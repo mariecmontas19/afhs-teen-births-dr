@@ -1,30 +1,129 @@
 # ============================================================================
-# 00_run_all.R -- master script: runs the CORE pipeline in order.
-# Scripts are numbered by stage (01 crosswalk ... 10 tables); the ~180 other
-# numbered scripts build appendix exhibits and robustness checks and are
-# documented in README.md. Restricted inputs (Ministry of Public Health birth
-# registry) must be present under ../analysis/datasets/ (see README, Data access).
-# NOTE: this order transcribes the documented pipeline; a full end-to-end
-# re-execution from raw data was last completed on 2026-07-13 (99_validate: 90/90).
+# 00_run_all.R -- master script. Sources every script in this repository in
+# stage order: raw inputs -> clean datasets -> estimation -> tables and figures.
+# The set is exactly the scripts on the dependency path of the paper's exhibits
+# (29 tables, 17 generated figures); exploratory analyses are not included.
+# Restricted inputs (Ministry of Public Health birth registry) must be present
+# under ../analysis/datasets/ (see README, Data access). Several 07-09 scripts
+# bootstrap 2,000 draws and take minutes to hours each.
+# NOTE: this order transcribes the numbered pipeline; the last full end-to-end
+# rebuild from raw data was 2026-07-13 (99_validate_pipeline: 90/90 checks).
 # ============================================================================
 Sys.setenv(LANG = "en_US.UTF-8", LC_ALL = "en_US.UTF-8")  # accented xlsx names (03, 04)
-core <- c(
-  "01_crosswalk.R", "01b_pcua_blank_municipio.R",
-  "02_population_projection.R", "02b_hamilton_perry.R",
-  "02c_projection_A_one.R", "02d_projection_B_intercensal.R",
+scripts <- c(
+  "01_crosswalk.R",
+  "01b_pcua_blank_municipio.R",
+  "02_population_projection.R",
+  "02b_hamilton_perry.R",
+  "02c_projection_A_one.R",
+  "02d_projection_B_intercensal.R",
+  "02f_projection_appendix.R",
   "03_clean_births.R",
-  "04_treatment.R", "04b_unit_dates_verified.R", "04c_treatment_modernization.R",
-  "05_covariates.R", "05b_income_ses.R", "05c_dhs_province.R", "05c2_dhs_contraception.R",
-  "05d_health_centers.R", "05e_poverty_measures.R", "05i_facility_access.R",
-  "05j_facility_levels.R", "05h2_jee_full.R",
-  "06_build_panel.R", "06b_monthly_panel.R",
-  "07_eventstudy.R", "07s_triplediff_ddd.R", "07t_headline.R", "07t2_dynamic_panelB.R",
-  "08_estimators.R", "08l_het_master.R", "08n_byage.R", "08x_bridge_cs.R",
-  "09_robustness.R", "09e_cost_effectiveness.R",
-  "10_tables.R",
-  "99_validate_pipeline.R"
+  "04_treatment.R",
+  "04b_unit_dates_verified.R",
+  "04c_treatment_modernization.R",
+  "04g_allocation_table.R",
+  "04h_provenance_table.R",
+  "04i_adoption_order.R",
+  "05_covariates.R",
+  "05b_income_ses.R",
+  "05c2_dhs_contraception.R",
+  "05c_dhs_province.R",
+  "05d_health_centers.R",
+  "05e_poverty_measures.R",
+  "05f_health_capability.R",
+  "05g_jee_education.R",
+  "05h2_jee_full.R",
+  "05h_jee_rollout.R",
+  "05i_facility_access.R",
+  "05j_facility_levels.R",
+  "05k_mics2019.R",
+  "05l_sisalril.R",
+  "05m_one_embarazos.R",
+  "05n2_mispas_cuadro29.R",
+  "05n3_mispas_panels.R",
+  "05n4_mispas_mechanisms.R",
+  "05n_mispas_facility.R",
+  "05p_educ_build.R",
+  "05q0_pn2024_centro.R",
+  "05q_pruebas_build.R",
+  "05r_census2010_check.R",
+  "05t_familia_moderators.R",
+  "05x2_kmo_expanded.R",
+  "06_build_panel.R",
+  "06b_monthly_panel.R",
+  "07a4_table1_descriptives.R",
+  "07b_honestdid.R",
+  "07p_decomposition.R",
+  "07s_triplediff_ddd.R",
+  "07t2_dynamic_panelB.R",
+  "07t_headline.R",
+  "07y_distance_build.R",
+  "07z5_spillover_table.R",
+  "07z6_gestlag_national.R",
+  "08_estimators.R",
+  "08_heterogeneity.R",
+  "08b_composition.R",
+  "08e_educ_composition.R",
+  "08g2_jee_figure.R",
+  "08g3_jee_baseline_control.R",
+  "08g_jee_contra_mechanism.R",
+  "08j_het_summary.R",
+  "08l_het_master.R",
+  "08m_newborn_health.R",
+  "08n_byage.R",
+  "08o4_conception_table.R",
+  "08o5_birth_vs_conception.R",
+  "08o6_ages2029.R",
+  "08o7_conception_fullwindow.R",
+  "08o8_table_age_robustness.R",
+  "08p3_table_age_gradient.R",
+  "08p5_placebo_panel.R",
+  "08p_age_gradient.R",
+  "08q2_cohort_atts.R",
+  "08s_siuben_inscripcion.R",
+  "08x_bridge_cs.R",
+  "08y_mechanisms_cs.R",
+  "08z3_educ_final_table.R",
+  "08z4_educ_by_grade.R",
+  "08z5_educ_overage_decomp.R",
+  "08z9_pruebas_panelC.R",
+  "09_robustness.R",
+  "09b_ramp_robustness.R",
+  "09c3_denominator_final.R",
+  "09d_packham_bridge.R",
+  "09e_cost_effectiveness.R",
+  "09g_undercount_battery.R",
+  "09h_placebo_wcb.R",
+  "09i2_matched_v2.R",
+  "09i3_psm_m4.R",
+  "09i_matched_controls.R",
+  "09j_covid.R",
+  "09k_drop_constanza.R",
+  "09l_bacon.R",
+  "09m_ddd_variants.R",
+  "10_appendix_leads.R",
+  "10_appendix_tables.R",
+  "10_table3_estimates.R",
+  "10r_rollout_figure.R",
+  "10w_wealth_items_table.R",
+  "10x_bridge_table.R",
+  "10x_denominator_panel.R",
+  "10y_shocks_table.R",
+  "10z3_matching_tables.R",
+  "10z4_sensitivity_table.R",
+  "10z5_placebo_table.R",
+  "10z6_registration_table.R",
+  "10z7_composition_utilization.R",
+  "10z_educ_tables.R",
+  "fig3b_motivation.R",
+  "fig_lac_ranking_2018.R",
+  "fig_pcua_rollout.R",
+  "fig_proximity_coef.R"
 )
-for (s in core) {
+for (s in scripts) {
   message("\n==== ", s, " ====")
   source(here::here("code", "R", s), echo = FALSE)
 }
+source(here::here("code", "R", "10_tables.R"))            # manifest of all paper tables
+source(here::here("code", "R", "99_validate_pipeline.R")) # end-to-end audit of clean datasets
