@@ -1,0 +1,1109 @@
+% ============================================================================
+% references.bib — DR Paper 3 (PCUA adolescent-care units & teen births)
+% Methodological citations for the estimators used in the pipeline.
+%
+% VERIFICATION STATUS (anti-hallucination):
+%   [VERIFIED-SOURCE]  = bibliographic details checked against the actual source
+%                        document this session.
+%   [DETAILS-PENDING]  = author / title / year / venue are correct and standard,
+%                        but volume / issue / pages / DOI were NOT re-verified
+%                        this session and must be confirmed before submission.
+%                        (Numeric fields omitted rather than guessed.)
+% ============================================================================
+
+% --- Triple-difference (our age-DDD estimator: 15-19 vs 30-34 partition) -----
+% [VERIFIED-SOURCE] Read full PDF (v3) this session: title, authors, affiliations
+% (both Emory University), date, arXiv id, and the companion R package name
+% "triplediff" all confirmed from the article itself.
+@misc{ortizvillavicencio2025triple,
+  author       = {Ortiz-Villavicencio, Marcelo and Sant'Anna, Pedro H. C.},
+  title        = {Better Understanding Triple Differences Estimators},
+  year         = {2025},
+  month        = jul,
+  howpublished = {arXiv preprint},
+  archivePrefix= {arXiv},
+  eprint       = {2505.09942},
+  primaryClass = {econ.EM},
+  note         = {Companion R package: \texttt{triplediff}. Develops RA/IPW/doubly-robust DDD estimators for staggered adoption; shows pooling all not-yet-treated units (or differencing two DiDs) is generally invalid in DDD.},
+  url          = {https://arxiv.org/abs/2505.09942}
+}
+
+% --- Staggered DiD estimator suite (used in 08_estimators.R, 07t, 09) --------
+% [VERIFIED 2026-07-30] volume/issue/pages recovered and checked for all of the below.
+@article{callaway2021did,
+  author  = {Callaway, Brantly and Sant'Anna, Pedro H. C.},
+  title   = {Difference-in-Differences with Multiple Time Periods},
+  journal = {Journal of Econometrics},
+  year    = {2021},
+  volume  = {225},
+  number  = {2},
+  pages   = {200--230},
+  note    = {R package: \texttt{did}. Vol/pages verified 2026-07-30.}
+}
+
+@article{sunabraham2021,
+  author  = {Sun, Liyang and Abraham, Sarah},
+  title   = {Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects},
+  journal = {Journal of Econometrics},
+  year    = {2021},
+  volume  = {225},
+  number  = {2},
+  pages   = {175--199},
+  note    = {\texttt{fixest::sunab}. Vol/pages verified 2026-07-30.}
+}
+
+@article{borusyak2024revelation,
+  author  = {Borusyak, Kirill and Jaravel, Xavier and Spiess, Jann},
+  title   = {Revisiting Event-Study Designs: Robust and Efficient Estimation},
+  journal = {Review of Economic Studies},
+  year    = {2024},
+  volume  = {91},
+  number  = {6},
+  pages   = {3253--3285},
+  note    = {Imputation estimator. Vol/pages verified 2026-07-30.}
+}
+
+@unpublished{gardner2022twostage,
+  author  = {Gardner, John and Thakral, Neil and T{\^o}, Linh T. and Yap, Luther},
+  title   = {Two-Stage Differences in Differences},
+  year    = {2024},
+  note    = {Working paper (May 2024 version); implemented in the \texttt{did2s} R package. Verified unpublished as of 2026-07.}
+}
+
+@article{dechaisemartin2020,
+  author  = {de Chaisemartin, Cl\'ement and D'Haultf{\oe}uille, Xavier},
+  title   = {Two-Way Fixed Effects Estimators with Heterogeneous Treatment Effects},
+  journal = {American Economic Review},
+  year    = {2020},
+  volume  = {110},
+  number  = {9},
+  pages   = {2964--2996},
+  note    = {Vol/pages verified 2026-07-30.}
+}
+
+@article{goodmanbacon2021,
+  author  = {Goodman-Bacon, Andrew},
+  title   = {Difference-in-Differences with Variation in Treatment Timing},
+  journal = {Journal of Econometrics},
+  year    = {2021},
+  volume  = {225},
+  number  = {2},
+  pages   = {254--277},
+  note    = {Vol/pages verified 2026-07-30.}
+}
+
+@article{santanna2020doubly,
+  author  = {Sant'Anna, Pedro H. C. and Zhao, Jun},
+  title   = {Doubly Robust Difference-in-Differences Estimators},
+  journal = {Journal of Econometrics},
+  year    = {2020},
+  volume  = {219},
+  number  = {1},
+  pages   = {101--122},
+  note    = {DR DiD basis for the DR DDD. Vol/pages verified 2026-07-30.}
+}
+
+@article{rambachanroth2023,
+  author  = {Rambachan, Ashesh and Roth, Jonathan},
+  title   = {A More Credible Approach to Parallel Trends},
+  journal = {Review of Economic Studies},
+  year    = {2023},
+  volume  = {90},
+  number  = {5},
+  pages   = {2555--2591},
+  note    = {\texttt{HonestDiD}. Vol/pages verified 2026-07-30.}
+}
+
+% [VERIFIED-SOURCE 2026-08-03] WHO IRIS 10665/43453 + UN digital library: edited
+% volume, WHO Technical Report Series 938. Cited for the utilization-evidence
+% chapter (Dick, Ferguson, Chandra-Mouli, Brabin et al.); chapter pages not
+% independently verifiable from catalog records, so the volume is cited.
+@book{ross2006preventing,
+  editor    = {Ross, David A. and Dick, Bruce and Ferguson, Jane},
+  title     = {Preventing {HIV/AIDS} in Young People: A Systematic Review of the Evidence from Developing Countries},
+  publisher = {World Health Organization},
+  address   = {Geneva},
+  series    = {WHO Technical Report Series},
+  number    = {938},
+  year      = {2006},
+  url       = {https://apps.who.int/iris/handle/10665/43453}
+}
+
+% [VERIFIED-SOURCE 2026-08-03] Crossref 10.1016/S0140-6736(07)60371-7: Lancet
+% 369(9572):1565-1573, May 2007. (The WHO 2012 guidance misdates it to 2008 in
+% its own prose; its footnote and the journal record say 2007.)
+@article{tylee2007youth,
+  author  = {Tylee, Andre and Haller, Dagmar M. and Graham, Tanya and Churchill, Rachel and Sanci, Lena A.},
+  title   = {Youth-Friendly Primary-Care Services: How Are We Doing and What More Needs to Be Done?},
+  journal = {The Lancet},
+  volume  = {369},
+  number  = {9572},
+  pages   = {1565--1573},
+  year    = {2007},
+  month   = may,
+  doi     = {10.1016/S0140-6736(07)60371-7}
+}
+
+% --- SRH / contraception data + motivation sources (see notes/srh_motivation_and_data_provenance.md) ---
+% [VERIFIED-SOURCE] $245M figure + MILENA-RD report located via web search 2026-06-28.
+@techreport{unfpa2022milenard,
+  author      = {{UNFPA Rep\'ublica Dominicana}},
+  title       = {Consecuencias socioecon\'omicas del embarazo adolescente en la Rep\'ublica Dominicana (estudio MILENA-RD)},
+  institution = {United Nations Population Fund (UNFPA-LACRO, MILENA 1.0 methodology)},
+  year        = {2021},
+  note        = {Opportunity cost US\$245 million (2018), 0.29\% of GDP; educational component US\$138M. Published July 2021 (verified on the PDF cover page, 2026-07-10); data year 2018; the PDF filename says 2022.},
+  url         = {https://dominicanrepublic.unfpa.org/sites/default/files/pub-pdf/estudio_milena-rd-2022_web_1_0.pdf}
+}
+
+% [VERIFIED-SOURCE] ENDESA 2013 microdata computed by us; FR292 is the published final report.
+@techreport{endesa2013,
+  author      = {{CESDEM and ICF International}},
+  title       = {Encuesta Demogr\'afica y de Salud (ENDESA) Rep\'ublica Dominicana 2013},
+  institution = {Centro de Estudios Sociales y Demogr\'aficos (CESDEM) and ICF International (DHS Program)},
+  year        = {2014},
+  note        = {DHS Final Report FR292. Microdata DRIR61. Unmet need, CPR, satisfied demand by age computed by us; see notes \S A.},
+  url         = {https://dhsprogram.com/pubs/pdf/FR292/FR292.pdf}
+}
+
+
+% [PARTLY VERIFIED 2026-07-30] Survey year 2019 (MICS round 6), ONE + UNICEF,
+% confirmed via the World Bank microdata catalogue (DOM_2019_MICS_v01_M) and the
+% ONE publications catalogue, which files the Informe General under 2022 (the WB
+% dataset record was created 2022-02-03). Earlier version of this entry said 2020.
+% NOT verified from the report's own cover page: both one.gob.do and the MICS PDF
+% are behind bot protection / CDN blocks. ISBN unknown. The wealth-quintile figures
+% used in the paper are OUR OWN calculation from the microdata we hold, not a
+% quotation from this report.
+@techreport{enhogarmics2019,
+  author      = {{Oficina Nacional de Estad\'istica (ONE)} and {UNICEF}},
+  title       = {Encuesta Nacional de Hogares de Prop\'ositos M\'ultiples (ENHOGAR-MICS) 2019: Informe General},
+  institution = {Oficina Nacional de Estad\'istica and UNICEF},
+  address     = {Santo Domingo, Rep\'ublica Dominicana},
+  year        = {2022},
+  note        = {Survey fielded 2019 (MICS round 6). Microdata: women's, birth-history and household files. Modern CPR 62\% (in-union); demand satisfied modern 79\% (national); by 10 regiones de salud. Adolescent childbearing by wealth quintile computed by us from the microdata (see notes).}
+}
+
+% [VERIFIED-SOURCE] Read the PDF this session. CITE CAUTIOUSLY — §9 figures uncited/mislabeled (notes §B).
+@techreport{cpd2022dom,
+  author      = {{UNFPA}},
+  title       = {Country Programme Document for the Dominican Republic},
+  institution = {UNFPA Executive Board, DP/FPA/CPD/DOM/7},
+  year        = {2022},
+  month       = dec,
+  note        = {Advocacy document; §9 family-planning figures are uncited and at least two are mislabeled 2013 ENDESA values (see notes \S B). Use for framing only.}
+}
+
+% ---- Hamilton-Perry projection validation (verified vs Baker et al. 2020 reference list, 2026-06-30) ----
+% [VERIFIED-SOURCE 2026-07-30] Crossref 10.2307/2573607 + Oxford Academic page:
+% title, both authors, 41(2):163-170, December 1962 all confirmed exactly.
+@article{hamilton1962short,
+  author  = {Hamilton, C. Horace and Perry, Josef},
+  title   = {A Short Method for Projecting Population by Age from One Decennial Census to Another},
+  journal = {Social Forces},
+  volume  = {41},
+  number  = {2},
+  pages   = {163--170},
+  year    = {1962},
+  month   = dec,
+  doi     = {10.2307/2573607}
+}
+% [VERIFIED 2026-07-30] Crossref: Demography 40(4):741-757, November 2003.
+@article{smith2003evaluation,
+  author  = {Smith, Stanley K. and Tayman, Jeff},
+  title   = {An Evaluation of Population Projections by Age},
+  journal = {Demography},
+  volume  = {40},
+  number  = {4},
+  pages   = {741--757},
+  year    = {2003},
+  month   = nov,
+  doi     = {10.2307/1515206}
+}
+@book{smith2001statelocal,
+  author={Smith, Stanley K. and Tayman, Jeff and Swanson, David A.}, title={State and Local Population Projections: Methodology and Analysis},
+  publisher={Kluwer Academic/Plenum Press}, address={New York}, year={2001}}
+% [VERIFIED-SOURCE 2026-07-30] Springer/RePEc: series vol. 37, Dordrecht (NL),
+% ISBN 978-94-007-7550-3. Earlier version of this entry said "New York" -- WRONG.
+@book{smith2013practitioners,
+  author    = {Smith, Stanley K. and Tayman, Jeff and Swanson, David A.},
+  title     = {A Practitioner's Guide to State and Local Population Projections},
+  publisher = {Springer},
+  address   = {Dordrecht},
+  series    = {The Springer Series on Demographic Methods and Population Analysis},
+  volume    = {37},
+  year      = {2013},
+  doi       = {10.1007/978-94-007-7551-0},
+  note      = {ISBN 978-94-007-7550-3}
+}
+% [VERIFIED 2026-07-30] Crossref: Springer 2017, ISBN 978-3-319-53745-0 (Cham,
+% not New York as this entry previously said).
+@book{baker2017cohort,
+  author    = {Baker, Jack and Swanson, David A. and Tayman, Jeff and Tedrow, Lucky M.},
+  title     = {Cohort Change Ratios and Their Applications},
+  publisher = {Springer},
+  address   = {Cham, Switzerland},
+  year      = {2017},
+  doi       = {10.1007/978-3-319-53745-0}
+}
+% [VERIFIED 2026-07-30] Crossref 10.1007/s11113-020-09601-y: now in print,
+% Population Research and Policy Review 40(6):1341-1354 (online 2020-09-20).
+@article{baker2020accuracy,
+  author  = {Baker, Jack and Swanson, David A. and Tayman, Jeff},
+  title   = {The Accuracy of Hamilton--Perry Population Projections for Census Tracts in the United States},
+  journal = {Population Research and Policy Review},
+  volume  = {40},
+  number  = {6},
+  pages   = {1341--1354},
+  year    = {2021},
+  doi     = {10.1007/s11113-020-09601-y},
+  note    = {Published online 20 September 2020.}
+}
+% [CORRECTED 2026-07-30] The DOI previously in this entry (10.1038/sdata.2019.19)
+% resolves to an UNRELATED paper on animal life expectancies. Correct record per
+% Crossref: Scientific Data 6, article 190005, doi 10.1038/sdata.2019.5, sole
+% author Hauer. Title ends "pathway" (singular) in the published version.
+@article{hauer2019population,
+  author  = {Hauer, Mathew E.},
+  title   = {Population Projections for U.S. Counties by Age, Sex, and Race Controlled to Shared Socioeconomic Pathway},
+  journal = {Scientific Data},
+  volume  = {6},
+  pages   = {190005},
+  year    = {2019},
+  doi     = {10.1038/sdata.2019.5}
+}
+% [VERIFIED 2026-07-30] Crossref: PRPR 33(5):747-770, 2014.
+@article{rayer2014population,
+  author  = {Rayer, Stefan and Smith, Stanley K.},
+  title   = {Population Projections by Age for Florida and Its Counties: Assessing Accuracy and the Impact of Adjustments},
+  journal = {Population Research and Policy Review},
+  volume  = {33},
+  number  = {5},
+  pages   = {747--770},
+  year    = {2014},
+  doi     = {10.1007/s11113-014-9325-x}
+}
+% [VERIFIED 2026-07-30] Crossref: PRPR 35(2):241-261 (online 2015-11-26).
+% This entry previously had NO journal, volume or pages at all.
+@article{wilson2016evaluation,
+  author  = {Wilson, Tom},
+  title   = {Evaluation of Alternative Cohort-Component Models for Local Area Population Forecasts},
+  journal = {Population Research and Policy Review},
+  volume  = {35},
+  number  = {2},
+  pages   = {241--261},
+  year    = {2016},
+  doi     = {10.1007/s11113-015-9380-y}
+}
+@incollection{swanson2017longterm,
+  author={Swanson, David A. and Tayman, Jeff}, title={A Long-Term Test of the Accuracy of the Hamilton--Perry Method for Forecasting State Populations by Age},
+  booktitle={The Frontiers of Applied Demography}, editor={Swanson, David A.}, pages={491--513}, publisher={Springer}, year={2017}}
+@article{smith1995evaluation,
+  author={Smith, Stanley K. and Shahidullah, Mohammed}, title={An Evaluation of Population Projection Errors for Census Tracts},
+  journal={Journal of the American Statistical Association}, volume={90}, number={429}, pages={64--71}, year={1995}}
+@article{green2015simple,
+  author={Green, Kesten C. and Armstrong, J. Scott}, title={Simple versus Complex Forecasting: The Evidence},
+  journal={Journal of Business Research}, volume={68}, number={8}, pages={1678--1685}, year={2015}}
+@article{tayman2025simplified,
+  author={Tayman, Jeff and Swanson, David A.}, title={A Simplified Version of the Hamilton--Perry Method for Forecasting Population by Age Group and Gender},
+  journal={Population Research and Policy Review}, volume={44}, number={3}, pages={31}, year={2025}, doi={10.1007/s11113-025-09951-5},
+  note={``H-P Light'' (non-gender-specific CCRs/CWRs); no accuracy loss vs H-P-Usual; addresses small-cell-size stability.}}
+
+% ==== SUBSTANTIVE / EMPIRICAL literature (verified via web, 2026-06-30; see quality_reports/lit_review_*) ====
+% --- Contraception / family-planning access -> fertility & women's outcomes ---
+@article{miller2010contraception,
+  author={Miller, Grant}, title={Contraception as Development? New Evidence from Family Planning in Colombia},
+  journal={The Economic Journal}, volume={120}, number={545}, pages={709--736}, year={2010},
+  note={Profamilia; FP explains <10\% of fertility decline but enables first-birth postponement -> schooling/work gains.}}
+@article{bailey2010momma,
+  author={Bailey, Martha J.}, title={``Momma's Got the Pill'': How Anthony Comstock and Griswold v. Connecticut Shaped US Childbearing},
+  journal={American Economic Review}, volume={100}, number={1}, pages={98--129}, year={2010}}
+@techreport{lovenheim2016access,
+  author={Lovenheim, Michael F. and Reback, Randall and Wedenoja, Leigh}, title={How Does Access to Health Care Affect Teen Fertility and High School Dropout Rates? Evidence from School-Based Health Centers},
+  institution={National Bureau of Economic Research}, type={NBER Working Paper}, number={22030}, year={2016},
+  note={CLOSEST ANALOG: supply-side clinic access cuts 15-18 birth rate ~5\%, largest for younger teens and Black/Hispanic. Verify published venue.}}
+% --- Adolescent-fertility consequences + prevention interventions ---
+@article{field2008early,
+  author={Field, Erica and Ambrus, Attila}, title={Early Marriage, Age of Menarche, and Female Schooling Attainment in Bangladesh},
+  journal={Journal of Political Economy}, volume={116}, number={5}, pages={881--930}, year={2008}}
+@article{duflo2015education,
+  author={Duflo, Esther and Dupas, Pascaline and Kremer, Michael}, title={Education, HIV, and Early Fertility: Experimental Evidence from Kenya},
+  journal={American Economic Review}, volume={105}, number={9}, pages={2757--2797}, year={2015}}
+@article{baird2011cash,
+  author={Baird, Sarah and McIntosh, Craig and {\"O}zler, Berk}, title={Cash or Condition? Evidence from a Cash Transfer Experiment},
+  journal={The Quarterly Journal of Economics}, volume={126}, number={4}, pages={1709--1753}, year={2011}}
+% --- Drivers of teen childbearing + media/edutainment ---
+@article{kearney2012why,
+  author={Kearney, Melissa S. and Levine, Phillip B.}, title={Why Is the Teen Birth Rate in the United States So High and Why Does It Matter?},
+  journal={Journal of Economic Perspectives}, volume={26}, number={2}, pages={141--166}, year={2012}}
+@article{kearney2015media,
+  author={Kearney, Melissa S. and Levine, Phillip B.}, title={Media Influences on Social Outcomes: The Impact of MTV's {\em 16 and Pregnant} on Teen Childbearing},
+  journal={American Economic Review}, volume={105}, number={12}, pages={3597--3632}, year={2015}}
+@article{laferrara2012soap,
+  author={La Ferrara, Eliana and Chong, Alberto and Duryea, Suzanne}, title={Soap Operas and Fertility: Evidence from Brazil},
+  journal={American Economic Journal: Applied Economics}, volume={4}, number={4}, pages={1--31}, year={2012}}
+
+% ==== Papers in the Literature/ folder — verified by reading title pages (2026-06-30) ====
+% --- BENCHMARK + LAC supply-side health-access (the papers we most directly build on) ---
+@article{galarraga2021effect,
+  author={Gal{\'a}rraga, Omar and Harris, Jeffrey E.}, title={Effect of an Abrupt Change in Sexual and Reproductive Health Policy on Teen Birth Rates in Ecuador, 2008--2017},
+  journal={Economics and Human Biology}, volume={41}, pages={100967}, year={2021}, doi={10.1016/j.ehb.2020.100967},
+  note={BENCHMARK. Ecuador 221 cantons; DiD + triple-difference (15-19 minus 20-24); policy reversal raised teen births 8.5/1000 in high-indigenous cantons.}}
+@article{galarraga2024mobile,
+  author={Gal{\'a}rraga, Omar and Quijano-Ruiz, Alonso and Faytong-Haro, Marco}, title={The Effects of Mobile Primary Health Teams: Evidence from the M{\'e}dico del Barrio Strategy in Ecuador},
+  journal={World Development}, volume={181}, pages={106659}, year={2024}, doi={10.1016/j.worlddev.2024.106659},
+  note={LAC supply-side primary-care expansion; canton extensive+intensive margin; DD+DDD (high-indigenous).}}
+% --- DR-specific ---
+@article{garganta2026extended,
+  author={Garganta, Santiago and Pinto, Mar{\'i}a Florencia and Zentner, Joaqu{\'i}n}, title={Extended School Day and Teenage Fertility in the Dominican Republic},
+  journal={Econom{\'i}a LACEA Journal}, volume={25}, number={1}, pages={276--295}, year={2026}, doi={10.31389/eco.566},
+  note={DR municipality-level; Jornada Escolar Extendida (JEE) exposure reduces teen pregnancies (stronger past 50\% coverage). Directly relevant to our JEE confound check.}}
+@article{smith2021helping,
+  author={Smith, Meghan and Leader, Alexandra and Roa, Wanny and Jaramillo, Ericka and Lazala, Davina and Flores, Jose and Cadet, Claudia and Vazifedan, Turaj and Bentley, Suzanne and Jensen, Lloyd},
+  title={Helping Mothers Survive: Program Evaluation and Early Outcomes of Maternal Care Training in the Dominican Republic},
+  journal={Frontiers in Public Health}, volume={9}, pages={660908}, year={2021}, doi={10.3389/fpubh.2021.660908},
+  note={DR maternal-mortality context (one of the highest MMRs in LAC despite 99\% skilled attendance). Useful for the MM limitation framing.}}
+% --- Methods (DiD with covariates / pre-trends) ---
+% [VERIFIED 2026-07-30] NO LONGER FORTHCOMING. Crossref: AEA Papers and
+% Proceedings 116:64-69, May 2026, doi 10.1257/pandp.20261109.
+@article{ghanem2026when,
+  author  = {Ghanem, Dalia and Sant'Anna, Pedro H. C. and W{\"u}thrich, Kaspar},
+  title   = {When Should Pre-Trends Be Parallel?},
+  journal = {AEA Papers and Proceedings},
+  volume  = {116},
+  pages   = {64--69},
+  year    = {2026},
+  month   = may,
+  doi     = {10.1257/pandp.20261109},
+  note    = {Pre-trends informativeness; covariate caution.}
+}
+% [VERIFIED-SOURCE 2026-07-30] arXiv:2406.15288. v1 submitted 21 June 2024;
+% latest is v3, 1 June 2026. No journal reference on arXiv as of 2026-07-30.
+% The earlier note here said "2026-03-21", which does not correspond to any
+% version date -- corrected.
+@misc{caetano2026did,
+  author        = {Caetano, Carolina and Callaway, Brantly},
+  title         = {Difference-in-Differences when Parallel Trends Holds Conditional on Covariates},
+  year          = {2026},
+  month         = jun,
+  howpublished  = {arXiv preprint},
+  archivePrefix = {arXiv},
+  eprint        = {2406.15288},
+  primaryClass  = {econ.EM},
+  note          = {v3, 1 June 2026. ``Hidden linearity bias'' from TWFE with covariates; doubly-robust alternatives (R \texttt{ptetools}). Supports the baseline-covariate choice here.},
+  url           = {https://arxiv.org/abs/2406.15288}
+}
+
+% ==== Round-3 substantive additions (web-verified 2026-06-30) ====
+% --- Supply-side contraception/clinic access -> teen fertility (closest analogs) ---
+@article{packham2017family,
+  author={Packham, Analisa}, title={Family Planning Funding Cuts and Teen Childbearing},
+  journal={Journal of Health Economics}, volume={55}, pages={168--185}, year={2017}, doi={10.1016/j.jhealeco.2017.07.002},
+  note={Texas family-planning funding cut (67\%, 80+ clinic closures) raised teen births ~3.4\%. Strong supply-side analog.}}
+@article{goldin2002power,
+  author={Goldin, Claudia and Katz, Lawrence F.}, title={The Power of the Pill: Oral Contraceptives and Women's Career and Marriage Decisions},
+  journal={Journal of Political Economy}, volume={110}, number={4}, pages={730--770}, year={2002}}
+@article{popeleches2010supply,
+  author={Pop-Eleches, Cristian}, title={The Supply of Birth Control Methods, Education, and Fertility: Evidence from Romania},
+  journal={Journal of Human Resources}, volume={45}, number={4}, pages={971--997}, year={2010}}
+% --- LMIC family-planning program evaluations + intergenerational ---
+@article{joshi2013family,
+  author={Joshi, Shareen and Schultz, T. Paul}, title={Family Planning and Women's and Children's Health: Long-Term Consequences of an Outreach Program in Matlab, Bangladesh},
+  journal={Demography}, volume={50}, number={1}, pages={149--180}, year={2013},
+  note={Matlab FP outreach -> ~15\% fertility decline + long-run women/children welfare + intergenerational gains.}}
+@article{popeleches2006impact,
+  author={Pop-Eleches, Cristian}, title={The Impact of an Abortion Ban on Socioeconomic Outcomes of Children: Evidence from Romania},
+  journal={Journal of Political Economy}, volume={114}, number={4}, pages={744--773}, year={2006}}
+% --- Adolescent-fertility prevention (schooling/incapacitation) + information ---
+% [VERIFIED-SOURCE 2026-07-30] Crossref 10.1016/j.jpubeco.2010.09.004: 95(1-2):
+% 41-53, February 2011, both authors. (EconPapers collapses the issue to "1";
+% Crossref and the printed issue are 1-2.) Design = longer school day
+% (incapacitation), i.e. a SCHOOLING-SUPPLY policy, not a demand-side subsidy --
+% the intro list was reworded accordingly on 2026-07-30.
+@article{berthelon2011risky,
+  author  = {Berthelon, Matias E. and Kruger, Diana I.},
+  title   = {Risky Behavior among Youth: Incapacitation Effects of School on Adolescent Motherhood and Crime in Chile},
+  journal = {Journal of Public Economics},
+  volume  = {95},
+  number  = {1--2},
+  pages   = {41--53},
+  year    = {2011},
+  month   = feb,
+  doi     = {10.1016/j.jpubeco.2010.09.004},
+  note    = {Chile's full-day school reform cut adolescent motherhood among the poor and in urban areas (incapacitation) -- same channel as the DR JEE (Garganta et al. 2026).}
+}
+@article{dupas2011teenagers,
+  author={Dupas, Pascaline}, title={Do Teenagers Respond to HIV Risk Information? Evidence from a Field Experiment in Kenya},
+  journal={American Economic Journal: Applied Economics}, volume={3}, number={1}, pages={1--34}, year={2011},
+  note={Relative-risk information cut teen pregnancy 28\%; abstinence curriculum had no effect.}}
+% --- LAC regional context / consequences ---
+@techreport{azevedo2012teenage,
+  author={Azevedo, Joao Pedro and Favara, Marta and Haddock, Sarah E. and Lopez-Calva, Luis F. and Muller, Miriam and Perova, Elizaveta},
+  title={Teenage Pregnancy and Opportunities in Latin America and the Caribbean: On Teenage Fertility Decisions, Poverty and Economic Achievement},
+  institution={World Bank}, address={Washington, DC}, year={2012}}
+@article{marteleto2018educational,
+  author={Marteleto, Let{\'i}cia J. and Villanueva, Aida}, title={The Educational Consequences of Adolescent Childbearing and Union Formation in Brazil},
+  journal={Studies in Family Planning}, volume={49}, number={3}, pages={183--211}, year={2018}}
+% --- Institutional (DR adolescent-care service supply; the CACU/PRONAISA setting) ---
+% [VERIFIED-SOURCE 2026-07-30] Read the PDF held in Literature/. NO date and NO
+% ISBN are printed anywhere in its 97 pages. Year 2019 established from two
+% independent internal signals: the file's own /CreationDate (D:20190520) and the
+% AUTORIDADES page, which lists Minister Rafael Sanchez and Viceminister Hector
+% Quezada (that ministerial team held office 2017-2020). "EFEI" was in an earlier
+% version of this entry and appears NOWHERE in the document -- removed.
+@techreport{pronaisa_estudio,
+  author      = {{Ministerio de Salud P{\'u}blica (PRONAISA)}},
+  title       = {Estudio Diagn{\'o}stico sobre Oferta de Servicios de Atenci{\'o}n Integral de Adolescentes (10--19 a{\~n}os)},
+  institution = {Ministerio de Salud P{\'u}blica, Divisi{\'o}n de Salud Materno Infantil y Adolescentes, Programa Nacional de Atenci{\'o}n Integral a la Salud de los y las Adolescentes (PRONAISA)},
+  address     = {Santo Domingo, Rep{\'u}blica Dominicana},
+  year        = {2019},
+  note        = {No publication date is printed on the document; dated 2019 from the file's internal creation timestamp (20 May 2019) and the ministerial authorities listed on the credits page. Prepared by J. M. Aragoneses, V. Laureano and M. Concepci{\'o}n. National inventory of adolescent-care service supply.}
+}
+
+% ============================================================================
+% APPENDED 2026-07-10: verified entries from the 6-strand literature sweep
+% (notes/litsweep/strand*_RAW.jsonl). All bibliographic details verified against
+% publisher/primary sources by the sweep agents; unpublished type = cite as WP.
+% (NB: never write an at-sign inside bib comments -- BibTeX parses it as an entry.)
+% Overlapping papers keep their ORIGINAL keys above (callaway2021did, etc.).
+% ============================================================================
+
+% ---------- US SRH access (new) ----------
+@article{lindopackham2017,
+  author  = {Lindo, Jason M. and Packham, Analisa},
+  title   = {How Much Can Expanding Access to Long-Acting Reversible Contraceptives Reduce Teen Birth Rates?},
+  journal = {American Economic Journal: Economic Policy},
+  year    = {2017},
+  volume  = {9},
+  number  = {3},
+  pages   = {348--376},
+  doi     = {10.1257/pol.20160039}
+}
+@article{kelly2020iud,
+  author  = {Kelly, Andrea and Lindo, Jason M. and Packham, Analisa},
+  title   = {The Power of the {IUD}: Effects of Expanding Access to Contraception Through {Title X} Clinics},
+  journal = {Journal of Public Economics},
+  year    = {2020},
+  volume  = {192},
+  pages   = {104288},
+  doi     = {10.1016/j.jpubeco.2020.104288}
+}
+@article{kearneylevine2009subsidized,
+  author  = {Kearney, Melissa S. and Levine, Phillip B.},
+  title   = {Subsidized Contraception, Fertility, and Sexual Behavior},
+  journal = {Review of Economics and Statistics},
+  year    = {2009},
+  volume  = {91},
+  number  = {1},
+  pages   = {137--151},
+  doi     = {10.1162/rest.91.1.137}
+}
+@article{myers2017power,
+  author  = {Myers, Caitlin Knowles},
+  title   = {The Power of Abortion Policy: Reexamining the Effects of Young Women's Access to Reproductive Control},
+  journal = {Journal of Political Economy},
+  year    = {2017},
+  volume  = {125},
+  number  = {6},
+  pages   = {2178--2224},
+  doi     = {10.1086/694293}
+}
+@article{guldi2008fertility,
+  author  = {Guldi, Melanie},
+  title   = {Fertility Effects of Abortion and Birth Control Pill Access for Minors},
+  journal = {Demography},
+  year    = {2008},
+  volume  = {45},
+  number  = {4},
+  pages   = {817--827},
+  doi     = {10.1353/dem.0.0026}
+}
+@article{fischer2018impacts,
+  author  = {Fischer, Stefanie and Royer, Heather and White, Corey},
+  title   = {The Impacts of Reduced Access to Abortion and Family Planning Services on Abortions, Births, and Contraceptive Purchases},
+  journal = {Journal of Public Economics},
+  year    = {2018},
+  volume  = {167},
+  pages   = {43--68}
+}
+@article{dench2024dobbs,
+  author  = {Dench, Daniel and Pineda-Torres, Mayra and Myers, Caitlin},
+  title   = {The Effects of Post-{Dobbs} Abortion Bans on Fertility},
+  journal = {Journal of Public Economics},
+  year    = {2024},
+  volume  = {234},
+  pages   = {105124}
+}
+@article{luslusky2019clinic,
+  author  = {Lu, Yao and Slusky, David J. G.},
+  title   = {The Impact of Women's Health Clinic Closures on Fertility},
+  journal = {American Journal of Health Economics},
+  year    = {2019},
+  volume  = {5},
+  number  = {3},
+  pages   = {334--359}
+}
+@article{bailey2012reexamining,
+  author  = {Bailey, Martha J.},
+  title   = {Reexamining the Impact of Family Planning Programs on {US} Fertility: Evidence from the {War on Poverty} and the Early Years of {Title X}},
+  journal = {American Economic Journal: Applied Economics},
+  year    = {2012},
+  volume  = {4},
+  number  = {2},
+  pages   = {62--97},
+  doi     = {10.1257/app.4.2.62}
+}
+
+% ---------- LMIC + AFHS/YFHS (new) ----------
+@article{bransonbyker2018,
+  author  = {Branson, Nicola and Byker, Tanya},
+  title   = {Causes and Consequences of Teen Childbearing: Evidence from a Reproductive Health Intervention in {South Africa}},
+  journal = {Journal of Health Economics},
+  year    = {2018},
+  volume  = {57},
+  pages   = {221--235},
+  doi     = {10.1016/j.jhealeco.2017.11.006}
+}
+@article{clarkemuhlrad2021abortion,
+  author  = {Clarke, Damian and M{\"u}hlrad, Hanna},
+  title   = {Abortion Laws and Women's Health},
+  journal = {Journal of Health Economics},
+  year    = {2021},
+  volume  = {76},
+  pages   = {102413},
+  doi     = {10.1016/j.jhealeco.2020.102413}
+}
+% [VERIFIED-SOURCE 2026-07-30] WHO IRIS 10665/75217 + who.int item page.
+% Subtitle matches WHO's own wording ("adolescent friendly", unhyphenated).
+@techreport{who2012afhs,
+  author      = {{World Health Organization}},
+  title       = {Making Health Services Adolescent Friendly: Developing National Quality Standards for Adolescent Friendly Health Services},
+  institution = {World Health Organization},
+  address     = {Geneva},
+  year        = {2012},
+  note        = {ISBN 978-92-4-150359-4},
+  url         = {https://apps.who.int/iris/handle/10665/75217}
+}
+% [VERIFIED-SOURCE 2026-07-30] who.int/publications/i/item/9789241549332.
+% Four volumes; vol. 1 is subtitled "Standards and criteria".
+@techreport{who2015standards,
+  author      = {{World Health Organization} and {UNAIDS}},
+  title       = {Global Standards for Quality Health-Care Services for Adolescents},
+  institution = {World Health Organization and UNAIDS},
+  address     = {Geneva},
+  year        = {2015},
+  note        = {4 volumes; vol.~1, \emph{Standards and Criteria}. ISBN 978-92-4-154933-2},
+  url         = {https://www.who.int/publications/i/item/9789241549332}
+}
+@techreport{who2025standards,
+  author      = {{World Health Organization}},
+  title       = {Global Standards for Quality Health Care Services for Adolescents},
+  institution = {World Health Organization},
+  address     = {Geneva},
+  year        = {2025},
+  note        = {Updated edition. ISBN 978-92-4-011401-2}
+}
+@article{chandramouli2015what,
+  author  = {Chandra-Mouli, Venkatraman and Lane, Catherine and Wong, Sylvia},
+  title   = {What Does Not Work in Adolescent Sexual and Reproductive Health: A Review of Evidence on Interventions Commonly Accepted as Best Practices},
+  journal = {Global Health: Science and Practice},
+  year    = {2015},
+  volume  = {3},
+  number  = {3},
+  pages   = {333--340},
+  doi     = {10.9745/GHSP-D-15-00126}
+}
+@article{denno2015effective,
+  author  = {Denno, Donna M. and Hoopes, Andrea J. and Chandra-Mouli, Venkatraman},
+  title   = {Effective Strategies to Provide Adolescent Sexual and Reproductive Health Services and to Increase Demand and Community Support},
+  journal = {Journal of Adolescent Health},
+  year    = {2015},
+  volume  = {56},
+  number  = {1, Suppl.},
+  pages   = {S22--S41},
+  doi     = {10.1016/j.jadohealth.2014.09.012}
+}
+% [VERIFIED-SOURCE 2026-08-08] Read local published PDF from Journal of
+% Development Economics 183 (2026) 103844. Verified title, authors, journal,
+% year, volume, article number, and DOI from the PDF.
+@article{kaytan2026complementary,
+  author  = {Kaytan, Sevin and Piedra-Bonilla, Stwarth and Zohar, Tom},
+  title   = {The Complementary Role of Information and Contraceptive Access in Teen Pregnancy},
+  journal = {Journal of Development Economics},
+  year    = {2026},
+  volume  = {183},
+  pages   = {103844},
+  doi     = {10.1016/j.jdeveco.2026.103844},
+  note    = {Studies Costa Rica's Salud Mesoamerica Initiative, combining free LARC access with school-based information campaigns.}
+}
+@article{doyle2010mema,
+  author  = {Doyle, Aoife M. and Ross, David A. and Maganja, Kaballa and Baisley, Kathy and Masesa, Clemens and Andreasen, Aura and Plummer, Mary L. and Obasi, Angela I. N. and Weiss, Helen A. and Kapiga, Saidi and Watson-Jones, Deborah and Changalucha, John and Hayes, Richard J.},
+  title   = {Long-Term Biological and Behavioural Impact of an Adolescent Sexual Health Intervention in {Tanzania}: Follow-up Survey of the Community-Based {MEMA kwa Vijana} Trial},
+  journal = {PLoS Medicine},
+  year    = {2010},
+  volume  = {7},
+  number  = {6},
+  pages   = {e1000287},
+  doi     = {10.1371/journal.pmed.1000287}
+}
+@article{rosenberg2018girlpower,
+  author  = {Rosenberg, Nora E. and Bhushan, Nivedita L. and Vansia, Dhrutika and others},
+  title   = {Comparing Youth-Friendly Health Services to the Standard of Care Through ``{Girl Power-Malawi}'': A Quasi-Experimental Cohort Study},
+  journal = {Journal of Acquired Immune Deficiency Syndromes},
+  year    = {2018},
+  volume  = {79},
+  number  = {4},
+  pages   = {458--466},
+  doi     = {10.1097/QAI.0000000000001830}
+}
+@article{graybill2025girlpower,
+  author  = {Graybill, Lauren A. and Westreich, Daniel and Maseko, Bertha and others},
+  title   = {The Effect of Youth-Friendly Health Services on Risk of Pregnancy Among Adolescent Girls and Young Women in {Lilongwe, Malawi}: A Secondary Analysis of the {Girl Power--Malawi} Study},
+  journal = {American Journal of Epidemiology},
+  year    = {2025},
+  volume  = {194},
+  number  = {5},
+  pages   = {1200--1207}
+}
+@article{sandoy2024rise,
+  author  = {Sand{\o}y, Ingvild F. and Mudenda, Mweetwa and Hegdahl, Hanne K. and others},
+  title   = {Effectiveness of Economic Support, Comprehensive Sexuality Education and Community Dialogue on Early Childbearing and Sitting for Grade Nine Exams Among Adolescent Girls in Rural {Zambia}: A Cluster Randomised Trial},
+  journal = {eClinicalMedicine},
+  year    = {2024},
+  volume  = {78},
+  pages   = {102934},
+  doi     = {10.1016/j.eclinm.2024.102934}
+}
+
+% ---------- Consequences + LAC (new) ----------
+@article{berthelon2017does,
+  author  = {Berthelon, Matias and Kruger, Diana I.},
+  title   = {Does Adolescent Motherhood Affect Education and Labor Market Outcomes of Mothers? {A} Study on Young Adult Women in {Chile} during 1990--2013},
+  journal = {International Journal of Public Health},
+  year    = {2017},
+  volume  = {62},
+  number  = {2},
+  pages   = {293--303},
+  doi     = {10.1007/s00038-016-0926-5}
+}
+@article{ozier2018impact,
+  author  = {Ozier, Owen},
+  title   = {The Impact of Secondary Schooling in {Kenya}: A Regression Discontinuity Analysis},
+  journal = {Journal of Human Resources},
+  year    = {2018},
+  volume  = {53},
+  number  = {1},
+  pages   = {157--188}
+}
+@article{ashcraft2013consequences,
+  author  = {Ashcraft, Adam and Fern{\'a}ndez-Val, Iv{\'a}n and Lang, Kevin},
+  title   = {The Consequences of Teenage Childbearing: Consistent Estimates When Abortion Makes Miscarriage Non-random},
+  journal = {Economic Journal},
+  year    = {2013},
+  volume  = {123},
+  number  = {571},
+  pages   = {875--905},
+  doi     = {10.1111/ecoj.12005}
+}
+@article{hotz2005teenage,
+  author  = {Hotz, V. Joseph and McElroy, Susan Williams and Sanders, Seth G.},
+  title   = {Teenage Childbearing and Its Life Cycle Consequences: Exploiting a Natural Experiment},
+  journal = {Journal of Human Resources},
+  year    = {2005},
+  volume  = {40},
+  number  = {3},
+  pages   = {683--715}
+}
+@article{geronimus1992socioeconomic,
+  author  = {Geronimus, Arline T. and Korenman, Sanders},
+  title   = {The Socioeconomic Consequences of Teen Childbearing Reconsidered},
+  journal = {Quarterly Journal of Economics},
+  year    = {1992},
+  volume  = {107},
+  number  = {4},
+  pages   = {1187--1214},
+  doi     = {10.2307/2118385}
+}
+@techreport{rodriguezvignoli2025gran,
+  author      = {Rodr{\'i}guez Vignoli, Jorge},
+  title       = {La gran reducci{\'o}n de la fecundidad en la adolescencia en {Am{\'e}rica Latina}},
+  institution = {CEPAL},
+  address     = {Santiago},
+  type        = {Serie Poblaci{\'o}n y Desarrollo},
+  number      = {LC/TS.2025/109},
+  year        = {2025}
+}
+@article{salinas2022adolescent,
+  author  = {Salinas, Viviana and Jorquera-Samter, Valentina},
+  title   = {Adolescent Fertility and High School Completion in {Chile}: Exploring Gender Differences},
+  journal = {Demographic Research},
+  year    = {2022},
+  volume  = {47},
+  number  = {31},
+  pages   = {967--1008},
+  doi     = {10.4054/DemRes.2022.47.31}
+}
+
+% ---------- Intergenerational / selection (new) ----------
+@article{gruber1999marginal,
+  author  = {Gruber, Jonathan and Levine, Phillip B. and Staiger, Douglas},
+  title   = {Abortion Legalization and Child Living Circumstances: Who Is the ``Marginal Child''?},
+  journal = {Quarterly Journal of Economics},
+  year    = {1999},
+  volume  = {114},
+  number  = {1},
+  pages   = {263--291}
+}
+@article{ananat2009abortion,
+  author  = {Ananat, Elizabeth Oltmans and Gruber, Jonathan and Levine, Phillip B. and Staiger, Douglas},
+  title   = {Abortion and Selection},
+  journal = {Review of Economics and Statistics},
+  year    = {2009},
+  volume  = {91},
+  number  = {1},
+  pages   = {124--136}
+}
+@article{ananathungerman2012,
+  author  = {Ananat, Elizabeth Oltmans and Hungerman, Daniel M.},
+  title   = {The Power of the Pill for the Next Generation: Oral Contraception's Effects on Fertility, Abortion, and Maternal and Child Characteristics},
+  journal = {Review of Economics and Statistics},
+  year    = {2012},
+  volume  = {94},
+  number  = {1},
+  pages   = {37--51},
+  doi     = {10.1162/REST_a_00230}
+}
+@article{bailey2019familyplanning,
+  author  = {Bailey, Martha J. and Malkova, Olga and McLaren, Zo{\"e} M.},
+  title   = {Does Access to Family Planning Increase Children's Opportunities? Evidence from the {War on Poverty} and the Early Years of {Title X}},
+  journal = {Journal of Human Resources},
+  year    = {2019},
+  volume  = {54},
+  number  = {4},
+  pages   = {825--856}
+}
+@article{bailey2013fifty,
+  author  = {Bailey, Martha J.},
+  title   = {Fifty Years of Family Planning: New Evidence on the Long-Run Effects of Increasing Access to Contraception},
+  journal = {Brookings Papers on Economic Activity},
+  year    = {2013},
+  volume  = {2013},
+  number  = {1},
+  pages   = {341--395}
+}
+@article{aizer2022grandparents,
+  author  = {Aizer, Anna and Devereux, Paul and Salvanes, Kjell G.},
+  title   = {Grandparents, Moms, or Dads? Why Children of Teen Mothers Do Worse in Life},
+  journal = {Journal of Human Resources},
+  year    = {2022},
+  volume  = {57},
+  number  = {6},
+  pages   = {2012--2047}
+}
+@article{almond2011killing,
+  author  = {Almond, Douglas and Currie, Janet},
+  title   = {Killing Me Softly: The Fetal Origins Hypothesis},
+  journal = {Journal of Economic Perspectives},
+  year    = {2011},
+  volume  = {25},
+  number  = {3},
+  pages   = {153--172},
+  doi     = {10.1257/jep.25.3.153}
+}
+@incollection{almond2011humancapital,
+  author    = {Almond, Douglas and Currie, Janet},
+  title     = {Human Capital Development before Age Five},
+  booktitle = {Handbook of Labor Economics},
+  editor    = {Ashenfelter, Orley and Card, David},
+  volume    = {4B},
+  pages     = {1315--1486},
+  publisher = {Elsevier},
+  address   = {Amsterdam},
+  year      = {2011}
+}
+@article{kearney2022puzzle,
+  author  = {Kearney, Melissa S. and Levine, Phillip B. and Pardue, Luke},
+  title   = {The Puzzle of Falling {US} Birth Rates since the {Great Recession}},
+  journal = {Journal of Economic Perspectives},
+  year    = {2022},
+  volume  = {36},
+  number  = {1},
+  pages   = {151--176}
+}
+@article{popeleches2006romania,
+  author  = {Pop-Eleches, Cristian},
+  title   = {The Impact of an Abortion Ban on Socioeconomic Outcomes of Children: Evidence from {Romania}},
+  journal = {Journal of Political Economy},
+  year    = {2006},
+  volume  = {114},
+  number  = {4},
+  pages   = {744--773}
+}
+
+% ---------- Methods (new; overlapping papers keep original keys above) ----------
+@article{dechaisemartin2023survey,
+  author  = {de Chaisemartin, Cl{\'e}ment and D'Haultf{\oe}uille, Xavier},
+  title   = {Two-Way Fixed Effects and Differences-in-Differences with Heterogeneous Treatment Effects: A Survey},
+  journal = {The Econometrics Journal},
+  year    = {2023},
+  volume  = {26},
+  number  = {3},
+  pages   = {C1--C30},
+  doi     = {10.1093/ectj/utac017}
+}
+@article{roth2023whats,
+  author  = {Roth, Jonathan and Sant'Anna, Pedro H. C. and Bilinski, Alyssa and Poe, John},
+  title   = {What's Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature},
+  journal = {Journal of Econometrics},
+  year    = {2023},
+  volume  = {235},
+  number  = {2},
+  pages   = {2218--2244},
+  doi     = {10.1016/j.jeconom.2023.03.008}
+}
+@article{roth2022pretest,
+  author  = {Roth, Jonathan},
+  title   = {Pretest with Caution: Event-Study Estimates after Testing for Parallel Trends},
+  journal = {American Economic Review: Insights},
+  year    = {2022},
+  volume  = {4},
+  number  = {3},
+  pages   = {305--322},
+  doi     = {10.1257/aeri.20210236}
+}
+@article{olden2022triple,
+  author  = {Olden, Andreas and M{\o}en, Jarle},
+  title   = {The Triple Difference Estimator},
+  journal = {The Econometrics Journal},
+  year    = {2022},
+  volume  = {25},
+  number  = {3},
+  pages   = {531--553},
+  doi     = {10.1093/ectj/utac010}
+}
+@article{cameron2008bootstrap,
+  author  = {Cameron, A. Colin and Gelbach, Jonah B. and Miller, Douglas L.},
+  title   = {Bootstrap-Based Improvements for Inference with Clustered Errors},
+  journal = {Review of Economics and Statistics},
+  year    = {2008},
+  volume  = {90},
+  number  = {3},
+  pages   = {414--427},
+  doi     = {10.1162/rest.90.3.414}
+}
+@article{mackinnon2018wild,
+  author  = {MacKinnon, James G. and Webb, Matthew D.},
+  title   = {The Wild Bootstrap for Few (Treated) Clusters},
+  journal = {The Econometrics Journal},
+  year    = {2018},
+  volume  = {21},
+  number  = {2},
+  pages   = {114--135},
+  doi     = {10.1111/ectj.12107}
+}
+@article{bertrand2004much,
+  author  = {Bertrand, Marianne and Duflo, Esther and Mullainathan, Sendhil},
+  title   = {How Much Should We Trust Differences-in-Differences Estimates?},
+  journal = {Quarterly Journal of Economics},
+  year    = {2004},
+  volume  = {119},
+  number  = {1},
+  pages   = {249--275},
+  doi     = {10.1162/003355304772839588}
+}
+@article{butts2022did2s,
+  author  = {Butts, Kyle and Gardner, John},
+  title   = {{did2s}: Two-Stage Difference-in-Differences},
+  journal = {The R Journal},
+  year    = {2022},
+  volume  = {14},
+  number  = {3},
+  pages   = {162--173},
+  doi     = {10.32614/RJ-2022-048}
+}
+@book{swanson2012subnational,
+  author    = {Swanson, David A. and Tayman, Jeff},
+  title     = {Subnational Population Estimates},
+  publisher = {Springer},
+  address   = {Dordrecht},
+  year      = {2012},
+  series    = {The Springer Series on Demographic Methods and Population Analysis},
+  volume    = {31}
+}
+
+% ---------- DR policy & data documents (new) ----------
+@techreport{gcps2019prea,
+  author      = {{Gabinete de Coordinaci{\'o}n de Pol{\'i}ticas Sociales (GCPS)}},
+  title       = {Plan Nacional para la Reducci{\'o}n de Embarazos en Adolescentes 2019--2023 (PREA-RD)},
+  institution = {Vicepresidencia de la Rep{\'u}blica Dominicana},
+  address     = {Santo Domingo},
+  year        = {2019}
+}
+@techreport{ganard2021ppa,
+  author      = {{Gabinete de Ni{\~n}ez y Adolescencia (GANA-RD)} and {CONANI}},
+  title       = {Pol{\'i}tica de prevenci{\'o}n y atenci{\'o}n a las uniones tempranas y el embarazo en adolescentes (PPA)},
+  institution = {Presidencia de la Rep{\'u}blica Dominicana},
+  address     = {Santo Domingo},
+  year        = {2021}
+}
+@misc{mepyd2015koica,
+  author       = {{Ministerio de la Presidencia de la Rep{\'u}blica Dominicana}},
+  title        = {Funcionarios del {MEPyD} y Corea visitan centro de promoci{\'o}n de la salud sexual y reproductiva de adolescentes},
+  year         = {2015},
+  month        = jul,
+  day          = {10},
+  howpublished = {\url{https://minpre.gob.do/comunicacion/notas-de-prensa/funcionarios-del-mepyd-y-corea-visitan-centro-de-promocion-de-la-salud-sexual-y-reproductiva-de-adolescentes/}},
+  note         = {Official note stating that the center of the ``Proyecto de Prevenci{\'o}n de Embarazo en Adolescentes y del Fortalecimiento de la Asistencia M{\'e}dica de las Mujeres J{\'o}venes en la Rep{\'u}blica Dominicana'' was inaugurated on February 17, 2015 with support from KOICA. Accessed August 9, 2026.}
+}
+@misc{mmujer2020centropsia,
+  author       = {{Ministerio de la Mujer de la Rep{\'u}blica Dominicana}},
+  title        = {Nuestro Centro de Promoci{\'o}n Salud Integral de Adolescentes cumple 5 a{\~n}os de servicio y ha impactado en m{\'a}s de 34 mil personas con el apoyo de {Koica}},
+  year         = {2020},
+  month        = feb,
+  day          = {17},
+  howpublished = {\url{https://mujer.gob.do/index.php/noticias/item/553-nuestro-centro-de-promocion-salud-integral-de-adolescentes-cumple-5-anos-de-servicio-y-ha-impactado-en-mas-de-34-mil-personas-con-el-apoyo-de-koica}},
+  note         = {Official note describing CentroPSIA as founded on February 17, 2015 and supported by KOICA. Accessed August 9, 2026.}
+}
+@misc{ley121,
+  author       = {{Congreso Nacional de la Rep{\'u}blica Dominicana}},
+  title        = {Ley No. 1-21 que modifica y deroga varias disposiciones del C{\'o}digo Civil y de la Ley No. 659 sobre Actos del Estado Civil},
+  year         = {2021},
+  howpublished = {Gaceta Oficial, promulgada el 6 de enero de 2021}
+}
+@misc{ley12315,
+  author       = {{Congreso Nacional de la Rep{\'u}blica Dominicana}},
+  title        = {Ley No. 123-15 que crea el Servicio Nacional de Salud (SNS)},
+  year         = {2015},
+  howpublished = {Gaceta Oficial, 17 de julio de 2015}
+}
+@techreport{one2017tendencias,
+  author      = {{Oficina Nacional de Estad{\'i}stica (ONE)} and {UNFPA}},
+  title       = {Tendencias, patrones y determinantes de la fecundidad adolescente en la Rep{\'u}blica Dominicana},
+  institution = {Oficina Nacional de Estad{\'i}stica},
+  address     = {Santo Domingo},
+  year        = {2017}
+}
+@techreport{worldbank2021adolescent,
+  author      = {{World Bank}},
+  title       = {Adolescent Pregnancy in the Dominican Republic},
+  institution = {World Bank, Macroeconomics, Trade and Investment Global Practice},
+  type        = {Policy Note},
+  address     = {Washington, DC},
+  year        = {2021},
+  note        = {Document dated September 2020; disclosed June 2021}
+}
+@article{gonzalez2024invisible,
+  author  = {Gonz{\'a}lez-Rodr{\'i}guez, Elena and Gil de Miguel, {\'A}ngel and Bravo-Infantes, Ra{\'u}l and Garrido-Gonz{\'a}lez, Ignacio and Gil-Prieto, Ruth},
+  journal = {Preventive Medicine Reports},
+  title   = {The Invisible Problem of Early Adolescent Pregnancy in the {Dominican Republic}: A Descriptive Analysis},
+  year    = {2024},
+  volume  = {43},
+  pages   = {102762},
+  doi     = {10.1016/j.pmedr.2024.102762}
+}
+@article{delarosa2018perfil,
+  author  = {De la Rosa, O.},
+  title   = {An{\'a}lisis del perfil sociodemogr{\'a}fico de las adolescentes embarazadas asistidas en una unidad de atenci{\'o}n integral de un hospital de {Santo Domingo}, febrero--abril 2017},
+  journal = {Ciencia y Salud},
+  year    = {2018},
+  volume  = {2},
+  number  = {1},
+  pages   = {41--47},
+  doi     = {10.22206/cysa.2018.v2i1.pp41-47}
+}
+
+% Added 2026-07-17 (refs pass): ENHOGAR-2018 primary sources, details verified
+% from the downloaded PDFs (cover pages + Cuadros 14/20 read directly).
+@techreport{one2019enhogar,
+  author      = {{Oficina Nacional de Estad\'istica (ONE)}},
+  title       = {Encuesta Nacional de Hogares de Prop\'ositos M\'ultiples (ENHOGAR-2018). Fasc\'iculo I: Salud sexual y reproductiva de las adolescentes},
+  institution = {Oficina Nacional de Estad\'istica},
+  address     = {Santo Domingo, Rep\'ublica Dominicana},
+  year        = {2019}
+}
+@techreport{caceres2020medicion,
+  author      = {C\'aceres Ure{\~n}a, Francisco I.},
+  title       = {Medici\'on del embarazo en las adolescentes en la Rep\'ublica Dominicana / ENHOGAR-2018},
+  institution = {UNFPA Rep\'ublica Dominicana},
+  address     = {Santo Domingo, Rep\'ublica Dominicana},
+  year        = {2020}
+}
+
+% Added 2026-07-29: Duflo (2001) INPRES school-construction — the template for
+% the cohort-exposure years-of-schooling design flagged as future work.
+% Details verified from the article PDF (AER 91(4):795-813).
+@article{duflo2001schooling,
+  author  = {Duflo, Esther},
+  title   = {Schooling and Labor Market Consequences of School Construction in {Indonesia}: Evidence from an Unusual Policy Experiment},
+  journal = {American Economic Review},
+  year    = {2001},
+  volume  = {91},
+  number  = {4},
+  pages   = {795--813}
+}
+
+@article{angristanabwani2026messenger,
+  author  = {Angrist, Noam and Anabwani, Gabriel},
+  title   = {The messenger matters: Behavioral responses to sex education in a cluster randomized trial},
+  journal = {PNAS Nexus},
+  year    = {2026},
+  volume  = {5},
+  number  = {6},
+  pages   = {pgag183},
+  doi     = {10.1093/pnasnexus/pgag183}
+}
+
+
+% [VERIFIED-SOURCE 2026-08-04] MSP institutional repository, handle 123456789/1512.
+% Full document read 2026-08-04 (142 pp); cover date March 2019; resolution Aug 2019.
+@techreport{msp2019guia,
+  author      = {{Ministerio de Salud P\'ublica}},
+  title       = {Gu\'ia para la atenci\'on integral en salud de personas adolescentes en Rep\'ublica Dominicana},
+  institution = {Ministerio de Salud P\'ublica},
+  address     = {Santo Domingo, Rep\'ublica Dominicana},
+  year        = {2019},
+  note        = {Puesta en vigencia por Resoluci\'on Ministerial No.\ 000008 del 20 de agosto de 2019},
+  url         = {https://repositorio.msp.gob.do/handle/123456789/1512}
+}
+
+% [VERIFIED-SOURCE 2026-08-04] MSP institutional repository, handle 123456789/1222.
+% The situational diagnosis that preceded and fed the PREA-RD 2019-2023 plan.
+@techreport{msp2018diagnostico,
+  author      = {{Gabinete de Coordinaci\'on de Pol\'iticas Sociales}},
+  title       = {Diagn\'ostico de situaci\'on del embarazo en adolescentes en Rep\'ublica Dominicana 2018},
+  institution = {Gabinete de Coordinaci\'on de Pol\'iticas Sociales, Vicepresidencia de la Rep\'ublica},
+  address     = {Santo Domingo, Rep\'ublica Dominicana},
+  year        = {2019},
+  note        = {Diagn\'ostico con datos de 2018; insumo del PREA-RD 2019--2023},
+  url         = {https://repositorio.msp.gob.do/handle/123456789/1222}
+}
+
+% [VERIFIED-SOURCE 2026-08-06] WDI database; series codes as used in the paper.
+@misc{worldbankwdi,
+  author       = {{World Bank}},
+  title        = {World Development Indicators},
+  year         = {2026},
+  publisher    = {World Bank},
+  address      = {Washington, DC},
+  howpublished = {Online database},
+  note         = {Series \texttt{SP.ADO.TFRT}, adolescent fertility rate (births per 1{,}000 women ages 15--19), modeled estimates based on the United Nations World Population Prospects; and \texttt{SP.REG.BRTH.ZS}, completeness of birth registration. Retrieved July 2026},
+  url          = {https://databank.worldbank.org/source/world-development-indicators}
+}
+
+% [VERIFIED-SOURCE] Crossref 2026-08-25: DOI 10.1016/j.socscimed.2025.117969; suggested by OG (comment #7).
+@article{ishola2025abortion,
+  author  = {Ishola, Foluso and McKinnon, Britt and Yang, Seungmi and Nandi, Arijit},
+  title   = {Neonatal mortality and contraceptive utilization following abortion restriction in the {Dominican Republic}: A difference-in-differences analysis},
+  journal = {Social Science \& Medicine},
+  year    = {2025},
+  volume  = {372},
+  pages   = {117969},
+  doi     = {10.1016/j.socscimed.2025.117969}
+}
+
+% [VERIFIED-SOURCE] Title page read from DRpaper/comparative_fertility_DR_EC-2.pdf, 2026-08-25 (OG comment #33).
+@unpublished{montasgalarraga2026covid,
+  author  = {Mont\'as, Marie C. and Gal\'arraga, Omar},
+  title   = {{COVID}-19 and Teen Birth Rates: Comparative Evidence from {Ecuador} and the {Dominican Republic}},
+  year    = {2026},
+  note    = {Working paper (August 2026 version)}
+}

@@ -1,0 +1,34 @@
+# ---- restricted / derived data: NEVER commit (Ministry of Public Health DUA) ----
+data/
+output/
+# ---- manuscript, decks, notes, internal material (kept out of the code repo) ----
+paper/
+decks/
+documents/
+photos/
+notes/
+progress_logs/
+quality_reports/
+CLAUDE.md
+CLAUDE.md.bak*
+*.zip
+*.pdf
+*.bak*
+*conflicted copy*
+Rplots.pdf
+references.bib.bak*
+# ---- R / OS ----
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
+*.log
+*.aux
+*.out
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+code/R/archive/
+code/python/
+.here

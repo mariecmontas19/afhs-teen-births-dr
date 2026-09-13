@@ -1,0 +1,40 @@
+unit_id,hosp,prov,muni,adm3_pcode,recorded_year,recorded_month,year_imputed,hosp_founded,modern_event_date,modern_event_type,never_modernized,consults_only,class
+23,Hospital Municipal Villa Duarte,Santo Domingo,Santo Domingo Este,DOM103201,1993,7,FALSE,NA,2022,new_opening,FALSE,TRUE,always_treated_pre2016
+6,Hospital Materno Infantil San Lorenzo de Los Mina,Santo Domingo,Santo Domingo Este,DOM103201,1997,1,FALSE,1974,2018-05,old_never_modernized,TRUE,FALSE,always_treated_pre2016
+15,Hospital Nuestra Señora de Regla,Peravia,Baní,DOM051701,1998,1,FALSE,1969,2021,upgrade,FALSE,FALSE,always_treated_pre2016
+4,Hospital Municipal de Las Caobas,Santo Domingo,Santo Domingo Oeste,DOM103202,1998,7,FALSE,1978,2022,new_opening,FALSE,TRUE,always_treated_pre2016
+7,Hospital Materno Dra. Evangelina Rodriguez,Santo Domingo,Distrito Nacional,DOM100101,2001,1,FALSE,1965,2024-03,upgrade_unconfirmed,FALSE,FALSE,always_treated_pre2016
+11,Hospital Dr. Ricardo Limardo,Puerto Plata,NA,DOM011801,2002,6,FALSE,1916/1917,2022,upgrade,FALSE,FALSE,always_treated_pre2016
+19,Hospital El Almirante,Santo Domingo,Santo Domingo Este,DOM103201,2005,12,FALSE,1997,2017,upgrade,FALSE,FALSE,always_treated_pre2016
+29,Hospital Municipal Dr. Felipe J. Achercar,Duarte,Pimentel,DOM030604,2006,4,FALSE,NA,2025,upgrade,FALSE,TRUE,always_treated_pre2016
+9,Hospital Infantil Regional Universitario Dr. Arturo Grullón,Santiago,NA,DOM012501,2006,6,FALSE,1947/1961,2023,upgrade,FALSE,FALSE,always_treated_pre2016
+5,Maternidad Nuestra Señora de La Altagracia,Santo Domingo,Distrito Nacional,DOM100101,2009,NA,FALSE,1949/1950,2024-07-17,upgrade,FALSE,FALSE,always_treated_pre2016
+31,Hospital Provincial Dr. Antonio Yapor Heded,María Trinidad Sánchez,Nagua,DOM031401,2009,NA,FALSE,1974,2024,upgrade,FALSE,FALSE,always_treated_pre2016
+18,Hospital Regional San Vicente de Paúl,Duarte,San Francisco de Macorís,DOM030601,2013,5,FALSE,1926,2019,upgrade,FALSE,FALSE,always_treated_pre2016
+10,Hospital Presidente Estrella Ureña,Santiago,NA,DOM012501,2017,2,FALSE,NA,NA,unknown,FALSE,FALSE,in_window
+2,Hospital Pediátrico Dr. Robert Reid Cabral,Santo Domingo,Distrito Nacional,DOM100101,2020,11,FALSE,NA,2020-11,new_opening,FALSE,FALSE,in_window
+25,Hospital Municipal Bajos de Nizao,Peravia,Nizao,DOM051702,2020,1,FALSE,NA,2021-01,new_opening,FALSE,TRUE,in_window
+1,Hospital Pediátrico Dr. Hugo Mendoza,Santo Domingo,Santo Domingo Norte,DOM103203,2020,10,FALSE,NA,2020-09-25,new_opening,FALSE,FALSE,in_window
+28,Hospital Municipal de CENOVI,Duarte,San Francisco de Macorís,DOM030601,2021,12,FALSE,NA,2021-12-06,new_opening,FALSE,TRUE,in_window
+30,Hospital Municipal de Castillo,Duarte,San Francisco de Macorís,DOM030603,2021,12,FALSE,NA,NA,unknown,FALSE,TRUE,in_window
+14,Hospital Juan Pablo Pina,San Cristóbal,NA,DOM052101,2021,3,FALSE,NA,2020,new_opening,FALSE,FALSE,in_window
+32,Hospital Municipal Dr. Pedro Antonio Céspedes,La Vega,Constanza,DOM021302,2022,7,FALSE,NA,2022-07,new_opening,FALSE,TRUE,in_window
+27,Hospital Vinicio Calventi,Santo Domingo,Los Alcarrizos,DOM103206,2022,6,FALSE,NA,2023,new_opening,FALSE,FALSE,in_window
+26,Hospital Municipal de Imbert,Puerto Plata,NA,DOM011804,2022,6,FALSE,NA,2021,new_opening,FALSE,TRUE,in_window
+34,"Ciudad Sanitaria, Luis Eduardo Aybar",Santo Domingo,Distrito Nacional,DOM100101,2023,6,FALSE,NA,2023-06-06,new_opening,FALSE,FALSE,in_window
+13,Hospital Regional Universitario Dr. Luis Manuel Morillo King,La Vega,NA,DOM021301,2023,9,FALSE,NA,2023-09-01,upgrade,FALSE,FALSE,in_window
+22,Hospital Regional Universitario Jaime Mota,Barahona,NA,DOM060401,2023,1,FALSE,NA,2023-01-27,new_opening,FALSE,FALSE,in_window
+33,Hospital Inmaculada concepción,Sánchez Ramírez,NA,DOM022401,2023,9,FALSE,NA,2023-09-21,new_opening,FALSE,FALSE,in_window
+35,Hospital Boca Chica Dr. Francisco Vicente Castro Sandoval,Santo Domingo,Boca Chica,DOM103204,2024,4,FALSE,NA,2024-04-23,new_opening,FALSE,FALSE,in_window
+37,Hospital Marcelino Vélez Santana,Santo Domingo,Distrito Nacional,DOM103202,2024,7,FALSE,NA,2024-07-10,new_opening,FALSE,FALSE,in_window
+39,Hospital Dr. Sigifredo Alba Dominguez,Sánchez Ramírez,Fantino,DOM022403,2024,10,FALSE,NA,2024-10-16,new_opening,FALSE,FALSE,in_window
+12,Hospital Regional Universitario Maternidad Nuestra Señora de la Altagracia,La Altagracia,Higuey,DOM081101,2024,7,FALSE,NA,2024-07,new_opening,FALSE,FALSE,in_window
+38,Hospital Dr. Federico Armando Aybar Las Matas de Farfan,San Juan,Las Matas de Farfán,DOM072205,2024,4,FALSE,NA,NA,unknown,FALSE,FALSE,in_window
+40,Hospital Municipal Licenciado Pablo Antonio Paulino,Samaná,Las Terrenas,DOM032003,2024,12,FALSE,NA,2024-12,new_opening,FALSE,FALSE,in_window
+36,Hospital Rodolfo de la Cruz,Santo Domingo,Pedro Brand,DOM103207,2024,7,FALSE,NA,NA,unknown,FALSE,FALSE,in_window
+21,Hospital General Santiago Rodriguez,Santiago Rodríguez,Sabaneta,DOM042601,2025,4,FALSE,NA,NA,unknown,FALSE,FALSE,in_window
+3,Hospital Municipal de Engombe,Santo Domingo,Santo Domingo Oeste,DOM103202,2025,11,FALSE,NA,2025-11-19,new_opening,FALSE,TRUE,in_window
+8,Hospital Municipal Materno Infantil Villa Mella,Santo Domingo,Santo Domingo Norte,DOM103203,NA,NA,TRUE,NA,2022,new_opening,FALSE,TRUE,in_window
+17,Hospital Municipal de Yamasa,Monte Plata,Yamasá,DOM092904,NA,NA,TRUE,NA,2020,new_opening,FALSE,TRUE,in_window
+16,Hospital Provincial Francisco Gonzalvo,La Romana,NA,DOM081201,NA,NA,TRUE,NA,2019,new_opening,FALSE,FALSE,in_window
+20,Hospital Regional Antonio Musa,San Pedro de Macorís,NA,DOM092301,NA,NA,TRUE,NA,2025,new_opening,FALSE,FALSE,in_window
