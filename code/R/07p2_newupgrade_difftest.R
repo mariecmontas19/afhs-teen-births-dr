@@ -101,7 +101,7 @@ strip_note <- function(x){ repeat { i <- regexpr("The difference row", x, fixed=
 L <- vapply(L, strip_note, "", USE.NAMES=FALSE)
 r <- res[1]
 stars <- function(pp) if (pp<.01) "^{***}" else if (pp<.05) "^{**}" else if (pp<.10) "^{*}" else ""
-pfmt  <- function(pp) if (pp < .001) "p<.001" else sprintf("p=%s", sub("^0", "", sprintf("%.3f", pp)))
+pfmt  <- function(pp) if (pp < .001) "$p<.001$" else sprintf("$p=%s$", sub("^0", "", sprintf("%.3f", pp)))
 row <- sprintf("\\quad Difference: first openings minus upgrades$^{\\dagger}$ & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & & & \\\\",
                r$difference, stars(r$p_joint), r$se_joint, r$difference-1.96*r$se_joint, r$difference+1.96*r$se_joint)
 iu <- grep("^Recovered: upgrades of pre-existing units", L); stopifnot(length(iu)==1)
