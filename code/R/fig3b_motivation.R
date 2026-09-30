@@ -58,7 +58,11 @@ pr[, sd := prov_code %in% c(1L, 32L)]                       # 01 Distrito Nacion
 nat <- p[, .(rate=1000*sum(nb_15_19)/sum(womenA_15_19)), by=year][order(year)]
 nclip <- pr[rate>100, .N]
 wdi <- data.table(year=2013:2024, rate=c(88.768,85.739,83.159,78.640,75.887,72.619,66.982,58.852,56.058,53.582,52.774,50.163))
-svy <- data.table(year=c(2013,2019), rate=c(90,77), lab=c("ENDESA 2013 (survey): 90","ENHOGAR-MICS 2019 (survey): 77"))
+# 2025 point (MM 2026-09-30): ENHOGAR-MICS 2025 Informe Basico (ONE-UNICEF, June 2026), adolescent
+# fertility rate for the three years before the survey = 46; plotted at the survey year like 2019.
+svy <- data.table(year=c(2013,2019,2025), rate=c(90,77,46),
+                  lab=c("ENDESA 2013 (survey): 90","ENHOGAR-MICS 2019 (survey): 77","ENHOGAR-MICS 2025 (survey): 46"),
+                  vj=c(-0.7,-0.7,1.9), hj=c(0,0,1), nx=c(0.15,0.15,-0.15))   # 2025 label sits left of its point (right edge)
 cat("provinces flagged Santo Domingo metro:", paste(sort(unique(pr[sd==TRUE]$prov_norm)), collapse=" | "), "\n")
 sdlab <- pr[sd==TRUE & year==2025]; sdlab[, lab := tools::toTitleCase(tolower(prov_norm))]
 gP <- ggplot() +
@@ -70,7 +74,7 @@ gP <- ggplot() +
   geom_line(data=nat, aes(year, rate), color=PCUA_COL$blue, linewidth=1.7) +
   geom_point(data=nat, aes(year, rate), color=PCUA_COL$blue, fill="white", shape=21, size=2.6, stroke=1.3) +
   geom_point(data=svy, aes(year, rate), color="grey30", fill="grey30", shape=23, size=3.2) +
-  geom_text(data=svy, aes(year, rate, label=lab), color="grey30", hjust=0, nudge_x=0.15, vjust=-0.7, size=2.8, fontface="bold") +
+  geom_text(data=svy, aes(year+nx, rate, label=lab, vjust=vj, hjust=hj), color="grey30", size=2.8, fontface="bold") +
   annotate("text", x=2025, y=nat[year==2025,rate], label="  National\n  (registered births)", hjust=0, vjust=0.9, size=3.1, color=PCUA_COL$blue, fontface="bold", lineheight=0.9) +
   annotate("text", x=2024, y=wdi[year==2024,rate], label=" National (WDI,\n UN-modeled)", hjust=0, vjust=-0.2, size=3.1, color="grey45", fontface="bold", lineheight=0.9) +
   scale_x_continuous(breaks=seq(2013,2025,1), expand=expansion(mult=c(0.01,0.18))) +
