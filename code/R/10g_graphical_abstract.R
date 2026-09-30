@@ -56,7 +56,7 @@ p2 <- ggplot(d2, aes(yr, att)) +
 tiles <- data.table(y=c(3,2,1),
   big=c(sprintf("%.1f%%", prg$pct), sprintf("%.1f%%", abo$pct), sprintf("%.1f vs %.1f", hm$att_s, hm$att_u)),
   small=c("pregnancy events\nin public hospitals", "abortion-related\nattendances",
-          "per 1,000, near vs far\nfrom a health facility"))
+          "per 1,000, near\nvs far from a\nhealth facility"))
 p3 <- ggplot(tiles) +
   geom_tile(aes(x=0.5, y=y), width=1, height=0.86, fill="grey96", color=G3, linewidth=0.3) +
   geom_text(aes(x=0.04, y=y, label=big), hjust=0, size=2.6, fontface="bold", color=BLUE) +
