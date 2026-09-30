@@ -56,13 +56,13 @@ p2 <- ggplot(d2, aes(yr, att)) +
 tiles <- data.table(y=c(3,2,1),
   big=c(sprintf("%.1f%%", prg$pct), sprintf("%.1f%%", abo$pct), sprintf("%.1f vs %.1f", hm$att_s, hm$att_u)),
   small=c("pregnancy events\nin public hospitals", "abortion-related\nattendances",
-          "per 1,000, near vs\nfar from a hospital"))
+          "per 1,000, near vs far\nfrom a health facility"))
 p3 <- ggplot(tiles) +
   geom_tile(aes(x=0.5, y=y), width=1, height=0.86, fill="grey96", color=G3, linewidth=0.3) +
   geom_text(aes(x=0.04, y=y, label=big), hjust=0, size=2.6, fontface="bold", color=BLUE) +
   geom_text(aes(x=0.56, y=y, label=small), hjust=0, size=fs*0.85, color=G1, lineheight=0.9) +
   coord_cartesian(xlim=c(0,1), ylim=c(0.5,3.5), expand=FALSE) +
-  labs(title="Fewer pregnancies, largest where\nadolescents can reach the hospital") +
+  labs(title="Fewer pregnancies, largest where\nadolescents can reach care") +
   theme_void(base_size=6) + theme(plot.title=element_text(size=6.2, face="bold", color=G1, lineheight=0.95, hjust=0.5))
 
 ga <- (p1 | p2 | p3) + plot_layout(widths=c(1, 1.1, 1.35)) +
