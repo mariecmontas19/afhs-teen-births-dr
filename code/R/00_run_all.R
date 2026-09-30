@@ -55,11 +55,11 @@ scripts <- c(
   "06b_monthly_panel.R",
   "07a4_table1_descriptives.R",
   "07b_honestdid.R",
-  "07p_decomposition.R",
-  "07p2_newupgrade_difftest.R",
   "07s_triplediff_ddd.R",
   "07t2_dynamic_panelB.R",
   "07t_headline.R",
+  "07p_decomposition.R",          # after 07t: checks its pooled row against headline_S1_S2.csv
+  "07p2_newupgrade_difftest.R",   # after 07p: reproduces cs_att_decomposition.csv, splices A17
   "07y_distance_build.R",
   "07z5_spillover_table.R",
   "07z6_gestlag_national.R",
@@ -97,9 +97,9 @@ scripts <- c(
   "09e_cost_effectiveness.R",
   "09g_undercount_battery.R",
   "09h_placebo_wcb.R",
+  "09i_matched_controls.R",       # before 09i2/09i3: it rewrites matched_cs.csv, they append M3-M5
   "09i2_matched_v2.R",
   "09i3_psm_m4.R",
-  "09i_matched_controls.R",
   "09j_covid.R",
   "09k_drop_constanza.R",
   "09l_bacon.R",

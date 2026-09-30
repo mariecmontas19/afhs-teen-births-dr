@@ -108,6 +108,10 @@ rowx <- function(i){ r <- out[i]
           r$layer, r$ATT, stars(r$p), r$SE, r$ATT-1.96*r$SE, r$ATT+1.96*r$SE, r$baseline, r$pct, r$n_treated) }
 c34 <- function(v){ att<-v[["att"]]; se<-v[["se"]]; p<-2*pnorm(-abs(att/se))
   sprintf("\\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%+.2f$, $%+.2f$]}}", att, stars(p), se, att-1.96*se, att+1.96*se) }
+# never-treated triple differences quoted in the note: read where Table 3 reads them (07s output)
+.NT <- fread(file.path(TAB,"ddd_triplediff.csv"))
+.NT1 <- .NT[spec=="S1 binary any-unit | uncond dr", ATT]; .NT2 <- .NT[spec=="S2 modernization | uncond dr", ATT]
+stopifnot(length(.NT1)==1, length(.NT2)==1)
 L <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{New units versus upgrades: decomposing the modernization estimate}",
@@ -151,7 +155,7 @@ sprintf("Implied triple difference (Table 3 level $-$ band) & $%.2f$ & $%.2f$ \\
 "the modernization design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
 "consistent with urban fertility postponement rather than the program. Subtracting the band effect from",
 "the level estimates of \\autoref{tab:estimates} approximately reproduces its never-treated triple differences",
-"($-5.76$, $-7.23$): the larger modernization triple difference is the comparison band moving, not a",
+sprintf("($%.2f$, $%.2f$): the larger modernization triple difference is the comparison band moving, not a", .NT1, .NT2),
 "larger effect on teens. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")
