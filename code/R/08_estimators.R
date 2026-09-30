@@ -63,7 +63,7 @@ g <- ggplot(ov, aes(e, att, color=est, fill=est)) +
   scale_x_continuous(breaks=seq(-5,4,1)) +
   labs(x="Years since first AU opening", y="ATT: teen births per 1,000 women (15-19)", color=NULL, fill=NULL) +
   theme_pcua()
-ggsave(file.path(FIG,"fig_b03_estimators_overlay.png"), g, width=8.6, height=5.2, dpi=200)
+ggsave_pair(file.path(FIG,"fig_b03_estimators_overlay.png"), g, width=8.6, height=5.2, dpi=200)
 cat("saved overlay figure (computed before did2s).\n")
 
 res <- list(); add <- function(sc,est,att,se,note="") res[[length(res)+1]] <<-

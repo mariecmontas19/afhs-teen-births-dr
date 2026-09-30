@@ -80,5 +80,5 @@ g <- ggplot(L, aes(em, rate_dm)) +
   geom_smooth(method="loess", span=0.6, se=TRUE, color=PCUA_COL$blue, fill=PCUA_COL$blue, alpha=0.12) +
   labs(x="Months since AU event", y="Demeaned teen birth rate (annualized /1,000)") +
   theme_pcua()
-ggsave(file.path(FIG,"fig_05_gestlag_national.png"), g, width=9.2, height=5.2, dpi=200)
+ggsave_pair(file.path(FIG,"fig_05_gestlag_national.png"), g, width=9.2, height=5.2, dpi=200)
 cat("saved -> fig_05_gestlag_national.png + gestlag_national.csv\n")

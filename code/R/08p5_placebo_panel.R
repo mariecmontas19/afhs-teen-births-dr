@@ -52,6 +52,6 @@ g <- ggplot(dd, aes(e, att)) +
   scale_y_continuous(limits=c(-rng, rng)) +
   labs(x="Years since first AU opening", y="ATT: births per 1,000 women in the band") +
   theme_pcua(base_size=12)
-ggsave(file.path(FIG,"fig_b05_placebo_ages.png"), g, width=7.6, height=6.6, dpi=200)
+ggsave_pair(file.path(FIG,"fig_b05_placebo_ages.png"), g, width=7.6, height=6.6, dpi=200)
 cat("saved -> fig_b05_placebo_ages.png\n")
 print(ann, class=FALSE)

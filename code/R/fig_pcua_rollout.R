@@ -47,7 +47,6 @@ p <- ggplot(g) +
   theme_pcua_map() + theme(legend.key.size=unit(0.85,"lines"))
 
 figdir <- file.path(PROJ, "output", "figures"); dir.create(figdir, recursive=TRUE, showWarnings=FALSE)
-ggsave(file.path(figdir, "fig_b02_rollout_map.pdf"), p, width=10, height=7.2, device=cairo_pdf)
-ggsave(file.path(figdir, "fig_b02_rollout_map.png"), p, width=10, height=7.2, dpi=150)
+ggsave_pair(file.path(figdir, "fig_b02_rollout_map.png"), p, width=10, height=7.2, dpi=150)
 cat("saved -> output/figures/pcua_rollout_map.{pdf,png}\n")
 cat("group counts:\n"); print(trt[, .N, by=grp][order(grp)])

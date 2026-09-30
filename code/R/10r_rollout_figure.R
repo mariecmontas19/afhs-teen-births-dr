@@ -69,7 +69,7 @@ pA <- ggplot(gA, aes(year, row, fill=status)) +
   labs(x=NULL, y=NULL) +
   theme_pcua() + theme(axis.text.y=element_blank(), axis.ticks.y=element_blank(),
                        panel.grid=element_blank(), legend.position="top")
-ggsave(file.path(FIG,"fig_03b_rollout_timing.png"), pA, width=9, height=5.4, dpi=300)
+ggsave_pair(file.path(FIG,"fig_03b_rollout_timing.png"), pA, width=9, height=5.4, dpi=300)
 
 # ------------------------------------------------------------ B: cumulative step
 cum <- rbindlist(lapply(YRS, function(y) data.table(year=y,

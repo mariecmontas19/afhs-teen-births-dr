@@ -92,3 +92,16 @@ es_pretrend_p <- function(agg, lo = -5, hi = -2){
   avg <- sum(w * att); se <- sqrt(sum(as.numeric(IF %*% w)^2)) / n
   list(avg = avg, se = se, p = 2 * pnorm(-abs(avg / se)), k = length(pre))
 }
+
+# ggsave_pair(): writes the PNG exactly as before AND a vector PDF twin of the same
+# size (JDE requires vector charts). cairo_pdf is unavailable on this machine (no
+# XQuartz), so the PDF uses the base device and Ghostscript embeds the fonts.
+ggsave_pair <- function(filename, plot = ggplot2::last_plot(), width, height, dpi = 200, ...) {
+  ggplot2::ggsave(filename, plot, width = width, height = height, dpi = dpi, ...)
+  pdf_f <- sub("\\.png$", ".pdf", filename)
+  stopifnot(pdf_f != filename)
+  ggplot2::ggsave(pdf_f, plot, width = width, height = height,
+                  device = grDevices::pdf, useDingbats = FALSE)
+  grDevices::embedFonts(pdf_f)
+  invisible(pdf_f)
+}

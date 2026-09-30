@@ -33,5 +33,5 @@ g <- ggplot(d, aes(att, grp)) +
   scale_x_continuous(breaks=seq(-16,4,4), limits=c(-17,5)) +
   labs(x="ATT: teen births per 1,000 women (15-19), with 95% CI", y=NULL) +
   theme_pcua(base_size=16) + theme(axis.text.y=element_text(size=14, face="bold", lineheight=0.95))
-ggsave(file.path(FIG,"fig_06b_proximity.png"), g, width=9.4, height=4.8, dpi=200)
+ggsave_pair(file.path(FIG,"fig_06b_proximity.png"), g, width=9.4, height=4.8, dpi=200)
 cat("saved -> fig_06b_proximity.png\n")

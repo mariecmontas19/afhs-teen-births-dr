@@ -168,7 +168,7 @@ g1 <- ggplot() +
   theme_pcua(base_size=14) +
   theme(legend.position="none",
         axis.text.y=element_text(size=13, face="bold", lineheight=0.95))
-ggsave(file.path(FIG,"fig_06a_het_dumbbell.png"), g1, width=9.8, height=5.4, dpi=200)
+ggsave_pair(file.path(FIG,"fig_06a_het_dumbbell.png"), g1, width=9.8, height=5.4, dpi=200)
 
 # ---- (3) PROXIMITY mechanism figure (fig_b04): near vs far, all + excl-SD.
 # Points AND p-value come from the SAME het_master rows as Table A6, so table
@@ -195,6 +195,6 @@ g2 <- ggplot(PX, aes(att, grp, color=grp)) +
   scale_x_continuous(breaks=seq(-24, 4, 2)) +
   labs(x="ATT: teen births per 1,000 women (15-19)", y=NULL) +
   theme_pcua()
-ggsave(file.path(FIG,"fig_b04_proximity_mechanism.png"), g2, width=9.4, height=5.4, dpi=200)
+ggsave_pair(file.path(FIG,"fig_b04_proximity_mechanism.png"), g2, width=9.4, height=5.4, dpi=200)
 cat("\nsaved -> het_master_table.csv (17 rows) + fig_06a_het_dumbbell.png (5 dims by width)",
     "+ fig_b04_proximity_mechanism.png (p from table rows)\n")

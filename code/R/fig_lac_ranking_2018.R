@@ -37,5 +37,5 @@ g <- ggplot(d, aes(rate, country, fill=dr)) +
         face=ifelse(rev(d$dr), "bold", "plain"),
         color=ifelse(rev(d$dr), PCUA_COL$blue, "grey25")),
         panel.grid.major.y=element_blank())
-ggsave(file.path(FIG,"fig_b01_lac_ranking.png"), g, width=8.6, height=6.4, dpi=200)
+ggsave_pair(file.path(FIG,"fig_b01_lac_ranking.png"), g, width=8.6, height=6.4, dpi=200)
 cat("saved -> fig_b01_lac_ranking.png\n")

@@ -45,7 +45,7 @@ gMap <- ggplot(gm) +
   scale_size_continuous(range=c(1.2,3.6), breaks=c(1,2,4), name="AUs open\nby year") +
   labs() +
   theme_pcua_map() + theme(legend.position="right", strip.text=element_text(face="bold"))
-ggsave(file.path(FIG,"fig_03a_timelapse_map.png"), gMap, width=11, height=4.6, dpi=200)
+ggsave_pair(file.path(FIG,"fig_03a_timelapse_map.png"), gMap, width=11, height=4.6, dpi=200)
 
 # ---- SPAGHETTI (province) + EXTERNAL SERIES: registration vs WDI vs surveys ----
 # Teen fertility is measured differently by methodology: our civil-registration
@@ -82,7 +82,7 @@ gP <- ggplot() +
   coord_cartesian(ylim=c(0,100)) +
   labs(x=NULL, y="Births per 1,000 women 15-19") +
   theme_pcua()
-ggsave(file.path(FIG,"fig_01_spaghetti_prov.png"), gP, width=10.2, height=5.8, dpi=200)
+ggsave_pair(file.path(FIG,"fig_01_spaghetti_prov.png"), gP, width=10.2, height=5.8, dpi=200)
 
 # ---- SPAGHETTI (155 municipalities), SAME y-axis as province (cap 100, breaks 20) ----
 nmuni <- p[, uniqueN(adm3_pcode)]; mclip <- p[rateA_15_19>100, .N]

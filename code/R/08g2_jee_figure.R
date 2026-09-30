@@ -73,9 +73,9 @@ gB <- ggplot(dd, aes(e, att)) +
 if(requireNamespace("patchwork", quietly=TRUE)){
   comb <- patchwork::wrap_plots(list(gA, gB), ncol=1) +
     patchwork::plot_annotation()
-  ggsave(file.path(FIG,"fig_b07_jee_parallel_rollout.png"), comb, width=8.6, height=10.2, dpi=200)
+  ggsave_pair(file.path(FIG,"fig_b07_jee_parallel_rollout.png"), comb, width=8.6, height=10.2, dpi=200)
   cat("saved -> fig_b07_jee_parallel_rollout.png (two-panel: calendar + event-time)\n")
 } else {
-  ggsave(file.path(FIG,"fig_b07_jee_parallel_rollout.png"), gB, width=8.6, height=5.4, dpi=200)
+  ggsave_pair(file.path(FIG,"fig_b07_jee_parallel_rollout.png"), gB, width=8.6, height=5.4, dpi=200)
   cat("patchwork missing - saved event-time panel only\n")
 }

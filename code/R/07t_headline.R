@@ -150,7 +150,7 @@ mk <- function(m, dd, pt, nbe, rng_fix=NA_real_, short_ann=FALSE){
     scale_y_continuous(limits=c(-rng, rng), breaks=seq(-rng, rng, 5)) +
     labs(x=m$xlab, y=m$ylab) +
     theme_pcua()
-  ggsave(file.path(FIG,paste0(m$fn,".png")), g, width=8.6, height=5.4, dpi=200)
+  ggsave_pair(file.path(FIG,paste0(m$fn,".png")), g, width=8.6, height=5.4, dpi=200)
 }
 # shared y-scale for the two PAPER panels (specs 1 = level, 3 = DDD; MM 2026-08-09)
 .shared <- {
