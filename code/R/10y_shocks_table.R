@@ -42,7 +42,7 @@ r_je <- sprintf("\\quad %s & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}}
 cb <- cb[order(component)]  # 15-17 first, then 18-19
 cblab <- c("Ages 15--17 (ban-bound)", "Ages 18--19 (not directly bound)")
 r_cb <- sprintf("\\quad %s & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & $%+.1f$ & %d & %d \\\\",
-                cblab, cb$ATT, st(cb$p), cb$SE, cb$ATT-1.96*cb$SE, cb$ATT+1.96*cb$SE, cb$pct_of_base, c(146L,146L), c(20L,20L))
+                cblab, cb$ATT, st(cb$p), cb$SE, cb$ATT-1.96*cb$SE, cb$ATT+1.96*cb$SE, 100*cb$ATT/cb$baseline, c(146L,146L), c(20L,20L))   # 2026-09-30 audit: csv pct is an integer
 
 tex <- c(
 "\\begin{table}[htbp]\\centering\\footnotesize",

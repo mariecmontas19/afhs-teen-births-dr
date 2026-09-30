@@ -77,7 +77,7 @@ sprintf("La Vega recoded to 2022 & %s & --- \\\\", cell(LAVEGA$ATT, LAVEGA$SE, L
 {r <- dcz[1]; sprintf("Drop Constanza & %s & --- \\\\", cell(r$ATT, r$SE, r$p))},
 "\\addlinespace",
 "\\multicolumn{3}{l}{\\textit{Covariate vintage (covariate-adjusted specification)}} \\\\",
-sprintf("Covariates from the 2022 census & %s & --- \\\\", cell(v10("attcovs_2022"), v10("se_2022"), v10("p_2022"))),
+sprintf("Covariates from the 2022 census & %s & --- \\\\", cell(.HL[spec=="CS, +covs",estimate], .HL[spec=="CS, +covs",SE], .HL[spec=="CS, +covs",p])),   # 2026-09-30 audit: canonical +covs row (= Table 3)
 sprintf("Covariates from the 2010 census & %s & --- \\\\", cell(v10("attcovs_2010"), v10("se_2010"), v10("p_2010"))),
 "\\addlinespace",
 "\\multicolumn{3}{l}{\\textit{Spatial spillovers}} \\\\",

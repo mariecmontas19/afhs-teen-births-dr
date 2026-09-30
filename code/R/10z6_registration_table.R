@@ -14,6 +14,7 @@ rr <- fread(file.path(TAB,"ramp_robustness.csv"))
 .HL <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1"]  # 2026-08-06: canonical full-window main rows
 rr[spec=="S1 CS level, no covs", `:=`(full_ATT=.HL[spec=="CS, no covs",estimate], full_SE=.HL[spec=="CS, no covs",SE], full_p=.HL[spec=="CS, no covs",p])]
 rr[spec=="S1 CS level, +covs",   `:=`(full_ATT=.HL[spec=="CS, +covs",estimate],   full_SE=.HL[spec=="CS, +covs",SE],   full_p=.HL[spec=="CS, +covs",p])]
+rr[spec=="S1 DDD (no covs)",     `:=`(full_ATT=.HL[spec=="DDD (no covs)",estimate], full_SE=.HL[spec=="DDD (no covs)",SE], full_p=.HL[spec=="DDD (no covs)",p])]   # 2026-09-30 audit: canonical DDD row (was 1.46 from the ramp run)
 ub <- fread(file.path(TAB,"undercount_battery.csv"))
 gA <- function(sp){ r <- rr[spec==sp]; stopifnot(nrow(r)==1); r }
 gB <- function(sp){ r <- ub[spec==sp]; stopifnot(nrow(r)==1); r }

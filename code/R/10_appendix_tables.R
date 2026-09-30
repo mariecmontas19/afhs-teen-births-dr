@@ -48,7 +48,7 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 "\\begin{minipage}{0.86\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Overall ATT on the adolescent (15--19) birth rate, level outcome,",
 "no controls; municipality-clustered standard errors in parentheses. Gardner (2022)",
-"two-stage omitted because it is numerically identical to Borusyak imputation. Controls are",
+"two-stage omitted because its point estimate is identical to Borusyak imputation. Controls are",
 "omitted here because, being time-invariant, they are absorbed by municipality fixed",
 "effects in every estimator except Callaway--Sant'Anna. The Callaway--Sant'Anna row is",
 "re-estimated within the estimator-comparison script; its bootstrap standard error can",

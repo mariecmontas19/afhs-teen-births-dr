@@ -22,9 +22,14 @@ v[, mstatus := fifelse(always_treated==1, "pre2016", "inwindow")]
 stopifnot(v[mstatus=="inwindow", uniqueN(adm3_pcode)]==20L,
           v[mstatus=="pre2016",  uniqueN(adm3_pcode)]==9L)
 
-tc <- function(x) tools::toTitleCase(tolower(x))
-v[, mn := fifelse(!is.na(muni) & muni!="", muni, tc(adm3_name))]
-v[, pv := fifelse(!is.na(prov)  & prov!="",  prov, tc(prov_norm))]
+tc <- function(x) gsub("(?<=\\s)(De|Del|La|Las|Los|Y)\\b", "\\L\\1", tools::toTitleCase(tolower(x)), perl=TRUE)   # Spanish particles stay lowercase
+# 2026-09-30 audit: the raw `muni` label can disagree with the unit's pcode (Castillo unit
+# recorded under San Francisco de Macoris in the source workbook; CLAUDE.md gotcha). The
+# pcode is authoritative, so use the crosswalk name whenever the two disagree.
+nrm <- function(x) toupper(stringi::stri_trans_general(trimws(as.character(x)), "Latin-ASCII"))
+v[, mn := fifelse(!is.na(muni) & muni!="" & nrm(muni)==nrm(adm3_name), muni, tc(adm3_name))]
+print(v[!is.na(muni) & muni!="" & nrm(muni)!=nrm(adm3_name), .(unit_id, hosp, muni_raw=muni, adm3_pcode, adm3_name)])
+v[, pv := fifelse(!is.na(prov)  & prov!="" & nrm(prov)==nrm(prov_norm),  prov, tc(prov_norm))]   # pcode-authoritative, as for municipality
 v[, unit := gsub("^Hospital ", "", hosp)]
 v[, unit := gsub("^(Municipal|Regional|Materno Infantil|Materno|Pediatrico|Pediátrico|General|Docente|Provincial|Infantil|Universitario) ", "", unit)]
 

@@ -62,7 +62,7 @@ sprintf("Joint pre-trend test ($e\\in[-5,-2]$), $p$ & %.2f & %.2f \\\\", S1$pre$
 "\\textit{Notes:} Callaway--Sant'Anna dynamic ATT on the adolescent (15--19) birth rate,",
 "universal base period $e=-1$; municipality-clustered standard errors in parentheses. The joint",
 "pre-trend test averages the plotted leads $e\\in[-5,-2]$. $^{\\dagger}$Years 3--4 are identified",
-"off only 7 and 4 treated municipalities in the first-opening design and are imprecise. $^{***}p<0.01$, etc.",
+"off only 7 and 4 treated municipalities in the first-opening design and are imprecise.",
 "\\end{minipage}",
 "\\end{table}")
 writeLines(L, file.path(TAB,"tab_a03_leads.tex"))

@@ -130,7 +130,7 @@ sprintf("Teen births averted (treated, 2016--25) [95\\%% CI] & %s & %s \\\\", bc
 "birth count. \\textbf{Births averted} $=$ CS ATT $\\times$ exposed teen-women-years in treated municipalities",
 "after opening; brackets $=$ 95\\% CI propagated from the ATT (normal approx.). Rough welfare approximation: it",
 "applies the \\emph{average} ATT to \\emph{all} post-treatment years (the effect actually builds from",
-"$\\approx0$ in Year 0, so it is a total, not year-accurate), counts treated municipalities' OWN exposure",
+"smaller and imprecise in Year 0, so it is a total, not year-accurate), counts treated municipalities' OWN exposure",
 "only (no spillovers), and uses denominator A.",
 sprintf("Sanity check: treated municipalities recorded %s teen births in these post-opening cells, so the first-opening",
         cm(bav[scenario=="S1", actual_births])),

@@ -150,7 +150,7 @@ sprintf("Implied triple difference (Table 3 level $-$ band) & $%.2f$ & $%.2f$ \\
 "by 2025). The near-zero response under the first-opening design validates the comparison band; under",
 "the modernization design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
 "consistent with urban fertility postponement rather than the program. Subtracting the band effect from",
-"the level estimates of \\autoref{tab:estimates} reproduces its never-treated triple differences",
+"the level estimates of \\autoref{tab:estimates} approximately reproduces its never-treated triple differences",
 "($-5.76$, $-7.23$): the larger modernization triple difference is the comparison band moving, not a",
 "larger effect on teens. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
