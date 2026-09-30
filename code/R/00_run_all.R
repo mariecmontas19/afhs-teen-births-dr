@@ -38,6 +38,7 @@ scripts <- c(
   "05i_facility_access.R",
   "05j_facility_levels.R",
   "05k_mics2019.R",
+  "05k2_mics_facility_by_age.R",
   "05l_sisalril.R",
   "05m_one_embarazos.R",
   "05n2_mispas_cuadro29.R",
