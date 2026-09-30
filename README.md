@@ -12,7 +12,7 @@ Adolescent-friendly health services are the World Health Organization’s global
 ## What is in this repository
 
 ```
-code/R/                 114 R scripts, numbered by stage, 00_run_all.R sources them in order
+code/R/                 116 R scripts, numbered by stage, 00_run_all.R sources them in order
 docs/                   codebooks and public reference data
 replication_package/    municipality population denominators, Series A and B (public, derived from NSO data)
 ```
