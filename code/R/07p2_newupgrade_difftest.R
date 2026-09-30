@@ -87,3 +87,29 @@ res <- rbind(difftest(A, U, "First openings (20) minus upgrades (6)"),
 print(res, class=FALSE)
 fwrite(res, file.path(TAB,"newupgrade_difftest.csv"))
 cat("saved -> newupgrade_difftest.csv\n")
+
+## ---- typeset the contrast into Table A17 (written by 07p; run 07p first) ----
+## Idempotent: any row/note inserted by a previous run is removed before re-inserting.
+a17f <- file.path(TAB, "tab_a17_decomposition.tex")
+L <- readLines(a17f)
+L <- L[!grepl("^\\\\quad Difference: first openings minus upgrades", L)]
+STARS <- "$^{***}p<0.01$"
+strip_note <- function(x){ repeat { i <- regexpr("The difference row", x, fixed=TRUE); j <- regexpr(STARS, x, fixed=TRUE)
+    if (i < 0 || j < i) return(x)
+    st <- max(gregexpr("$^{", substr(x, 1, i-1), fixed=TRUE)[[1]])   # start of the dagger marker
+    x <- paste0(substr(x, 1, st-1), substr(x, j, nchar(x))) } }
+L <- vapply(L, strip_note, "", USE.NAMES=FALSE)
+r <- res[1]
+stars <- function(pp) if (pp<.01) "^{***}" else if (pp<.05) "^{**}" else if (pp<.10) "^{*}" else ""
+pfmt  <- function(pp) if (pp < .001) "p<.001" else sprintf("p=%s", sub("^0", "", sprintf("%.3f", pp)))
+row <- sprintf("\\quad Difference: first openings minus upgrades$^{\\dagger}$ & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & & & \\\\",
+               r$difference, stars(r$p_joint), r$se_joint, r$difference-1.96*r$se_joint, r$difference+1.96*r$se_joint)
+iu <- grep("^Recovered: upgrades of pre-existing units", L); stopifnot(length(iu)==1)
+L <- append(L, row, after=iu)
+note <- sprintf("$^{\\dagger}$The difference row tests whether first openings and upgrades have the same effect; its standard error accounts for the correlation between the two estimates induced by their shared never-treated comparison municipalities (correlation %.2f), obtained by aligning the estimates' influence functions by municipality (%s; joint multiplier bootstrap %s). ",
+                r$corr, pfmt(r$p_joint), pfmt(r$p_boot))
+ino <- grep(STARS, L, fixed=TRUE); stopifnot(length(ino)==1)
+k <- regexpr(STARS, L[ino], fixed=TRUE)
+L[ino] <- paste0(substr(L[ino], 1, k-1), note, substr(L[ino], k, nchar(L[ino])))
+writeLines(L, a17f)
+cat("Table A17: difference row + note inserted\n")
