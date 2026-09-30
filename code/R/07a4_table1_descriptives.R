@@ -13,6 +13,11 @@
 # Replaces table1_muni_prepost.tex in the main text (pre/post columns dropped:
 # with a treated/control split, post-period means embed the treatment effect).
 # Panel B numbers must REPRODUCE table1_muni_baseline.csv (same bstat).
+# 2026-09-30 (JC review #20/#21): the p-value and standardized-difference
+# columns are dropped from the typeset table (kept in the csv) and a third
+# column reports the 34 unique matched never-treated municipalities of the
+# primary matching scheme (matched_pairs.csv, 10z3 = 09i), unweighted, i.e.
+# the same pool 09i uses for the matched estimates and post-match balance.
 # Output: table1_descriptives.{csv,tex}
 # ============================================================================
 source(here::here("code","R","00_config.R"))
@@ -25,6 +30,10 @@ tr[, arm := fifelse(ever_treated==1L & always_treated==0L, "Treated",
             fifelse(ever_treated==0L, "Control", NA_character_))]
 arm_map <- tr[!is.na(arm), .(adm3_pcode, arm)]
 stopifnot(arm_map[arm=="Treated",.N]==20L, arm_map[arm=="Control",.N]==126L)
+mp <- fread(file.path(TAB,"matched_pairs.csv"))
+matched_c <- unique(c(mp$c1, mp$c2, mp$c3))
+n_matched <- fread(file.path(TAB,"matched_cs.csv"))[grepl("^Primary", spec), n_controls]
+stopifnot(nrow(mp)==20L, length(matched_c)==n_matched, all(matched_c %in% arm_map[arm=="Control", adm3_pcode]))
 
 # ---- Panel A: individual birth records, 2019 --------------------------------
 b <- as.data.table(readRDS(file.path(DIR_CLEAN,"births_clean_2016_2025.rds")))[
@@ -41,6 +50,11 @@ pa <- b[, .(n        = .N,
             csec     = 100*mean((csection==TRUE | csection==1)[!is.na(csection)]),
             pubfac   = 100*mean((facility=="Public")[!is.na(facility)])),
         by=arm]
+paM <- b[adm3_pcode %in% matched_c, .(n=.N, age=mean(age_mom), sh1517=100*mean(age_mom<=17),
+          sh1819=100*mean(age_mom>=18), haitian=100*mean(nationality=="Haitian", na.rm=TRUE),
+          noins=100*mean((insurance=="None")[!is.na(insurance)]),
+          csec=100*mean((csection==TRUE | csection==1)[!is.na(csection)]),
+          pubfac=100*mean((facility=="Public")[!is.na(facility)]))]
 # observations per statistic (records with the field observed, both arms pooled):
 # only insurance has material missingness (2018+ coverage), nationality has one.
 nA <- c(births_n = nrow(b), age = b[!is.na(age_mom), .N],
@@ -129,7 +143,8 @@ bstat <- function(v, scale100=FALSE, cluster_prov=FALSE){
   } else {
     p <- t.test(Tv, Cv)$p.value                                  # Welch, unequal variances
   }
-  list(t = k*mean(Tv, na.rm=TRUE), c = k*mean(Cv, na.rm=TRUE),
+  Mv <- mcb[adm3_pcode %in% matched_c][[v]]
+  list(t = k*mean(Tv, na.rm=TRUE), c = k*mean(Cv, na.rm=TRUE), m = k*mean(Mv, na.rm=TRUE),
        nd = (mean(Tv,na.rm=TRUE)-mean(Cv,na.rm=TRUE))/sqrt((var(Tv,na.rm=TRUE)+var(Cv,na.rm=TRUE))/2),
        dif = dif, p = p)
 }
@@ -192,7 +207,8 @@ num <- function(x, d=1) fifelse(d==0 & abs(x)>=1000, formatC(round(x), format="d
                                 sprintf(paste0("%.",d,"f"), x))
 rowA <- function(v, tv, cv){
   dd <- if (v=="births_n") list(diff=NA_real_, p=NA_real_) else diffA(v)
-  data.table(panel="A", var=v, treated=tv, control=cv, diff=dd$diff, p=dd$p, nd=NA_real_)
+  mv <- paM[[if (v=="births_n") "n" else v]]
+  data.table(panel="A", var=v, treated=tv, control=cv, matched=mv, diff=dd$diff, p=dd$p, nd=NA_real_)
 }
 csv <- rbindlist(list(
   rowA("births_n", pa[arm=="Treated",n],       pa[arm=="Control",n]),
@@ -205,11 +221,11 @@ csv <- rbindlist(list(
   rowA("pubfac",   pa[arm=="Treated",pubfac],  pa[arm=="Control",pubfac]),
   rbindlist(lapply(names(BL), function(k)
     data.table(panel=fifelse(k %in% c("unmet","mcpr"), "C", "B"), var=k,
-               treated=BL[[k]]$t, control=BL[[k]]$c,
+               treated=BL[[k]]$t, control=BL[[k]]$c, matched=BL[[k]]$m,
                diff=BL[[k]]$dif, p=BL[[k]]$p, nd=BL[[k]]$nd))),
   data.table(panel="C", var=c("everbirth_nat","everbirth_q1","partnered","educ_years","prenatal"),
              treated=c(everbirth_nat, everbirth_q1, mics$pct_partnered, mics$educ_years, mics$anc_visits),
-             control=NA_real_, diff=NA_real_, p=NA_real_, nd=NA_real_)))
+             control=NA_real_, matched=NA_real_, diff=NA_real_, p=NA_real_, nd=NA_real_)))
 obs_map <- c(nA, setNames(rep(146L, 18), c("rate2019","brate","births","women","preg","abort",
              "sb","ger","dropout","ger6","wealth","educ",
              "internet","urban","bottom2q","cwr","sns","senasa")),
@@ -225,24 +241,23 @@ pf  <- function(p) fifelse(p < 0.001, "$<$.001", sub("^0", "", sprintf("%.3f", p
 # where it departs from the panel's stated N.
 rr <- function(lab, v, d=1){
   r <- csv[var==v]
-  nd <- fifelse(is.na(r$nd), "", sprintf("%.2f", r$nd))          # SMD, Panel B only (OG #13/14, §59.95)
-  sprintf("%s & %s & %s & %s & %s \\\\", lab, num(r$treated,d), num(r$control,d),
-          pf(r$p), nd) }
-rC <- function(lab, x, d=1) sprintf("%s & \\multicolumn{2}{c}{%s} & & \\\\", lab, num(x,d))
+  sprintf("%s & %s & %s & %s \\\\", lab, num(r$treated,d), num(r$control,d), num(r$matched,d)) }
+rC <- function(lab, x, d=1) sprintf("%s & \\multicolumn{3}{c}{%s} \\\\", lab, num(x,d))
 L <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{Baseline characteristics of treated and comparison municipalities}",
 "\\label{tab:table1}\\scriptsize",
 "\\setlength{\\tabcolsep}{3pt}",
-"\\begin{tabular}{lcccc}",
+"\\begin{tabular}{lccc}",
 "\\toprule",
-" & Treated & Never-treated & & \\\\",
-" & (20) & (126) & $p$-value & Std.\\ difference \\\\",
+" & & & Matched \\\\",
+" & Treated & Never-treated & never-treated \\\\",
+sprintf(" & (20) & (126) & (%d) \\\\", length(matched_c)),
 "\\midrule",
-sprintf("\\multicolumn{5}{l}{\\textit{Panel A. Birth-record level: teen (15--19) births, 2019 (N $=$ %s)}} \\\\[2pt]",
+sprintf("\\multicolumn{4}{l}{\\textit{Panel A. Birth-record level: teen (15--19) births, 2019 (N $=$ %s)}} \\\\[2pt]",
         bm(nA[["births_n"]])),
-sprintf("Number of births & %s & %s & & \\\\", bm(csv[var=="births_n",treated]),
-        bm(csv[var=="births_n",control])),
+sprintf("Number of births & %s & %s & %s \\\\", bm(csv[var=="births_n",treated]),
+        bm(csv[var=="births_n",control]), bm(csv[var=="births_n",matched])),
 rr("Mother's age (mean)","age"),
 rr("\\% mothers aged 15--17","sh1517"),
 rr("\\% mothers aged 18--19","sh1819"),
@@ -251,7 +266,7 @@ rr(sprintf("\\%% without health insurance (N $=$ %s)$^{a}$", bm(nA[["noins"]])),
 rr("\\% c-section","csec"),
 rr("\\% public-facility births","pubfac"),
 "\\midrule",
-"\\multicolumn{5}{l}{\\textit{Panel B. Municipality level (N $=$ 146)}} \\\\[2pt]",
+"\\multicolumn{4}{l}{\\textit{Panel B. Municipality level (N $=$ 146)}} \\\\[2pt]",
 rr("Teen birth rate, 2019 (per 1,000 women 15--19)","rate2019"),
 rr("Teen birth rate, 2016--19 average","brate"),
 rr("Teen births, 2019 (mean count)","births",0),
@@ -270,7 +285,7 @@ rr("Child-woman ratio, 2010 census","cwr",0),
 rr("Public health facilities per 10{,}000 residents","sns"),
 rr("\\% enrolled in SeNaSa (DHS 2013)","senasa"),
 "\\midrule",
-"\\multicolumn{5}{l}{\\textit{Panel C. Survey benchmarks (ENDESA 2013; ENHOGAR-MICS 2019)}} \\\\[2pt]",
+"\\multicolumn{4}{l}{\\textit{Panel C. Survey benchmarks (ENDESA 2013; ENHOGAR-MICS 2019)}} \\\\[2pt]",
 rr("\\% unmet need for contraception, women 15--49 (N $=$ 146)$^{p}$","unmet"),
 rr("\\% modern contraceptive prevalence, women 15--49 (N $=$ 146)$^{p}$","mcpr"),
 rC(sprintf("\\%% women 15--19 ever given birth (N $=$ %s)", bm(n_eb_nat)), everbirth_nat),
@@ -282,22 +297,22 @@ rC(sprintf("Teen mothers: prenatal visits (N $=$ %s)", bm(n_tm[["prenatal"]])), 
 "\\end{tabular}",
 "\\begin{minipage}{0.94\\linewidth}\\vspace{3pt}\\scriptsize",
 "\\textit{Notes:} All quantities are pre-treatment unless noted otherwise; the first cohort opens in 2020.",
-"Sample sizes appear in row labels when they differ from the panel total. Reported $p$-values come from",
-"Panel A regressions on 2019 records with municipality-clustered SEs and Panel B Welch $t$-tests across",
-sprintf("municipalities, excluding the nine served before 2016. $^{a}$Insurance is recorded from 2018 (%s records", bm(nA[["births_n"]]-nA[["noins"]])),
+"Sample sizes appear in row labels when they differ from the panel total. The nine municipalities served",
+"before 2016 are excluded. The matched column reports the never-treated municipalities selected by the",
+"primary matching scheme (each treated municipality matched with replacement to its three nearest",
+"never-treated neighbors on structural characteristics and log population; Appendix~\\autoref{tab:matching}",
+"and \\autoref{tab:matching_pairs}), each counted once; the baseline birth rate is not a matching variable.",
+sprintf("$^{a}$Insurance is recorded from 2018 (%s records", bm(nA[["births_n"]]-nA[["noins"]])),
 "lack it); education, union status, and prenatal care begin in 2020--21 and therefore appear only in Panel C.",
 "$^{h}$Hospital-registry (Form 67-A) events at the attending facility's municipality; municipalities without",
 "a reporting facility are zeros. Pregnancy events $=$ deliveries $+$ abortion-related attendances, ages 15--19.",
-"The standardized difference divides the mean difference by the pooled standard deviation across",
-"municipalities, $\\sqrt{(s_T^2+s_C^2)/2}$. Large values for counts and population reflect the documented",
-"scale-based placement criterion (\\autoref{tab:allocation}); identification relies on parallel trends",
-"rather than baseline balance. Appendix~\\autoref{tab:matching}, Panel B reports covariate balance before and",
-"after matching in the same metric.",
+"Differences in counts and population reflect the documented scale-based placement criterion",
+"(\\autoref{tab:allocation}); identification relies on parallel trends rather than baseline balance.",
 "Schooling rows are for the school year ending in 2019; gross enrollment is any-age secondary enrollment per",
 "100 population aged 12--17.",
 "The wealth index is the first principal component of 29 census items (Appendix \\autoref{tab:wealth_items}).",
 "$^{p}$ENDESA province measures for women aged 15--49 are assigned to municipalities;",
-"tests cluster at the province. MICS quantities are national, weighted, and admit no arm comparison; teen",
+"MICS quantities are national, weighted, and admit no arm comparison; teen",
 "mothers are women aged 15--19 with a birth in the 24",
 "months before the interview.",
 "\\textit{Sources:} BDNV; Form 67-A registries; MoE; 2022 census; NSO; NHS registry; SIUBEN; ENDESA 2013;",

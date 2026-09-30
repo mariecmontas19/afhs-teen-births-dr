@@ -83,6 +83,7 @@ code/R/*
 !code/R/07a4_table1_descriptives.R
 !code/R/07b_honestdid.R
 !code/R/07p_decomposition.R
+!code/R/07p2_newupgrade_difftest.R
 !code/R/07s_triplediff_ddd.R
 !code/R/07t2_dynamic_panelB.R
 !code/R/07t_headline.R

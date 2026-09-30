@@ -55,6 +55,7 @@ scripts <- c(
   "07a4_table1_descriptives.R",
   "07b_honestdid.R",
   "07p_decomposition.R",
+  "07p2_newupgrade_difftest.R",
   "07s_triplediff_ddd.R",
   "07t2_dynamic_panelB.R",
   "07t_headline.R",
