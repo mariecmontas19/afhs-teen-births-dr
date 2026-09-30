@@ -17,10 +17,10 @@ unit_id,hosp,prov,muni,adm3_pcode,recorded_year,recorded_month,year_imputed,hosp
 1,Hospital Pediátrico Dr. Hugo Mendoza,Santo Domingo,Santo Domingo Norte,DOM103203,2020,10,FALSE,NA,2020-09-25,new_opening,FALSE,FALSE,in_window
 28,Hospital Municipal de CENOVI,Duarte,San Francisco de Macorís,DOM030601,2021,12,FALSE,NA,2021-12-06,new_opening,FALSE,TRUE,in_window
 30,Hospital Municipal de Castillo,Duarte,San Francisco de Macorís,DOM030603,2021,12,FALSE,NA,NA,unknown,FALSE,TRUE,in_window
-14,Hospital Juan Pablo Pina,San Cristóbal,NA,DOM052101,2021,3,FALSE,NA,2020,new_opening,FALSE,FALSE,in_window
+14,Hospital Juan Pablo Pina,San Cristóbal,NA,DOM052101,2021,3,FALSE,NA,2021-03-17,new_opening,FALSE,FALSE,in_window
 32,Hospital Municipal Dr. Pedro Antonio Céspedes,La Vega,Constanza,DOM021302,2022,7,FALSE,NA,2022-07,new_opening,FALSE,TRUE,in_window
-27,Hospital Vinicio Calventi,Santo Domingo,Los Alcarrizos,DOM103206,2022,6,FALSE,NA,2023,new_opening,FALSE,FALSE,in_window
-26,Hospital Municipal de Imbert,Puerto Plata,NA,DOM011804,2022,6,FALSE,NA,2021,new_opening,FALSE,TRUE,in_window
+27,Hospital Vinicio Calventi,Santo Domingo,Los Alcarrizos,DOM103206,2022,6,FALSE,NA,2022-06-14,new_opening,FALSE,FALSE,in_window
+26,Hospital Municipal de Imbert,Puerto Plata,NA,DOM011804,2022,6,FALSE,NA,2022-06-30,new_opening,FALSE,TRUE,in_window
 34,"Ciudad Sanitaria, Luis Eduardo Aybar",Santo Domingo,Distrito Nacional,DOM100101,2023,6,FALSE,NA,2023-06-06,new_opening,FALSE,FALSE,in_window
 13,Hospital Regional Universitario Dr. Luis Manuel Morillo King,La Vega,NA,DOM021301,2023,9,FALSE,NA,2023-09-01,upgrade,FALSE,FALSE,in_window
 22,Hospital Regional Universitario Jaime Mota,Barahona,NA,DOM060401,2023,1,FALSE,NA,2023-01-27,new_opening,FALSE,FALSE,in_window
