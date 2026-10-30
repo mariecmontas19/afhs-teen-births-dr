@@ -7,8 +7,8 @@
 # two log components enter EQUALLY. Single-column LPM (Duflo's layout), HC1
 # SEs; the equality test and the births-alone / hospital variants are printed
 # for the PROSE (kept out of the table per MM, as in Duflo).
-# Variables are 2016-2019 pre-roll-out averages (one municipality has zero
-# births in 2019 alone; averages also match the balance-table baseline).
+# Variables are 2016-2018 pre-opening averages. This window ends before the
+# earliest first-access date in the revised treatment record (2019).
 # Output: output/tables/tab_02_allocation.tex + allocation_test.csv
 # ============================================================================
 source(here::here("code","R","00_config.R"))
@@ -16,7 +16,7 @@ suppressPackageStartupMessages({library(data.table); library(sandwich); library(
 fold <- c("DOM010905","DOM051703","DOM012510")
 
 p <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[!adm3_pcode %in% fold]
-d <- p[year %in% 2016:2019, .(nb=mean(nb_15_19), pop=mean(womenA_15_19), rate=mean(rateA_15_19)), by=adm3_pcode]
+d <- p[year %in% 2016:2018, .(nb=mean(nb_15_19), pop=mean(womenA_15_19), rate=mean(rateA_15_19)), by=adm3_pcode]
 fl <- as.data.table(readRDS(file.path(DIR_CLEAN,"health_facility_levels_panel.rds")))[
         year==2019, .(adm3_pcode, has_hosp=as.integer(n_hosp>0))]
 d <- merge(d, fl, by="adm3_pcode", all.x=TRUE)
@@ -62,7 +62,7 @@ L <- c("\\begin{table}[htbp]\\centering",
 "\\setlength{\\tabcolsep}{4pt}",
 "\\begin{tabular}{lcccc}",
 "\\toprule",
-" & \\multicolumn{4}{c}{Received a first AU, 2020--2025$^{a}$} \\\\",
+" & \\multicolumn{4}{c}{Received a first AU, 2019--2025$^{a}$} \\\\",
 "\\cmidrule(lr){2-5}",
 " & (1) & (2) & (3) & (4) \\\\",
 "\\midrule",
@@ -81,23 +81,24 @@ sprintf("\\quad conditional on log adolescent population & \\multicolumn{4}{c}{$
         gv("ols2_lrate_b"), gv("ols2_lrate_se"), gv("ols2_lrate_p")),
 sprintf("Spearman rank correlation, opening year $\\times$ baseline rate & \\multicolumn{4}{c}{$%.2f$, $p=%.2f$} \\\\",
         gv("spearman_rho"), gv("spearman_p")),
-sprintf("Mean baseline rate, 2020--21 vs.\\ 2023--25 cohorts & \\multicolumn{4}{c}{%.1f vs.\\ %.1f, $p=%.2f$} \\\\",
+sprintf("Mean baseline rate, 2019--21 vs.\\ 2023--25 cohorts & \\multicolumn{4}{c}{%.1f vs.\\ %.1f, $p=%.2f$} \\\\",
         gv("early_mean"), gv("late_mean"), gv("welch_p")),
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.86\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Heteroskedasticity-robust standard errors are in parentheses.",
 "$^{a}$The dependent variable is an indicator equal to one if the municipality received its",
-"first AU between 2020 and 2025; Panel A reports linear probability models for the 146 estimation",
+"first AU between 2019 and 2025; Panel A reports linear probability models for the 146 estimation",
 "municipalities.",
-"$^{b}$Births per 1{,}000 women aged 15--19; all regressors are 2016--2019 pre-roll-out",
-"averages. The number of adolescent births, the documented allocation criterion, is the",
+"$^{b}$The birth count is the number of births to women aged 15--19; the birth rate is births per",
+"1{,}000 women aged 15--19. All regressors are 2016--2018 pre-opening averages. The number of",
+"adolescent births, the documented allocation criterion, is the",
 "product of the adolescent population and the birth rate, so allocation on counts implies",
 "that the two components of column (3) enter with equal coefficients.",
 "$^{c}$Panel B tests whether earlier openings went to higher-fertility municipalities among the 20 treated",
 "municipalities. Opening year is regressed on the log baseline rate (HC1 standard",
 "errors), the rank correlation is Spearman's $\\rho$, and the last row compares mean baseline rates",
-"of the earliest (2020--2021) and latest (2023--2025) opening cohorts (Welch test).",
+"of the earliest (2019--2021) and latest (2023--2025) opening cohorts (Welch test).",
 "$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")

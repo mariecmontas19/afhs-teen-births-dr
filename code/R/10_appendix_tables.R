@@ -27,14 +27,18 @@ n1<-N(bin); n2<-N(mod)
 
 # ---------- A1: estimator robustness ----------
 est <- fread(file.path(TAB,"estimators_S1_S2.csv"))[!grepl("Gardner", estimator)]
-ex <- function(sc,pat){ r<-est[scenario==sc & grepl(pat,estimator)]; stopifnot(nrow(r)==1); cell(r$ATT,r$SE,r$p) }
+hl <- fread(file.path(TAB,"headline_S1_S2.csv"))[spec=="CS, no covs"]
+ex <- function(sc,pat){
+  r <- if (pat=="^CS") hl[scenario==sc, .(ATT=estimate, SE, p)] else est[scenario==sc & grepl(pat,estimator)]
+  stopifnot(nrow(r)==1); cell(r$ATT,r$SE,r$p)
+}
 A1 <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{Robustness to estimator choice}",
 "\\label{tab:estimators}\\small",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or modernization} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
 "\\midrule",
 sprintf("Callaway--Sant'Anna & %s & %s \\\\", ex("S1","^CS"),  ex("S2","^CS")),
 sprintf("Sun--Abraham & %s & %s \\\\",         ex("S1","^SA"),  ex("S2","^SA")),
@@ -47,12 +51,12 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 "\\end{tabular}",
 "\\begin{minipage}{0.86\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Overall ATT on the adolescent (15--19) birth rate, level outcome,",
-"no controls; municipality-clustered standard errors in parentheses. Gardner (2022)",
+"no controls; municipality-clustered standard errors in parentheses and 95\\% confidence intervals",
+"in brackets. Gardner (2022)",
 "two-stage omitted because its point estimate is identical to Borusyak imputation. Controls are",
 "omitted here because, being time-invariant, they are absorbed by municipality fixed",
-"effects in every estimator except Callaway--Sant'Anna. The Callaway--Sant'Anna row is",
-"re-estimated within the estimator-comparison script; its bootstrap standard error can",
-"differ trivially from Table 3 across bootstrap runs. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
+"effects in every estimator except Callaway--Sant'Anna. The Callaway--Sant'Anna row reproduces",
+"the canonical estimates in Table~\\ref{tab:estimates}. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}"
 )
@@ -82,7 +86,7 @@ sprintf("Treated municipalities identifying horizon & %d & %d & %d \\\\", nm[1],
 "\\textit{Notes:} Dynamic ATT on the adolescent (15--19) birth rate after a first AU opening;",
 sprintf("full panel of %d municipalities, %s municipality-years. Municipality-clustered standard", n1$cl, cma(n1$ob)),
 sprintf("errors in parentheses. Capped at Year 2: Years 3--4 are identified off only %d and %d", thin[1], thin[2]),
-"municipalities. The small, statistically insignificant Year-0 effect is consistent with",
+"municipalities. The imprecisely estimated Year-0 effect is consistent with",
 "the $\\sim$9-month gestational lag. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}"

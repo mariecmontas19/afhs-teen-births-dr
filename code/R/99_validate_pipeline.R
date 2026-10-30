@@ -261,8 +261,8 @@ if (file.exists(f("mispas_muni_panels.rds"))) {
   v <- file.path(PROJ, "output", "tables", "mispas_validation.csv")
   if (file.exists(v)) {
     vd <- fread(v)
-    ok("mispas validation: corr vs NSO (prov) > .98 & vs BDNV (muni) > .90",
-       vd[check=="V1_NSO_prov", cor(ours, theirs)] > 0.98 &&
+    ok("mispas validation: corr vs ONE (prov) > .98 & vs BDNV (muni) > .90",
+       vd[check %chin% c("V1_ONE_prov", "V1_NSO_prov"), cor(ours, theirs)] > 0.98 &&
        vd[check=="V2_BDNV_muni", cor(ours, theirs)] > 0.90)
   }
 }

@@ -35,6 +35,6 @@ unit_id,hosp,prov,muni,adm3_pcode,recorded_year,recorded_month,year_imputed,hosp
 21,Hospital General Santiago Rodriguez,Santiago Rodríguez,Sabaneta,DOM042601,2025,4,FALSE,NA,NA,unknown,FALSE,FALSE,in_window
 3,Hospital Municipal de Engombe,Santo Domingo,Santo Domingo Oeste,DOM103202,2025,11,FALSE,NA,2025-11-19,new_opening,FALSE,TRUE,in_window
 8,Hospital Municipal Materno Infantil Villa Mella,Santo Domingo,Santo Domingo Norte,DOM103203,NA,NA,TRUE,NA,2022,new_opening,FALSE,TRUE,in_window
-17,Hospital Municipal de Yamasa,Monte Plata,Yamasá,DOM092904,NA,NA,TRUE,NA,2020,new_opening,FALSE,TRUE,in_window
-16,Hospital Provincial Francisco Gonzalvo,La Romana,NA,DOM081201,NA,NA,TRUE,NA,2019,new_opening,FALSE,FALSE,in_window
+17,Hospital Municipal de Yamasa,Monte Plata,Yamasá,DOM092904,2020,NA,FALSE,NA,2020,new_opening,FALSE,TRUE,in_window
+16,Hospital Provincial Francisco Gonzalvo,La Romana,NA,DOM081201,2019,NA,FALSE,NA,2019,new_opening,FALSE,FALSE,in_window
 20,Hospital Regional Antonio Musa,San Pedro de Macorís,NA,DOM092301,NA,NA,TRUE,NA,2025,new_opening,FALSE,FALSE,in_window

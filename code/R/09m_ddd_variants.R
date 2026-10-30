@@ -6,8 +6,10 @@
 # the pre-differenced age-DDD").
 # Spec mirrors 07t's ddd_one: unit = municipio x age-cell, pname = 1{15-19},
 # control = notyettreated (the package's GMM combination over cohort-specific
-# comparisons, Remark 4.2 / Thm 4.2 — NOT pooled), est = "dr", universal base,
+# comparisons, Remark 4.2 / Thm 4.2 — NOT pooled), est = "reg", universal base,
 # municipality-clustered, boot 999. Seed before EVERY call (project rule).
+# The 2019 cohort is omitted, as in the headline GMM triple difference, because
+# including it makes the not-yet-treated system singular.
 # Variants: never-treated | population-weighted | drop imputed | intercensal
 # (denominator B) | drop SD metro | comparison ages 20-24 / 25-29.
 # NOTE: ddd() has no anticipation argument -> the anticipation DDD cell in A9
@@ -21,9 +23,9 @@ fold <- c("DOM010905","DOM051703","DOM012510"); TAB <- file.path(PROJ,"output","
 bin <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]
 bin[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year),
                    fifelse(ever_treated==0L, 0L, NA_integer_))]
-gt <- bin[!is.na(g), .(adm3_pcode, state=g)]
+gt <- bin[!is.na(g) & g != 2019L, .(adm3_pcode, state=g)]
 imputed <- bin[cohort_imputed==TRUE & ever_treated==1L, adm3_pcode]
-stopifnot(length(imputed)==3L)
+stopifnot(length(imputed)==1L)
 sd_metro <- bin[prov_norm %in% c("DISTRITO NACIONAL","SANTO DOMINGO"), adm3_pcode]
 
 AL <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_age_long_155.rds")))
@@ -44,7 +46,7 @@ run1 <- function(label, age2="30-34", ycol="rateA", keep=NULL, drop=NULL,
   a <- tryCatch({
     o <- ddd(yname="y", tname="time", idname="id", gname="state", pname="partition",
              xformla=~1, data=d, control_group=ctrl, base_period="universal",
-             est_method="dr", panel=TRUE, cluster="cluster",
+             est_method="reg", panel=TRUE, cluster="cluster",
              weightsname=if(wgt) "wt_base" else NULL, boot=TRUE, nboot=999)
     agg_ddd(o, type="group", boot=TRUE, nboot=999)$aggte_ddd
   }, error=function(e){ cat(label, "-> INFEASIBLE:", conditionMessage(e), "\n"); NULL })

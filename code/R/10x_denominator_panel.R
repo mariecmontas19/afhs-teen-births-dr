@@ -11,8 +11,15 @@ TAB <- DIR_TABLES
 
 pa <- fread(file.path(TAB,"denominator_panelA.csv"))
 .HL <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1" & spec=="CS, no covs"]  # 2026-08-06: canonical
+.RB <- fread(file.path(TAB,"robustness_S1_S2.csv"))[
+  scenario=="S1" & spec=="B4 denominator B (level)" & outcome=="rateB_15_19"]
+stopifnot(nrow(.RB)==1L)
 pa[series=="A" & estimand=="level",
    `:=`(ATT=.HL$estimate, SE=.HL$SE, p=.HL$p, lo=.HL$estimate-1.96*.HL$SE, hi=.HL$estimate+1.96*.HL$SE)]
+# Keep the intercensal row identical to the canonical robustness result used in
+# Table 3. The raw panel file comes from a separate bootstrap stream.
+pa[series=="B" & estimand=="level",
+   `:=`(ATT=.RB$ATT, SE=.RB$SE, p=.RB$p, lo=.RB$ATT-1.96*.RB$SE, hi=.RB$ATT+1.96*.RB$SE)]
 # 2026-08-07 (MM): triple differences are the PROPER triplediff estimator, not the
 # pre-differenced gap-CS: series A from the canonical headline DDD row; series B
 # from ddd_variants.csv (09m, triplediff on the intercensal rates).
@@ -67,7 +74,7 @@ rB("placebo_drift_AB","\\quad Realized differential drift, A vs.\\ B (\\%)"),
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
-r"(\textit{Notes:} Each cell reports a Callaway--Sant'Anna group ATT for the first AU opening using not-yet-treated controls, a universal base period, and municipio-clustered multiplier-bootstrap standard errors. NSO publishes municipality population only through 2020, so post-2020 denominators must be projected. Series A is the paper's main Hamilton--Perry projection and does not use the 2022 census. Series B is an intercensal construction based on the 2010 and 2022 censuses and uses NSO only through province growth rates. A back-test against the held-out 2022 census implies that the official series over-projects women aged 15--19 by about 10 percent; removing that bias uniformly rescales the level estimate and the baseline rate together, leaving the implied percentage effect essentially unchanged. The smaller triple-difference estimate under series B reflects that the intercensal construction shifts the 15--19 and 30--34 denominators differentially in pre-treatment years, which the triple difference absorbs mechanically. Panel B rescales the treated post-opening rate by $1+\delta$, which is algebraically equivalent to a differential over-projection of $\delta$ in the treated post-opening denominator. The final row estimates the same specification on the ratio of the two independently constructed denominator series, bounding the differential drift actually present in the data. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Each cell reports a Callaway--Sant'Anna group-aggregated ATT for the first AU opening using not-yet-treated controls, a universal base period, and municipality-clustered multiplier-bootstrap standard errors. Parentheses contain standard errors and brackets contain 95\% confidence intervals. NSO publishes municipal population estimates only through 2020, so post-2020 denominators must be projected. Series A is the paper's main Hamilton--Perry projection and does not use the 2022 census. Series B is an intercensal construction based on the 2010 and 2022 censuses, with NSO province growth rates used between census years. A back-test against the held-out 2022 census indicates that Series A over-projects women aged 15--19 by about 10 percent. Removing a uniform bias rescales the level estimate and its baseline together, leaving the implied percentage effect essentially unchanged. The smaller triple-difference estimate under Series B reflects differential changes in the constructed 15--19 and 30--34 denominators during the pre-treatment period. Panel B rescales the treated post-opening rate by $1+\delta$, which is algebraically equivalent to differential over-projection of $\delta$ in the treated post-opening denominator. The final row applies the same design to the ratio of Series A to Series B and therefore measures the differential drift present across the two constructions. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L <- gsub("municipio-clustered", "municipality-clustered", L, fixed=TRUE)

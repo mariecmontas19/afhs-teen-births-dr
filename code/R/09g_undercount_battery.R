@@ -10,7 +10,7 @@
 #  B. LEAVE-ONE-OUT influence: drop each treated municipio, recompute the
 #     all-births pubfac/Haitian placebo ATT (analytic SE for speed) — is the
 #     shift driven by 1-2 municipios?
-#  C. HEADLINE ROBUSTNESS: does the -6.43 survive conditioning on the shares?
+#  C. HEADLINE ROBUSTNESS: does the main estimate survive conditioning on the shares?
 #     C1 CS + BASELINE (2016-19 mean) pubfac/Haitian shares (time-invariant,
 #        Caetano-Callaway-consistent).  C2 TWFE with CONTEMPORANEOUS shares
 #        (bad-control caveat: they are themselves treatment outcomes; reported
@@ -74,9 +74,9 @@ for(v in c("pct_pubfac","pct_haitian")){
 }
 
 # ---- C. headline conditioning on the shares ----
-cat("\n===== C. headline (-6.43) conditioning on shares =====\n")
+cat("\n===== C. headline estimate conditioning on shares =====\n")
 p  <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[!adm3_pcode %in% fold, .(adm3_pcode,year,rateA_15_19)]
-bl <- dALL[year<=2019, .(bl_pubfac=mean(pct_pubfac), bl_haitian=mean(pct_haitian)), by=adm3_pcode]   # pre-treatment baseline (all cohorts open 2020+)
+bl <- dALL[year<=2018, .(bl_pubfac=mean(pct_pubfac), bl_haitian=mean(pct_haitian)), by=adm3_pcode]   # pre-opening baseline (earliest cohort is 2019)
 dh <- merge(merge(p, bin[!is.na(g),.(adm3_pcode,g)], by="adm3_pcode"), bl, by="adm3_pcode", all.x=TRUE)
 cat("baseline-share NAs after merge:", sum(is.na(dh$bl_pubfac)), "\n")
 dh[, id := as.integer(factor(adm3_pcode))]

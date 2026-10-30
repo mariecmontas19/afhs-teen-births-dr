@@ -36,8 +36,9 @@ mod <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio_mod.rds"))
 mod[, g := fifelse(mod_ever_treated==1L & always_treated_mod==0L, as.integer(mod_cohort), fifelse(mod_ever_treated==0L,0L,NA_integer_))]
 N <- function(gt){ d<-merge(p, gt[!is.na(g),.(adm3_pcode,g)], by="adm3_pcode"); list(cl=uniqueN(d$adm3_pcode), ob=nrow(d)) }
 n1 <- N(bin); n2 <- N(mod)
-# triple-difference stacks ages 15-19 + 30-34 -> 2x municipio-years
-ddo1 <- n1$ob*2L; ddo2 <- n2$ob*2L
+# Triple differences stack ages 15--19 and 30--34 and omit 2019 cohorts.
+Nddd <- function(gt){ d<-merge(p, gt[!is.na(g) & g!=2019L,.(adm3_pcode,g)], by="adm3_pcode"); 2L*nrow(d) }
+ddo1 <- Nddd(bin); ddo2 <- Nddd(mod)
 
 stars <- function(p) ifelse(p<0.01,"***",ifelse(p<0.05,"**",ifelse(p<0.10,"*","")))
 cell  <- function(e,se,p){ s<-stars(p); sup<-if(s=="") "" else sprintf("^{%s}",s)
@@ -53,10 +54,11 @@ ntH1<-hl[scenario=="S1",n_treated][1];          ntH2<-hl[scenario=="S2",n_treate
 L <- c(
 "\\begin{table}[H]\\centering",
 "\\caption{Effect of AU openings on the adolescent birth rate}",
-"\\label{tab:estimates}\\small",
+"\\label{tab:estimates}\\footnotesize",
+"\\setlength{\\tabcolsep}{4.5pt}",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or modernization} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Panel A. Main estimates}} \\\\[2pt]",
 sprintf("Adolescent births per 1{,}000 women aged 15--19 & %s & %s \\\\", hx("S1","CS, no covs"), hx("S2","CS, no covs")),
@@ -71,7 +73,7 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Panel B. Robustness of the level estimate (one change at a time)}} \\\\[2pt]",
 rbrow("Never-treated comparisons only", "A2 never-treated only"),
-rbrow("Drop municipalities with imputed opening dates", "A4 drop imputed cohorts"),
+rbrow("Drop municipality with an imputed opening date", "A4 drop imputed cohorts"),
 rbrow("Intercensal population denominators", "B4 denominator B (level)", "rateB_15_19"),
 rbrow("Drop the Santo Domingo metropolitan area", "C1 drop Santo Domingo metro (level)"),
 sprintf("\\quad Exclude the pandemic years, 2020--2021 & %s & --- \\\\", cell(.CV$ATT,.CV$SE,.CV$p)),
@@ -79,19 +81,22 @@ rbrow("Population-weighted", "A1 population-weighted"),
 rbrow("One year of anticipation allowed", "A3 anticipation 1yr"),
 "\\bottomrule",
 "\\end{tabular}",
-"\\begin{minipage}{0.92\\linewidth}\\vspace{4pt}\\footnotesize",
-"\\textit{Notes:} Callaway--Sant'Anna group-time ATT; dependent variable is the adolescent",
+"\\begin{minipage}{0.96\\linewidth}\\vspace{3pt}\\footnotesize",
+"\\textit{Notes:} Callaway--Sant'Anna group-aggregated ATT; the dependent variable is the adolescent",
 "(15--19) birth rate per 1{,}000 women. Municipality-clustered standard errors are in parentheses;",
 "95\\% confidence intervals are in brackets. The first column defines treatment as a municipality's",
-"first AU opening; the second also includes modernizations of pre-existing units. Triple differences use",
+"first AU opening; the second also includes documented administrative opening, modernization, or remodeling events",
+"for pre-existing units and does not assume a uniform change in service intensity. Triple differences use",
 "the triplediff estimator with cohort-specific not-yet-treated comparisons combined by GMM;",
+"the 2019 cohort is omitted from these rows because its inclusion makes the GMM system singular;",
 "the indented row restricts the comparison group to never-treated municipalities.",
 "Controls: baseline wealth index, public health facilities per 10{,}000 residents, \\% urban,",
 "\\% secondary-or-more, \\% SeNaSa 2013 (time-invariant). The triple-difference nets the",
 sprintf("30--34 birth rate and stacks both age groups (%s / %s observations).", cma(ddo1), cma(ddo2)),
 "Panel B re-estimates the Panel A level specification changing one element at a time; the imputed-date",
-"row drops La Romana, San Pedro de Macor\\'is, and Yamas\\'a, whose opening years are assigned to 2023. The",
-"pandemic row drops 2020--2021 and dates the 2020 and 2021 cohorts to their first post-pandemic year; it",
+"row drops San Pedro de Macor\\'is, the only municipality assigned to the roll-out midpoint. La Romana",
+"and Yamas\\'a are dated to the earliest access identified through fieldwork. The pandemic row drops",
+"2020--2021 and dates the 2019--2021 cohorts to their first post-pandemic year; it",
 "is estimated for the first-opening design only. Appendix~\\autoref{tab:sensitivity} reports these and",
 "further variations, including their triple-difference counterparts.",
 "Estimator robustness and year-by-year dynamics appear in the Appendix.",

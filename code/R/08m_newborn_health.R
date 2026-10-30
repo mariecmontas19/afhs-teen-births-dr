@@ -30,7 +30,7 @@ set.seed(20260722); fold <- c("DOM010905","DOM051703","DOM012510")
 TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figures")
 YRS <- 2016:2025
 OUT <- data.table(var=c("low_bw","preterm","csection","sga"),
-                  label=c("Low birthweight (<2500g)","Preterm (<37 wks)","C-section","Small-for-gest-age"),
+                  label=c("Low birthweight (<2500g)","Preterm (<37 wks)","C-section","Small for gestational age"),
                   col=c(PCUA_COL$red, PCUA_COL$orange, PCUA_COL$purple, PCUA_COL$blue))
 
 # ---- teen births -> per-muni-year counts (numerator) + non-missing denominators
@@ -98,12 +98,24 @@ star <- function(p) fifelse(is.na(p),"",fifelse(p<.01,"^{***}",fifelse(p<.05,"^{
 pop <- tab[grepl("per-population", frame)]; shr <- tab[grepl("per-birth", frame)]
 fmt <- function(d) paste(sprintf("%s & %.1f & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %+.1f & %.2f \\\\",
          gsub("<","$<$",d$outcome), d$baseline, d$ATT, star(d$p), d$SE, d$ATT-1.96*d$SE, d$ATT+1.96*d$SE, d$pct_of_base, d$p), collapse="\n")
-tex <- c("\\begin{tabular}{lrrrr}", "\\toprule",
-  "Outcome & Baseline & Estimate (SE) [95\\% CI] & \\% base & $p$ \\\\", "\\midrule",
-  "\\multicolumn{5}{l}{\\textit{Panel A. Population burden --- valid ITT (per 1{,}000 women 15--19)}} \\\\",
+tex <- c("\\begin{table}[htbp]\\centering",
+  "\\caption{Newborn outcomes: population burden and birth composition}",
+  "\\label{tab:newborn}\\small", "\\setlength{\\tabcolsep}{4pt}",
+  "\\begin{tabular}{lrrrr}", "\\toprule",
+  "Outcome & Baseline & Estimate (SE) [95\\% CI] & \\% of baseline & $p$ \\\\", "\\midrule",
+  "\\multicolumn{5}{l}{\\textit{Panel A. Population burden (per 1{,}000 women aged 15--19)}} \\\\",
   fmt(pop), "\\addlinespace", "\\midrule",
   "\\multicolumn{5}{l}{\\textit{Panel B. Composition share --- \\% of teen births (descriptive; selection-confounded)}} \\\\",
-  fmt(shr), "\\bottomrule", "\\end{tabular}")
+  fmt(shr), "\\bottomrule", "\\end{tabular}",
+  "\\begin{minipage}{0.98\\linewidth}\\vspace{4pt}\\footnotesize",
+  paste0("\\textit{Notes:} Each row reports a Callaway--Sant'Anna group-aggregated ATT using the first-opening design, ",
+         "not-yet-treated controls, and municipality-clustered multiplier-bootstrap standard errors. Parentheses ",
+         "contain standard errors and brackets contain 95\\% confidence intervals. ",
+         "Panel A expresses newborn outcomes per 1{,}000 women aged 15--19 and measures the population burden ",
+         "of adverse newborn outcomes. Panel B re-expresses the same outcomes as shares of adolescent births ",
+         "and is descriptive because conditioning on births is post-treatment. Baseline is the treated mean ",
+         "in the year before opening. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$."),
+  "\\end{minipage}", "\\end{table}")
 tex <- gsub("municipio-clustered", "municipality-clustered", tex, fixed=TRUE)
 writeLines(tex, file.path(TAB,"tab_a05_newborn_health.tex"))
 cat("\n--- presentation table (tab_a05_newborn_health.tex) ---\n", paste(tex, collapse="\n"), "\n", sep="")

@@ -1,6 +1,6 @@
 # ============================================================================
 # 09j_covid.R — COVID robustness (committee 2026-07-07, work plan R3).
-# Question: is the headline (-6.43) an artifact of the pandemic period?
+# Question: is the headline (-6.39) an artifact of the pandemic period?
 # Three variants, S1 (first opening), denominator A, CS spec identical to 07t:
 #   A. DROP CALENDAR YEARS 2020-2021. Retained years {2016-19, 2022-25} recoded
 #      to consecutive indices 1..8 (att_gt needs evenly spaced time; the gap
@@ -8,10 +8,10 @@
 #      their first OBSERVED treated period (2022): in the retained panel they
 #      are untreated through 2019 and treated in every observed year 2022+,
 #      so under absorbing treatment g=2022(idx 5) is their observed onset.
-#      Event-time for those 4 munis is shifted (true onset was in the gap) —
+#      Event-time for the six 2019--2021 municipalities is shifted —
 #      noted; variant C removes them entirely.
-#   B. FULL PANEL, LATE COHORTS ONLY: treated = 2022+ openers (16); the 4
-#      munis opening 2020-21 are EXCLUDED (not controls). All years 2016-2025.
+#   B. FULL PANEL, LATE COHORTS ONLY: treated = 2022+ openers (14); the six
+#      municipalities opening in 2019--2021 are EXCLUDED. All years 2016-2025.
 #   C. A and C combined: years {2016-19, 2022-25} AND 2022+ cohorts only.
 # Controls = never-treated + not-yet-treated, as in the headline.
 # Baseline for % = mean teen rate at the (recoded) g-1, printed per variant.
@@ -49,14 +49,15 @@ dA[, t := ymap[as.character(year)]]
 dA[, g := fifelse(g0==0L, 0L, ymap[as.character(pmax(g0, 2022L))])]       # 2020/21 cohorts -> first observed treated yr 2022
 stopifnot(dA[g0>0, uniqueN(adm3_pcode)]==20, !anyNA(dA$g))
 baseA <- dA[g>0][, .SD[t==g-1L], by=adm3_pcode][, mean(rateA_15_19)]
-add("A: drop 2020-21 (all 20, remapped)", run_cs(dA), baseA, "2020/21 cohorts observed-onset 2022; event time shifted for those 4")
+add("A: drop 2020-21 (all 20, remapped)", run_cs(dA), baseA, "2019--2021 cohorts observed-onset 2022; event time shifted for those 6")
 
 # ---- B: full panel, 2022+ cohorts only ----
 dB <- merge(pw, bin[!is.na(g) & (g==0L | g>=2022L), .(adm3_pcode, g)], by="adm3_pcode")
 dB[, t := year]
-stopifnot(dB[g>0, uniqueN(adm3_pcode)]==16)
+n_late <- bin[g>=2022L, uniqueN(adm3_pcode)]
+stopifnot(dB[g>0, uniqueN(adm3_pcode)]==n_late)
 baseB <- dB[g>0][, .SD[year==g-1L], by=adm3_pcode][, mean(rateA_15_19)]
-add("B: full years, 2022+ cohorts (16)", run_cs(dB), baseB, "2020/21 openers excluded entirely")
+add(sprintf("B: full years, 2022+ cohorts (%d)", n_late), run_cs(dB), baseB, "2019--2021 openers excluded entirely")
 
 # ---- C: drop 2020-21 AND 2022+ cohorts only ----
 dC <- merge(pw[year %in% yrs], bin[!is.na(g) & (g==0L | g>=2022L), .(adm3_pcode, g0=g)], by="adm3_pcode")
@@ -66,7 +67,7 @@ baseC <- dC[g>0][, .SD[t==g-1L], by=adm3_pcode][, mean(rateA_15_19)]
 add("C: drop 2020-21 + 2022+ cohorts", run_cs(dC), baseC, "strictest: no COVID years, no COVID-era openers")
 
 RR <- rbindlist(res)
-cat("\n=== COVID robustness (headline reference: -6.43, se 2.10, base 55.3) ===\n")
+cat("\n=== COVID robustness (headline reference: -6.39, se 2.01, base 56.5) ===\n")
 print(RR, class=FALSE)
 fwrite(RR, file.path(TAB,"covid_robustness.csv"))
 cat("\nsaved -> output/tables/covid_robustness.csv\n")

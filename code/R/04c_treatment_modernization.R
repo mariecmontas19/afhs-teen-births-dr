@@ -1,20 +1,18 @@
 # ============================================================================
 # 04c_treatment_modernization.R — ALTERNATIVE treatment: MODERNIZATION design.
 #
-# Treatment = arrival of a MODERN comprehensive adolescent unit (new full-service
-# SNS opening, OR post-2016 modernization/remodel of a pre-existing basic unit).
-# Rationale (Marie, field-verified): the new units are Abinader-administration
-# full-service units; the older units were REMODELED/upgraded after 2016 (service
-# expansion beyond contraception). Honest research question = effect of a modern
-# comprehensive adolescent unit, not merely "any unit ever".
+# Treatment = earliest documented administrative opening, modernization, or
+# remodeling event for an adolescent service. The record does not verify a uniform
+# change in service intensity across events, so this is an administrative-event
+# specification rather than a comprehensive-service treatment definition.
 #
 # Per-unit modernization year (from notes/pcua_unit_dates_verified.csv, built in
 # 04b from web + field + photo evidence):
 #   never_modernized  -> NA (old 1990s unit, never upgraded; does NOT switch a muni)
 #   verified modern_event_date -> its year
 #   else recorded opening year (in-window units w/ unverified-but-recorded date)
-#   else IMPUTE_YEAR (4 undated units w/ no found date)  [same 2023 as 04]
-# Municipio cohort = earliest modern-unit year among its units.
+#   else IMPUTE_YEAR for any remaining undated event [same 2023 as 04]
+# Municipio cohort = earliest documented event year among its units.
 #   always_treated_mod = cohort < 2016 (only SFM: San Vicente KOICA 2013).
 # new_vs_upgrade = type of the cohort-defining (earliest modern) unit, for a
 #   heterogeneity split (new access vs service-intensification).

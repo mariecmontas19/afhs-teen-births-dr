@@ -21,8 +21,8 @@ cat("near:", d[grp %like% "Near", att], "far:", d[grp %like% "Far", att], "| dif
 
 g <- ggplot(d, aes(att, grp)) +
   geom_vline(xintercept=0, color="grey40", linewidth=0.6) +
-  geom_vline(xintercept=-6.43, linetype="22", color="grey35", linewidth=0.6) +
-  annotate("text", x=-6.43, y="Far from a health facility\n(above-median distance)", label="overall effect (-6.4)",
+  geom_vline(xintercept=-6.39, linetype="22", color="grey35", linewidth=0.6) +
+  annotate("text", x=-6.39, y="Far from a health facility\n(above-median distance)", label="overall effect (-6.4)",
            hjust=-0.05, vjust=5.5, size=3.4, color="grey35", fontface="italic") +
   geom_linerange(aes(xmin=lo, xmax=hi), linewidth=1.4, color=c(PCUA_COL$blue, "grey45")) +
   geom_point(size=6, color=c(PCUA_COL$blue, "grey45")) +

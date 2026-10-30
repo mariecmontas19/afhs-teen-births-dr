@@ -5,7 +5,9 @@
 # Treatment = BINARY, FIRST-OPENING, ABSORBING (Callaway-Sant'Anna framework):
 # a municipio turns on the YEAR its FIRST AU opens and stays on; later units
 # ignored for the binary spec (captured by n_units for the intensity extension).
-# Missing opening year (4 units) -> 2016 (per plan). Always-treated = first
+# Missing opening years are resolved from documented field evidence where available;
+# any municipality that remains entirely undated is assigned the rollout midpoint.
+# Always-treated = first
 # opening < 2016 (no in-sample pre-period -> excluded from the binary event study;
 # retained via intensity/dose + descriptives). Treatment modeled as HOMOGENEOUS
 # (standardized SNS unit model; see notes/unit_characteristics.md); unit_type +
@@ -61,6 +63,14 @@ u[grepl("Marcelino V", hosp), adm3_pcode := "DOM103202"]
 # Hospital in Constanza: official name is "Dr. PEDRO Antonio Céspedes" (§55.3);
 # the source sheet omits "Pedro". Name-only fix (no coding impact).
 u[grepl("Antonio Céspedes", hosp), hosp := "Hospital Municipal Dr. Pedro Antonio Céspedes"]
+# ---- earliest access dates recovered through fieldwork ----
+# The source workbook leaves La Romana and Yamasá undated. Fieldwork found evidence
+# of adolescent services at Francisco Gonzalvo in 2019 and at Yamasá in 2020. These
+# are the earliest access dates currently supported by the treatment record, so use
+# them as the first-opening dates rather than assigning both municipalities to the
+# rollout midpoint. Month precision is unavailable.
+u[unit_id == 16L, `:=`(year=2019L, month=NA_integer_, year_imputed=FALSE)]
+u[unit_id == 17L, `:=`(year=2020L, month=NA_integer_, year_imputed=FALSE)]
 # ---- Boca Chica duplicate (RESOLVED 2026-07-17, MM-confirmed, notes §59.38) ----
 # The SNS "unidades con fechas" source double-lists ONE hospital: generic row
 # "Hospital Boca Chica" (undated, no unit number) AND "Hospital Boca Chica Dr.
@@ -79,8 +89,8 @@ cat("Boca Chica duplicate dropped:", ndup, "row (SNS double-listing; §59.38)\n"
 # proves it existed by Jul-2022 ("esta se une a la del Morillo King"), but no opening date
 # exists in any source. Coded at the DOCUMENTED event: the SNS-validated "Reinauguracion
 # 1-9-23" (2023-09, the source-recorded date) — a 2022 "upper bound" coding would itself
-# be a constructed date. Sensitivity (computed, §56.1): La Vega at 2022 gives headline
-# -5.90 vs -6.43; DDD ~unchanged. No mutation needed (source records 2023-09).
+# be a constructed date. The 2022 coding remains a reported sensitivity check; the main
+# treatment record retains the documented 2023 reinauguration (source records 2023-09).
 # ---- 40th unit, NOT in the source xlsx (added from field/SNS data collection) ----
 # Hospital Municipal Lic. Pablo Antonio Paulino, Las Terrenas (Samaná, DOM032003): the
 # adolescent unit has provided services since Dec 2024 but was NOT formally inaugurated.
@@ -106,10 +116,9 @@ u <- merge(u, uc, by="unit_id", all.x=TRUE, sort=FALSE)
 # Cohort = earliest DATED unit in the municipio. Fall back to IMPUTE_YEAR ONLY when ALL of a municipio's
 # units are undated (avoids an undated unit overriding a documented one — e.g. SD Norte's dated Hugo
 # Mendoza 2020 must not be pulled by the undated Villa Mella). cohort_imputed flags the all-undated case.
-# IMPUTATION = 2023 (center of the national SNS adolescent-unit rollout; the bulk opened 2023-24; MM
-# decision 2026-06-22) for the 3 units (La Romana/SPM/Yamasá) whose dates are unverifiable online.
-# Conservative vs earlier years (avoids over-counting treated years). cohort_imputed flags them ->
-# ROBUSTNESS in 07 MUST drop them + vary the year; headline must not hinge on these 3.
+# IMPUTATION = 2023 (center of the national SNS adolescent-unit rollout; the bulk opened 2023-24)
+# for San Pedro de Macorís, the one municipality that remains entirely undated after incorporating
+# the La Romana and Yamasá field evidence. cohort_imputed flags it for robustness checks.
 IMPUTE_YEAR <- 2023L
 tm <- u[, {
   dated <- year[!is.na(year)]; mo_d <- month[!is.na(year)]
@@ -119,7 +128,7 @@ tm <- u[, {
     last_year    = if (has_dated) max(dated) else IMPUTE_YEAR,
     n_units      = .N,
     n_dated      = length(dated),
-    cohort_imputed   = !has_dated,                 # ALL units undated -> cohort imputed to 2016
+    cohort_imputed   = !has_dated,                 # ALL units undated -> cohort imputed to midpoint
     has_undated_unit = any(year_imputed),          # municipio has >=1 undated unit (transparency)
     any_contraception  = any(contraception_onsite=="yes"),
     any_maternity_unit = any(unit_type=="maternity_femaleonly"))
@@ -174,7 +183,7 @@ cat("\ncohort (first-opening year) distribution, treated municipios:\n")
 print(trt[ever_treated==1, .N, by=cohort][order(cohort)])
 cat("\nALWAYS-TREATED municipios (first unit pre-2016):\n")
 print(trt[always_treated==1, .(adm3_name, prov_norm, first_year, n_units)][order(first_year)])
-cat("\nIMPUTED-cohort municipios (ALL units undated -> cohort=2016; robustness: drop/vary):\n")
+cat("\nIMPUTED-cohort municipios (ALL units undated -> rollout midpoint; robustness: drop):\n")
 print(trt[cohort_imputed==TRUE, .(adm3_name, prov_norm, first_year, n_units)])
 cat("treated municipios with >=1 undated unit but a DATED cohort (undated unit ignored for timing):\n")
 print(trt[ever_treated==1 & has_undated_unit==TRUE & cohort_imputed==FALSE, .(adm3_name, first_year, n_units, n_dated)])

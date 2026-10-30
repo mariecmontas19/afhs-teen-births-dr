@@ -13,7 +13,7 @@ suppressPackageStartupMessages(library(data.table))
 TAB <- file.path(PROJ,"output","tables")
 rb <- fread(file.path(TAB,"robustness_S1_S2.csv"))[scenario=="S1"]
 # 2026-08-06: display the ONE canonical main estimate (headline_S1_S2.csv) in the
-# reference row so -6.43 (SE 2.10, p=.002) is identical to Table 3 and the abstract.
+# reference row so the headline estimate is identical to Table 3 and the abstract.
 .HL <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1"]
 rb[spec=="A0 headline (not-yet)" & outcome=="rateA_15_19",
    `:=`(ATT=.HL[spec=="CS, no covs",estimate], SE=.HL[spec=="CS, no covs",SE], p=.HL[spec=="CS, no covs",p])]
@@ -29,6 +29,7 @@ hdcell <- function(){ h <- .HL[spec=="DDD (no covs)"]; cell(h$estimate, h$SE, h$
 # spatial-spillover checks into this exhibit as labeled groups):
 sl  <- fread(file.path(TAB,"spillover_locality.csv"))
 dcz <- fread(file.path(TAB,"drop_constanza.csv"))
+loo <- fread(file.path(TAB,"leave_one_out_treated.csv"))
 c10 <- fread(file.path(TAB,"census2010_covariate_check.csv"))
 v10 <- function(k) c10[stat==k, value]
 # La Vega 2022 sensitivity: the §56.1 vintage headline (-5.90, SE 2.06, p=.004),
@@ -51,6 +52,11 @@ den <- function(){ l <- get("B4 denominator B (level)","rateB_15_19")
 dsd <- function(){ l <- get("C1 drop Santo Domingo metro (level)","rateA_15_19")
   sprintf("Drop the Santo Domingo metropolitan area & %s & --- \\\\", cell(l$ATT,l$SE,l$p)) }
 
+loorow <- function(){
+  sprintf("Drop each treated municipality in turn & \\multicolumn{2}{c}{range $[%.2f, %.2f]$} \\\\",
+          min(loo$ATT), max(loo$ATT))
+}
+
 L <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{Sensitivity to alternative specifications, samples, and comparison groups}",
@@ -65,12 +71,13 @@ row2("A0 headline (not-yet)",      "Main estimate (not-yet-treated comparisons)"
 row2("A2 never-treated only",      "Never-treated comparisons only", dvcell("never-treated comparisons")),
 row2("A1 population-weighted",     "Population-weighted", dvcell("population-weighted")),
 row2("A3 anticipation 1yr",        "One year of anticipation allowed", "---"),
-row2("A4 drop imputed cohorts",    "Drop imputed-date municipalities", dvcell("drop imputed-date municipalities")),
+row2("A4 drop imputed cohorts",    "Drop the imputed-date municipality", dvcell("drop imputed-date municipalities")),
 den(),
 dsd(),
+loorow(),
 rowL("B1 log1p(rate)",             "Log specification (log points)", "log_rate"),
-rowD("DDD comparison age 20--24 (exposed; invalid)", "comparison age 20-24"),
-rowD("DDD comparison age 25--29 (exposed; invalid)", "comparison age 25-29"),
+rowD("DDD comparison ages 20--24 (potentially exposed)", "comparison age 20-24"),
+rowD("DDD comparison ages 25--29 (potentially exposed)", "comparison age 25-29"),
 "\\addlinespace",
 "\\multicolumn{3}{l}{\\textit{Treatment dating}} \\\\",
 sprintf("La Vega recoded to 2022 & %s & --- \\\\", cell(LAVEGA$ATT, LAVEGA$SE, LAVEGA$p)),
@@ -87,8 +94,8 @@ sprintf("Covariates from the 2010 census & %s & --- \\\\", cell(v10("attcovs_201
 {r <- sl[grepl("30 km", row)]; sprintf("Donut: drop controls within 30 km & %s & --- \\\\", cell(r$ATT, r$SE, r$p))},
 "\\bottomrule",
 "\\end{tabular}",
-"\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\scriptsize",
-r"(\textit{Notes:} Each row varies one ingredient of the design and re-estimates the level effect and the triple difference (15--19 versus 30--34). Standard errors are municipio-clustered multiplier-bootstrap standard errors. Triple-difference estimates use the same triplediff estimator as the main design, combining cohort-specific not-yet-treated comparisons by GMM. The anticipation and drop-metropolitan-area variants are unavailable for the triple difference because the corresponding restricted designs leave comparison cohorts too thin for stable GMM aggregation. The intercensal triple difference is smaller because that denominator construction shifts the two age bands differentially before treatment, which the triple difference absorbs. The log specification is reported in log points; $-0.13$ corresponds closely to a 12 percent decline. The comparison-age rows replace ages 30--34 with age groups that can themselves be exposed to the program, so the collapse of the triple difference is mechanically expected. La Vega's unit existed by mid-2022 but its documented event is a 2023 reinauguration, which is the coded date in the main analysis; Constanza's 2019 baseline appears inflated by a local registration shift, so retaining it is conservative. The covariate-vintage rows re-estimate the covariate-adjusted specification and are therefore not directly comparable to the unconditional rows. Spatial spillovers would bias the main estimate toward zero; deleting controls near treated municipalities strengthens the estimate, consistent with limited cross-border contamination. Matching estimates are reported separately in Appendix~\autoref{tab:matching}. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+"\\begin{minipage}{0.97\\linewidth}\\vspace{2pt}\\scriptsize",
+r"(\textit{Notes:} Each row changes one element of the first-opening design. Standard errors are municipality-clustered multiplier-bootstrap standard errors except in the leave-one-out row, which reports the range obtained by dropping each of the 20 treated municipalities in turn. Triple differences compare ages 15--19 with ages 30--34 using cohort-specific not-yet-treated comparisons combined by GMM; the 2019 cohort is omitted because it makes the GMM aggregation singular. The comparison-age rows deliberately use age groups that may themselves have been exposed, so their attenuation is expected. La Vega is dated to its documented 2023 reinauguration in the main analysis; the table also reports a 2022 coding. Spatial exclusions remove nearby controls and therefore address attenuation from cross-border use. Appendix~\autoref{tab:matching} reports the matching estimates. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L <- gsub("municipio-clustered", "municipality-clustered", L, fixed=TRUE)

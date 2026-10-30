@@ -21,7 +21,7 @@ stopifnot(nrow(hyb)==1, nrow(f40)==1)
 stars <- function(p) ifelse(p<0.01,"***",ifelse(p<0.05,"**",ifelse(p<0.10,"*","")))
 cl <- function(v,a){ r <- res[classification==v & age==a]; stopifnot(nrow(r)==1)
   s <- stars(r$p); sup <- if(s=="")"" else sprintf("^{%s}",s)
-  sprintf("$%.2f%s$ (%.2f)", r$ATT, sup, r$SE) }
+  sprintf("\\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}}", r$ATT, sup, r$SE, r$ATT-1.96*r$SE, r$ATT+1.96*r$SE) }
 pc <- function(v,a) res[classification==v & age==a, sprintf("$-$%d\\%%", abs(pct))]
 rr <- function(a, lab=a) sprintf("\\quad %s & %s & %s \\\\", lab, cl("Age at BIRTH",a), cl("Age at CONCEPTION",a))
 
@@ -43,11 +43,12 @@ rr("15--17"), rr("18--19"),
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.95\\linewidth}\\vspace{4pt}\\footnotesize",
-"\\textit{Notes:} Callaway--Sant'Anna group ATT, first AU opening (20 treated municipalities),",
-"not-yet-treated controls, municipio-clustered SEs in parentheses; panel years 2018--2025 for both",
-"columns (the mother's date of birth, needed for age at conception, is recorded from 2018; the",
-"age-at-birth main estimate is identical on 2016--2025 and 2018--2025, $-6.43$, as all openings occur",
-"2020+). Age at conception $=$ age at (birth date $-$ recorded gestational age). Outcome $=$ births",
+"\\textit{Notes:} Callaway--Sant'Anna group-aggregated ATT, first AU opening (20 treated municipalities),",
+"not-yet-treated controls, municipio-clustered standard errors in parentheses and 95\\% confidence",
+"intervals in brackets; panel years 2018--2025 for both",
+"columns (the mother's date of birth, needed for age at conception, is recorded from 2018). The",
+"age-at-birth estimate is $-6.39$ in both the full panel and the 2018--2025 window. Age at conception",
+"$=$ age at (birth date $-$ recorded gestational age). Outcome $=$ births",
 "to mothers of the given age per 1{,}000 women 15--19 (common denominator), so single-year rows sum",
 "to the 15--19 total. Records with inconsistent date-of-birth/gestation combinations ($\\approx$2.4\\%)",
 "excluded. The two classifications tell one story at different clocks: conceptions are prevented from",

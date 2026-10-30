@@ -11,7 +11,7 @@
 source(here::here("code","R","00_config.R")); source(here::here("code","R","00_theme.R"))
 suppressPackageStartupMessages({library(data.table); library(did); library(ggplot2)})
 set.seed(20260722); fold <- c("DOM010905","DOM051703","DOM012510")
-TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figures"); OVERALL <- -6.43
+TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figures"); OVERALL <- -6.39
 
 p   <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[, .(adm3_pcode, year, rateA_15_19, wealth_index, pct_senasa_2013)]
 bin <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]
@@ -60,7 +60,7 @@ map <- data.table(
   label=c("Rural vs urban","Distance to nearest unit","Health centres per capita","Health capability index",
           "Unmet need (FP)","Contraceptive use (CPR)","Satisfied demand",
           "Poverty (ICV % poor)","Wealth (census PCA)","Subsidized insurance (\\%)","Education (\\% secondary+)","School enrolment","JEE intensity"),
-  ord=c(1,2,1,2,1,2,3,3,4,1,2,3))
+  ord=c(1,2,1,2,1,2,3,1,2,3,1,2,3))
 ALL <- merge(ALL, map, by="moderator")
 ALL[, grp := fifelse(group=="More underserved","under","served")]
 # DROP 2025-SIUBEN endline measures (post-treatment -> invalid baseline moderators):
@@ -153,8 +153,8 @@ A6[, `:=`(cu=sprintf("\\makecell{%.2f%s (%.2f) \\\\ {[%.2f, %.2f]}}", att_u, sup
           cs=sprintf("\\makecell{%.2f%s (%.2f) \\\\ {[%.2f, %.2f]}}", att_s, sup(p_s), se_s, att_s-1.96*se_s, att_s+1.96*se_s))]
 L <- c("\\begin{table}[htbp]\\centering",
        "\\caption{Heterogeneity of the effect by baseline municipality characteristics}",
-       "\\label{tab:het}\\footnotesize",
-       "\\setlength{\\tabcolsep}{4pt}\\renewcommand{\\arraystretch}{0.92}",
+       "\\label{tab:het}\\scriptsize",
+       "\\setlength{\\tabcolsep}{4pt}\\renewcommand{\\arraystretch}{0.86}",
        "\\begin{tabular}{l c c c c}","\\toprule",
        " & More underserved & Less underserved & Gap & $p_{\\mathrm{diff}}$ \\\\","\\midrule")
 for(ct in unique(A6$cat)){
@@ -165,7 +165,7 @@ for(ct in unique(A6$cat)){
   L <- c(L, "\\addlinespace")
 }
 L <- c(L, "\\bottomrule","\\end{tabular}",
-  "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
+  "\\begin{minipage}{0.97\\linewidth}\\vspace{3pt}\\scriptsize",
   "\\textit{Notes:} Subgroup Callaway--Sant'Anna ATTs, plotted in \\autoref{fig:het}: the 20 treated",
   "municipalities are split at each baseline's median ($n=10$ per half, at $g-1$) against the shared",
   "never-treated and not-yet-treated controls (municipality-clustered bootstrap; single seed, fixed estimation order).",
@@ -175,8 +175,7 @@ L <- c(L, "\\bottomrule","\\end{tabular}",
   "10{,}000 women, discounting each facility by the population competing for it, so it captures",
   "congestion-adjusted access rather than simple distance. $p_{\\mathrm{diff}}$ tests the",
   "underserved$-$served gap (conservative: shared controls) and is unadjusted for the number of",
-  "contrasts; proximity in the full sample ($p=.069$) has a Holm-adjusted $p$ of $0.83$ across the 12 original contrasts, so the splits",
-  "are read as descriptive. Overall ATT $=-6.43$. Sources: NHS registry (1{,}588 facilities;",
+  "contrasts, so the splits are read as descriptive. Overall ATT $=-6.39$. Sources: NHS registry (1{,}588 facilities;",
   "distance and density), ENDESA 2013 (contraception and subsidized insurance, province level),",
   "2022 census (wealth, urbanization); the school-attachment panel uses the 2019 Evaluaci\\'on",
   "Diagn\\'ostica family questionnaire (MoE; family-weighted municipality shares, school year",

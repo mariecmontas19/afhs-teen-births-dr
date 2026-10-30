@@ -1,12 +1,11 @@
 # ============================================================================
 # 09h_placebo_wcb.R — two inference/design checks on the S1 headline:
-#  A. FAKE-TIMING PLACEBO on the pre-treatment window 2016-2019 (all real
-#     cohorts open 2020+, so 2016-19 is untreated for everyone). Shift fake
-#     treatment 3 years early: g_fake = g - 3 (2020->2017, 2021->2018,
-#     2022->2019). Real cohorts 2023+ map to fake 2020+ = OUTSIDE the window;
+#  A. FAKE-TIMING PLACEBO on the pre-treatment window 2016-2018. Shift fake
+#     treatment 3 years early: g_fake = g - 3 (2020->2017, 2021->2018).
+#     Real cohorts 2022+ map to fake 2019+ = OUTSIDE the window;
 #     they are NOT recoded to never-treated — did::att_gt internally treats
 #     units first-treated after the last sample period as controls, which is
-#     exactly their not-yet-treated status in 2016-19. Expected: fake ATT ~ 0.
+#     exactly their not-yet-treated status in 2016-18. Expected: fake ATT ~ 0.
 #     Plus a fake-timing TWFE (post_fake) on the same window.
 #  B. WILD CLUSTER BOOTSTRAP (manual CGM, Rademacher, restricted/null-imposed
 #     bootstrap-t, B=999) for the static TWFE post coefficient on the FULL
@@ -36,15 +35,15 @@ res <- list(); add <- function(block, label, est, se, pv, note="") res[[length(r
   data.table(block=block, spec=label, estimate=round(est,3), se=round(se,3), p=round(pv,4), note=note)
 
 # ===========================================================================
-# PART A — fake-timing placebo on the pre-treatment window 2016-2019
+# PART A — fake-timing placebo on the pre-treatment window 2016-2018
 # ===========================================================================
-cat("\n===== A. fake-timing placebo (2016-2019, g_fake = g - 3) =====\n")
-dpre <- d[year <= 2019]
+cat("\n===== A. fake-timing placebo (2016-2018, g_fake = g - 3) =====\n")
+dpre <- d[year <= 2018]
 dpre[, g_fake := fifelse(g>0, g - 3L, 0L)]
 cat(sprintf("placebo window: %d rows, years %d-%d | fake-cohort counts (municipios):\n",
             nrow(dpre), min(dpre$year), max(dpre$year)))
 print(dpre[, .(n_muni=uniqueN(adm3_pcode)), keyby=g_fake], class=FALSE)
-cat("NOTE: g_fake 2020-2022 (real cohorts 2023+) lie beyond the 2019 window ->\n",
+cat("NOTE: g_fake 2019-2022 (real cohorts 2022+) lie beyond the 2018 window ->\n",
     "      not-yet-treated controls throughout; did recodes them internally.\n")
 
 run_cs_fake <- function(boot){
@@ -67,7 +66,7 @@ if (!is.finite(fk$se)) {  # bootstrap ran but returned NA SE -> analytic fallbac
 }
 cat(sprintf("fake CS overall ATT = %.3f (SE %.3f, p %.3f) | estimable fake cohorts: %s | %s\n",
             fk$att, fk$se, fk$p, fk$cohorts, boot_note))
-add("A", "CS fake-timing placebo (2016-19, g-3)", fk$att, fk$se, fk$p,
+add("A", "CS fake-timing placebo (2016-18, g-3)", fk$att, fk$se, fk$p,
     sprintf("fake cohorts %s; %s", fk$cohorts, boot_note))
 
 # fake-timing TWFE on the same window
@@ -76,7 +75,7 @@ cat(sprintf("post_fake=1 cells: %d (of %d rows)\n", sum(dpre$post_fake), nrow(dp
 mf <- feols(rateA_15_19 ~ post_fake | id + year, data=dpre, cluster=~id)
 cat(sprintf("fake TWFE post coef = %.3f (SE %.3f, p %.3f)\n",
             coef(mf)[["post_fake"]], se(mf)[["post_fake"]], pvalue(mf)[["post_fake"]]))
-add("A", "TWFE fake-timing placebo (2016-19, g-3)",
+add("A", "TWFE fake-timing placebo (2016-18, g-3)",
     coef(mf)[["post_fake"]], se(mf)[["post_fake"]], pvalue(mf)[["post_fake"]],
     sprintf("n=%d rows, %d clusters", nobs(mf), uniqueN(dpre$adm3_pcode)))
 

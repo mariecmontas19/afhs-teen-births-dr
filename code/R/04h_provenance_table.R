@@ -33,7 +33,7 @@ v[, pv := fifelse(!is.na(prov)  & prov!="" & nrm(prov)==nrm(prov_norm),  prov, t
 v[, unit := gsub("^Hospital ", "", hosp)]
 v[, unit := gsub("^(Municipal|Regional|Materno Infantil|Materno|Pediatrico|Pediátrico|General|Docente|Provincial|Infantil|Universitario) ", "", unit)]
 
-# opening: recorded date; the four imputed years show the ESTIMATION year + dagger
+# opening: recorded/field date; remaining imputed years show the ESTIMATION year + dagger
 v[, oy   := fifelse(!is.na(recorded_year), as.character(recorded_year), as.character(first_year))]
 v[, open := fifelse(!is.na(recorded_month), sprintf("%s-%02d", oy, as.integer(recorded_month)), oy)]
 v[year_imputed==TRUE, open := sprintf("%d$^{\\dagger}$", first_year)]
@@ -56,13 +56,13 @@ rows <- function(dt){
                esc(pv), esc(mn), esc(unit), open, modern, src)]
 }
 L <- c(
-"\\begin{table}[htbp]\\centering",
+"\\begin{sidewaystable}[p]\\centering",
 "\\caption{Treatment-timing provenance: the 39 adolescent units}",
 "\\label{tab:unit_provenance}\\scriptsize",
 "\\setlength{\\tabcolsep}{3pt}\\renewcommand{\\arraystretch}{0.92}",
 "\\begin{tabular}{llp{5.6cm}ccc}",
 "\\toprule",
-"Province & Municipality & Unit (hospital) & Opening & Modernization & Source \\\\",
+"Province & Municipality & Unit (hospital) & First access & \\makecell{Recorded administrative \\\\ event} & Source \\\\",
 "\\midrule",
 sprintf("\\multicolumn{6}{l}{\\textit{Panel A. First openings during the roll-out (20 municipalities, %d units): the identifying variation}} \\\\[2pt]",
         v[mstatus=="inwindow", .N]),
@@ -75,18 +75,19 @@ rows(v[mstatus=="pre2016"]),
 "\\end{tabular}",
 "\\begin{minipage}{0.98\\linewidth}\\vspace{4pt}\\scriptsize",
 "\\textit{Notes:} One row per unit; the treatment date of a municipality with several units is its",
-"earliest. Panel A municipalities enter the first-opening design at their opening year; Panel B",
-"municipalities are excluded from that design and enter the modernization design at their modernization",
+"earliest recorded access date. Panel A municipalities enter the first-opening design at that year; Panel B",
+"municipalities are excluded from that design and enter the administrative-event design at their recorded event",
 "year, alongside Panel A. \\emph{Source} is the strongest evidence behind the unit's dates: NHS",
 "document $>$ dated web or press record $>$ author fieldwork $>$ NHS internal list (recorded date",
 "without independent confirmation) $>$ interim placeholder; a dated press record of an inauguration",
 "takes precedence over a year-only NHS entry (San Crist\\'obal, Imbert, Los Alcarrizos). $^{\\dagger}$Opening year imputed to the",
-"roll-out midpoint (three municipalities; dropping them: Appendix \\autoref{tab:sensitivity}) or,",
-"for Villa Mella, to its municipality's documented first opening. \\emph{Modernization} is the",
-"documented arrival of the comprehensive-service model (new full-service unit or upgrade of an",
-"existing one); \\emph{None} indicates no documented modernization event. La Vega and Nizao coding",
+"roll-out midpoint (San Pedro de Macor\\'is) or, for Villa Mella, to its municipality's documented first",
+"opening. The La Romana and Yamas\\'a opening years are the earliest access dates found through fieldwork.",
+"\\emph{Recorded administrative event} reports a documented opening, modernization, or remodeling event",
+"and does not imply a uniform change in verified service intensity. \\emph{None} indicates no documented",
+"modernization event. La Vega and Nizao coding",
 "choices are discussed in \\ref{app:provenance}.",
 "\\end{minipage}",
-"\\end{table}")
+"\\end{sidewaystable}")
 writeLines(L, file.path(TAB,"tab_a21_unit_provenance.tex"))
 cat("saved -> tab_a21_unit_provenance.tex (", nrow(v), "units )\n")

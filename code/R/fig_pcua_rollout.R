@@ -14,7 +14,7 @@ trt  <- as.data.table(readRDS(file.path(DIR_CLEAN, "treatment_municipio.rds")))
 # treatment group factor
 trt[, grp := fifelse(ever_treated==0, "Never treated",
               fifelse(always_treated==1, "Always-treated (pre-2016)", as.character(first_year)))]
-lv <- c("Never treated","Always-treated (pre-2016)","2020","2021","2022","2023","2024","2025")  # 2016 level removed: no 2016 cohort post-overhaul (vestigial legend entry, fixed 2026-07-17)
+lv <- c("Never treated","Always-treated (pre-2016)","2019","2020","2021","2022","2023","2024","2025")
 trt[, grp := factor(grp, levels=lv)]
 
 g <- merge(geom, trt[, .(adm3_pcode, grp, ever_treated, always_treated, n_units, first_year)],
@@ -32,6 +32,7 @@ sub <- sprintf("%d municipalities · %d units · %d ever-treated (%d pre-2016 al
                n_muni, n_units, n_ever, n_always, n_win)
 
 pal <- c("Never treated"="grey90","Always-treated (pre-2016)"="grey55",
+         "2019"="#fed976",
          "2020"="#feb24c","2021"="#fd8d3c","2022"="#fc4e2a",
          "2023"="#e31a1c","2024"="#bd0026","2025"="#800026")
 

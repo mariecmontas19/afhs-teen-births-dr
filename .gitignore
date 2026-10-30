@@ -130,6 +130,7 @@ code/R/*
 !code/R/09j_covid.R
 !code/R/09k_drop_constanza.R
 !code/R/09m_ddd_variants.R
+!code/R/09n_leave_one_out.R
 !code/R/10_appendix_leads.R
 !code/R/10_appendix_tables.R
 !code/R/10_table3_estimates.R

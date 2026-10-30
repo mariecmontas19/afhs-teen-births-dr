@@ -70,8 +70,8 @@ scripts <- c(
   "08g2_jee_figure.R",
   "08g3_jee_baseline_control.R",
   "08g_jee_contra_mechanism.R",
-  "08j_het_summary.R",
-  "08l_het_master.R",
+  "08l_het_master.R",          # writes canonical het_master_table.csv
+  "08j_het_summary.R",         # reads the canonical master to format Table A6
   "08m_newborn_health.R",
   "08n_byage.R",
   "08o4_conception_table.R",
@@ -104,6 +104,7 @@ scripts <- c(
   "09k_drop_constanza.R",
   "09l_bacon.R",
   "09m_ddd_variants.R",
+  "09n_leave_one_out.R",
   "10_appendix_leads.R",
   "10_appendix_tables.R",
   "10_table3_estimates.R",

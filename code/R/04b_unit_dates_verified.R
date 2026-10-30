@@ -22,8 +22,9 @@ u <- as.data.frame(readRDS(file.path(DIR_CLEAN, "pcua_units_mapped.rds")))
 stopifnot(nrow(u) == 39L, !anyDuplicated(u$unit_id))
 
 # ---- verified extras, keyed by unit_id ------------------------------------
-# modern_event_date : YYYY, YYYY-MM, or YYYY-MM-DD (the date the MODERN
-#   comprehensive unit arrived: new opening, or upgrade of an old unit). NA if
+# modern_event_date : YYYY, YYYY-MM, or YYYY-MM-DD (the date of a documented
+#   administrative opening, modernization, or remodeling event). It does not
+#   imply a uniform or independently verified change in service intensity. NA if
 #   unknown or if the unit was never modernized.
 # modern_event_type : new_opening | upgrade | upgrade_unconfirmed |
 #   old_never_modernized | unknown
@@ -102,10 +103,10 @@ ver <- rbind(
   v(38, NA, NA, "unknown", FALSE, NA, "recorded_only", "S38",
     "Federico Armando Aybar (Las Matas de Farfan): recorded 2024-04; UAIA not found; hosp remozado Jul 24 2018 [S38]"),
 
-  # ---- imputed-year units (no recorded date), UAIA NOT FOUND ----
+  # ---- source workbook undated; earliest access/event dates recovered separately ----
   v( 8, NA, "2022", "new_opening", FALSE, NA, "interim", NA, "Villa Mella (SD Norte): consults-only; hospital being demolished/rebuilt as of Feb 2026 (no formal unit; field: no one found). Date 2022 = INTERIM placeholder (MM 2026-06-25, will update). SD Norte also treated via Hugo Mendoza 2020"),
-  v(16, NA, "2019", "new_opening", FALSE, NA, "web", "S33", "Francisco Gonzalvo (La Romana): adolescent 'modulo' since 2019 remodel [S33]; field (Oct 2024) unit space in remodelacion; 2025 surgical-block remodel in progress (no date) -> use 2019"),
-  v(17, NA, "2020", "new_opening", FALSE, NA, "web", "S32", "Yamasa (Monte Plata): hospital remodel Aug 15 2020 [S32]; field: adolescents seen but NO space (consults-only)"),
+  v(16, NA, "2019", "new_opening", FALSE, NA, "field", "S33", "Francisco Gonzalvo (La Romana): fieldwork identified adolescent access from 2019, supported by evidence of an adolescent 'modulo' during the 2019 remodel [S33]. Use 2019 as the earliest first-access date; month unavailable."),
+  v(17, NA, "2020", "new_opening", FALSE, NA, "field", "S32", "Yamasa (Monte Plata): fieldwork identified adolescent consultations from 2020, alongside the Aug. 15, 2020 hospital remodel [S32]. Use 2020 as the earliest first-access date; month unavailable and no dedicated space was verified."),
   v(20, NA, "2025", "new_opening", FALSE, NA, "web", "S34", "Antonio Musa (SPM): unit space remodel completed Apr 2025 [S34]; field (Oct 2024) it was in remodelacion -> use 2025"),
 
   # ---- former duplicate row (unit 24, generic "Hospital Boca Chica") ----

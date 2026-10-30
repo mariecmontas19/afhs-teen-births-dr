@@ -46,11 +46,11 @@ cs1 <- function(treated){
   c(att=o$overall.att, se=o$overall.se, n=uniqueN(treated$adm3_pcode), base=base)
 }
 sets <- list(); lay <- function(nm, dt) sets[[nm]] <<- dt
-lay(sprintf("First openings, 2020--2025 (main design; %d)", nFA), firstaccess)
-lay(sprintf("Recovered: first modern unit is new (%d)", nRN), recnew)
-lay(sprintf("All new modern units (%d)", nFA+nRN), rbind(firstaccess, recnew))
-lay(sprintf("Recovered: upgrades of pre-existing units (%d)", nUP), recupg)
-lay(sprintf("Pooled modernization design (%d)", nFA+nRN+nUP), rbind(firstaccess, recnew, recupg))
+lay(sprintf("First-opening municipalities, dated by administrative event (%d)", nFA), firstaccess)
+lay(sprintf("Pre-2016 access: recorded new opening (%d)", nRN), recnew)
+lay(sprintf("All recorded new openings (%d)", nFA+nRN), rbind(firstaccess, recnew))
+lay(sprintf("Pre-2016 access: recorded remodeling event (%d)", nUP), recupg)
+lay(sprintf("Pooled administrative-event design (%d)", nFA+nRN+nUP), rbind(firstaccess, recnew, recupg))
 
 out <- rbindlist(lapply(names(sets), function(nm){
   r <- cs1(sets[[nm]])
@@ -69,8 +69,8 @@ fwrite(out, file.path(TAB,"cs_att_decomposition.csv"))
 
 # ---- PANEL B (MM 2026-08-09): the 30-34 comparison band under each design ----
 # CS on the 30-34 rate: H1 (binary first-opening cohorts), H2 (modernization
-# cohorts, all 29), and the 9 recovered municipalities alone. Women 30-34 cannot
-# be exposed (units serve 10-19; oldest exposable is 24 by 2025), so H1's zero
+# cohorts, all 29), and the 9 recovered municipalities alone. Women 30-34 are
+# outside the program's 10-19 eligibility range, so H1's zero
 # validates the DDD comparison band and H2's positive response is the urban
 # postponement that inflates the H2 triple difference.
 AL <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_age_long_155.rds")))[ag=="30-34", .(adm3_pcode=id, year, y=rateA)]
@@ -104,23 +104,19 @@ fwrite(data.table(set=c("H1 first opening","H2 modernization","recovered nine"),
 # ---- appendix exhibit ---------------------------------------------------------
 stars <- function(pp) fifelse(pp<.01,"^{***}", fifelse(pp<.05,"^{**}", fifelse(pp<.10,"^{*}","")))
 rowx <- function(i){ r <- out[i]
-  sprintf("%s & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.1f & $%+.1f$ & %d \\\\",
+  sprintf("%s & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.1f & $%+.1f\\%%$ & %d \\\\",
           r$layer, r$ATT, stars(r$p), r$SE, r$ATT-1.96*r$SE, r$ATT+1.96*r$SE, r$baseline, r$pct, r$n_treated) }
 c34 <- function(v){ att<-v[["att"]]; se<-v[["se"]]; p<-2*pnorm(-abs(att/se))
   sprintf("\\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%+.2f$, $%+.2f$]}}", att, stars(p), se, att-1.96*se, att+1.96*se) }
-# never-treated triple differences quoted in the note: read where Table 3 reads them (07s output)
-.NT <- fread(file.path(TAB,"ddd_triplediff.csv"))
-.NT1 <- .NT[spec=="S1 binary any-unit | uncond dr", ATT]; .NT2 <- .NT[spec=="S2 modernization | uncond dr", ATT]
-stopifnot(length(.NT1)==1, length(.NT2)==1)
 L <- c(
 "\\begin{table}[htbp]\\centering",
-"\\caption{New units versus upgrades: decomposing the modernization estimate}",
-"\\label{tab:decomposition}\\small",
-"\\setlength{\\tabcolsep}{4pt}",
-"\\textit{Panel A. New units versus upgrades}\\par\\smallskip",
-"\\begin{tabular}{lcccc}",
+"\\caption{First openings and later administrative events}",
+"\\label{tab:decomposition}\\footnotesize",
+"\\setlength{\\tabcolsep}{2.5pt}",
+"\\textit{Panel A. Effects by recorded event type}\\par\\smallskip",
+"\\begin{tabular}{p{6.4cm}cccc}",
 "\\toprule",
-" & Estimate (SE) [95\\% CI] & Baseline & \\% of base & Treated \\\\",
+" & Estimate (SE) [95\\% CI] & Baseline & \\% of baseline & Municipalities \\\\",
 "\\midrule",
 rowx(1), rowx(2), rowx(3),
 "\\addlinespace",
@@ -131,9 +127,9 @@ rowx(5),
 "\\end{tabular}",
 "\\par\\medskip",
 "\\textit{Panel B. The 30--34 comparison band (placebo)}\\par\\smallskip",
-"\\begin{tabular}{lcc}",
+"\\begin{tabular}{p{6.4cm}cc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or modernization} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
 "\\midrule",
 sprintf("Effect on the 30--34 birth rate & %s & %s \\\\", c34(b_h1), c34(b_h2)),
 sprintf("\\quad recovered nine municipalities alone & N/A & %s \\\\", c34(b_r9)),
@@ -143,20 +139,22 @@ sprintf("Implied triple difference (Table 3 level $-$ band) & $%.2f$ & $%.2f$ \\
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Callaway--Sant'Anna group ATTs; not-yet-treated comparisons, universal base period,",
 "municipality-clustered multiplier bootstrap, seed reset before each estimate. \\emph{Panel A}: the teen",
-"birth rate, estimated separately for each subset of the modernization design's treated municipalities",
-"against the shared never-treated comparisons, with modernization-cohort timing throughout.",
-"\\emph{Recovered} municipalities are the nine served before 2016, entering through their first",
-"modern-unit event: a newly built full-service unit (new) or a documented remodel (upgrade). Baseline",
-"$=$ treated mean in the year before the modernization event. The pooled row reproduces the modernization column",
-"of \\autoref{tab:estimates}; the upgrade subset is small and its estimate correspondingly imprecise.",
-"\\emph{Panel B}: the 30--34 birth rate, the triple difference's comparison band; women aged 30--34",
-"cannot be exposed (the units serve ages 10--19, and the oldest woman exposable as an adolescent is 24",
-"by 2025). The near-zero response under the first-opening design validates the comparison band; under",
-"the modernization design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
-"consistent with urban fertility postponement rather than the program. Subtracting the band effect from",
-"the level estimates of \\autoref{tab:estimates} approximately reproduces its never-treated triple differences",
-sprintf("($%.2f$, $%.2f$): the larger modernization triple difference is the comparison band moving, not a", .NT1, .NT2),
-"larger effect on teens. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
+"birth rate, estimated separately for each subset of the administrative-event design's treated municipalities",
+"against the shared never-treated comparisons, with administrative-event timing throughout.",
+"The nine municipalities served before 2016 enter through their earliest documented administrative event,",
+"classified in the source record as a new opening or a remodeling event. These labels do not imply a",
+"verified or uniform change in service intensity. Baseline $=$ the treated-group mean in the year before the event.",
+"Parentheses contain standard errors and brackets contain 95\\% confidence intervals.",
+"The pooled row reproduces the administrative-event column of \\autoref{tab:estimates}; the remodeling-event",
+"subset is small and its estimate correspondingly imprecise.",
+"\\emph{Panel B}: the 30--34 birth rate, the triple difference's comparison band; these women are",
+"outside the program's 10--19 eligibility range at each observed event. The near-zero response under",
+"the first-opening design supports the use of this comparison band; under",
+"the administrative-event design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
+"consistent with urban fertility postponement rather than the program. The final row is the simple difference",
+"between the level estimate and the comparison-band estimate; it is descriptive and is not the GMM triple-difference",
+"estimator reported in \\autoref{tab:estimates}. The larger administrative-event contrast is therefore driven by",
+"movement in the comparison band, not by a larger effect on teens. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")
 writeLines(L, file.path(TAB,"tab_a17_decomposition.tex"))

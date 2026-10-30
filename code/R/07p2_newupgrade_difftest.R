@@ -49,7 +49,7 @@ cs_if <- function(treated){
   list(att=o$overall.att, se_boot=o$overall.se, se_an=sqrt(mean(inf^2)/n), n=n,
        contrib=data.table(adm3_pcode=lev[ids], c=inf/n))
 }
-A <- cs_if(firstaccess)                       # first openings, 2020-2025
+A <- cs_if(firstaccess)                       # first openings, 2019-2025
 U <- cs_if(recupg)                            # upgrades of pre-existing units
 N <- cs_if(rbind(firstaccess, recnew))        # all new modern units (secondary contrast)
 
@@ -57,7 +57,7 @@ N <- cs_if(rbind(firstaccess, recnew))        # all new modern units (secondary 
 dec <- fread(file.path(TAB,"cs_att_decomposition.csv"))
 chk <- function(obj, pat){ r <- dec[grepl(pat, layer)]; stopifnot(nrow(r)==1)
   stopifnot(abs(round(obj$att,2) - r$ATT) < 1e-9, abs(round(obj$se_boot,2) - r$SE) < 1e-9) }
-chk(A, "^First openings"); chk(U, "^Recovered: upgrades"); chk(N, "^All new modern units")
+chk(A, "^First-opening municipalities"); chk(U, "^Pre-2016 access: recorded remodeling"); chk(N, "^All recorded new openings")
 cat(sprintf("reproduced A17: first openings %.2f (%.2f) | upgrades %.2f (%.2f) | all new %.2f (%.2f)\n",
             A$att, A$se_boot, U$att, U$se_boot, N$att, N$se_boot))
 cat(sprintf("analytic IF SEs: first openings %.2f | upgrades %.2f | all new %.2f\n", A$se_an, U$se_an, N$se_an))
@@ -104,7 +104,7 @@ stars <- function(pp) if (pp<.01) "^{***}" else if (pp<.05) "^{**}" else if (pp<
 pfmt  <- function(pp) if (pp < .001) "$p<.001$" else sprintf("$p=%s$", sub("^0", "", sprintf("%.3f", pp)))
 row <- sprintf("\\quad Difference: first openings minus upgrades$^{\\dagger}$ & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & & & \\\\",
                r$difference, stars(r$p_joint), r$se_joint, r$difference-1.96*r$se_joint, r$difference+1.96*r$se_joint)
-iu <- grep("^Recovered: upgrades of pre-existing units", L); stopifnot(length(iu)==1)
+iu <- grep("^Pre-2016 access: recorded remodeling event", L); stopifnot(length(iu)==1)
 L <- append(L, row, after=iu)
 note <- sprintf("$^{\\dagger}$The difference row tests whether first openings and upgrades have the same effect; its standard error accounts for the correlation between the two estimates induced by their shared never-treated comparison municipalities (correlation %.2f), obtained by aligning the estimates' influence functions by municipality (%s; joint multiplier bootstrap %s). ",
                 r$corr, pfmt(r$p_joint), pfmt(r$p_boot))

@@ -49,9 +49,9 @@ tex <- c(
 "\\setlength{\\tabcolsep}{2.5pt}",
 "\\caption{Sensitivity to concurrent policies and shocks}",
 "\\label{tab:shocks}",
-"\\begin{tabular}{lcccc}",
+"\\begin{tabular}{p{6.0cm}cccc}",
 "\\toprule",
-" & Estimate (SE) [95\\% CI] & \\% of baseline & Munis & Treated \\\\",
+" & Estimate (SE) [95\\% CI] & \\% of baseline & Municipalities & Treated \\\\",
 "\\midrule",
 r_hl,
 "\\addlinespace",
@@ -69,5 +69,7 @@ r_cb,
 r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group ATT for the adolescent birth rate using not-yet-treated controls, a universal base period, and municipality-clustered multiplier-bootstrap standard errors. ``\% of baseline'' is relative to the treated mean in the year before opening. \emph{Panel A} examines pandemic calendar years and opening cohorts. Dropping 2020--2021 while retaining all treated municipalities is the most direct pandemic check. Restricting the sample to later opening cohorts also removes cohorts observed at longer exposures, so the resulting attenuation is not a clean test of pandemic confounding. \emph{Panel B} examines sensitivity to the extended school day. All rows use the 145 municipalities with JEE data; the last adds baseline JEE coverage to the main covariate set. Appendix~\autoref{fig:jee} shows that JEE coverage evolves similarly in treated and never-treated municipalities around AU openings. \emph{Panel C} splits the teen birth rate by age band using the common denominator of women aged 15--19. A response to the January 2021 child-marriage ban should be concentrated below age 18; instead, the decline is concentrated at ages 18--19. Births at ages 10--14 appear in Appendix~\autoref{tab:agegradient}. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
+tex <- gsub("group ATT", "group-aggregated ATT", tex, fixed=TRUE)
+tex <- gsub("the treated mean", "the treated-group mean", tex, fixed=TRUE)
 writeLines(tex, file.path(TAB,"tab_07_policies_shocks.tex"))
 cat("wrote tab_07_policies_shocks.tex\n"); cat(r_hl, r_cv, r_je, sep="\n")

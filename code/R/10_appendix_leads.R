@@ -36,7 +36,9 @@ cat(sprintf("\njoint pre-trend (leads -5..-2): H1 avg=%.2f p=%.3f | H2 avg=%.2f 
 
 # ---- LaTeX ----
 cl <- function(a,se){ if(is.na(a)) return("---"); if(is.na(se)) return(sprintf("$%.2f$",a))
-  sprintf("\\makecell{$%.2f$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}}", a, se, a-1.96*se, a+1.96*se) }
+  p <- 2*pnorm(-abs(a/se))
+  st <- if (p<.01) "^{***}" else if (p<.05) "^{**}" else if (p<.10) "^{*}" else ""
+  sprintf("\\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}}", a, st, se, a-1.96*se, a+1.96*se) }
 rows <- sapply(seq_len(nrow(m)), function(i){
   e <- m$e[i]; lab <- if (e==-1) "$-1$ (reference)" else sprintf("$%d$", e)
   flag <- if (e %in% c(3,4)) "$^{\\dagger}$" else ""
@@ -47,7 +49,7 @@ L <- c(
 "\\label{tab:leads}\\small",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-"Years since opening ($e$) & First AU opening & \\makecell{First AU opening \\\\ or modernization} \\\\",
+"Years since opening ($e$) & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Leads (pre-treatment)}} \\\\[2pt]",
 rows[m$e < 0],
@@ -60,9 +62,11 @@ sprintf("Joint pre-trend test ($e\\in[-5,-2]$), $p$ & %.2f & %.2f \\\\", S1$pre$
 "\\end{tabular}",
 "\\begin{minipage}{0.86\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Callaway--Sant'Anna dynamic ATT on the adolescent (15--19) birth rate,",
-"universal base period $e=-1$; municipality-clustered standard errors in parentheses. The joint",
+"universal base period $e=-1$; municipality-clustered multiplier-bootstrap standard errors in parentheses",
+"and 95\\% confidence intervals in brackets. The joint",
 "pre-trend test averages the plotted leads $e\\in[-5,-2]$. $^{\\dagger}$Years 3--4 are identified",
-"off only 7 and 4 treated municipalities in the first-opening design and are imprecise.",
+sprintf("off only %d and %d treated municipalities in the first-opening design and are imprecise.", S1$nmuni[4], S1$nmuni[5]),
+"$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")
 writeLines(L, file.path(TAB,"tab_a03_leads.tex"))

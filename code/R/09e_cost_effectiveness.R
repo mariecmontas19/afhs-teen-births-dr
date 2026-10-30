@@ -39,14 +39,14 @@ cat(sprintf("H1: averted=%d [%d-%d] | exposed=%s | municipality-post-years=%d\n"
 # ---- per-birth values and derived quantities ----
 nar18 <- MIL_HEALTH/ADOL_BIRTHS; brd18 <- MIL_TOTAL/ADOL_BIRTHS
 rows <- rbindlist(list(
-  data.table(item="Teen births averted, 2016-25 [95% CI]", v2018=sprintf("%s [%s-%s]", format(ba$births_averted,big.mark=","), format(ba$averted_lo,big.mark=","), format(ba$averted_hi,big.mark=",")), v2025="", src="this paper (Table 4); registration-based -> lower bound"),
+  data.table(item="Registered adolescent births averted, 2016--2025 [95% CI]", v2018=sprintf("%s [%s--%s]", format(ba$births_averted,big.mark=","), format(ba$averted_lo,big.mark=","), format(ba$averted_hi,big.mark=",")), v2025="", src="this paper (Table 4); registration-based lower bound"),
   data.table(item="Exposed teen-women-years (treated, post)", v2018=format(ba$exposed_women_years,big.mark=","), v2025="", src="this paper"),
   data.table(item="Treated municipality-post-years", v2018=as.character(muniyrs), v2025="", src="this paper"),
   data.table(item="Value per averted birth: health only (USD)", v2018=sprintf("%.0f",nar18), v2025=sprintf("%.0f",nar18*CPI), src="MILENA (UNFPA 2021): US$21M / 28,791"),
   data.table(item="Value per averted birth: total opportunity cost (USD)", v2018=format(round(brd18),big.mark=","), v2025=format(round(brd18*CPI),big.mark=","), src="MILENA (UNFPA 2021): US$245M / 28,791"),
   data.table(item="Implied benefit: health only (USD)", v2018=format(round(ba$births_averted*nar18),big.mark=","), v2025=format(round(ba$births_averted*nar18*CPI),big.mark=","), src="computed"),
   data.table(item="Implied benefit: total opportunity cost (USD)", v2018=format(round(ba$births_averted*brd18),big.mark=","), v2025=format(round(ba$births_averted*brd18*CPI),big.mark=","), src="computed"),
-  data.table(item="  {[}95% CI, total, 2018 USD{]}", v2018=sprintf("%s - %s", format(round(ba$averted_lo*brd18),big.mark=","), format(round(ba$averted_hi*brd18),big.mark=",")), v2025="", src="computed from ATT CI"),
+  data.table(item="  {[}95% CI, total, 2018 USD{]}", v2018=sprintf("%s--%s", format(round(ba$averted_lo*brd18),big.mark=","), format(round(ba$averted_hi*brd18),big.mark=",")), v2025="", src="computed from ATT CI"),
   data.table(item="Break-even cost per municipality-year: health only (USD)", v2018=format(round(ba$births_averted*nar18/muniyrs),big.mark=","), v2025=format(round(ba$births_averted*nar18*CPI/muniyrs),big.mark=","), src="computed"),
   data.table(item="Break-even cost per municipality-year: total (USD)", v2018=format(round(ba$births_averted*brd18/muniyrs),big.mark=","), v2025=format(round(ba$births_averted*brd18*CPI/muniyrs),big.mark=","), src="computed"),
   data.table(item="National opportunity cost of adolescent pregnancy", v2018="245M/yr (0.29% GDP)", v2025="", src="MILENA (UNFPA 2021)"),
@@ -84,7 +84,7 @@ sprintf("\\textit{Notes:} Treatment is a municipality's first AU opening (20 mun
 "counts undercount true births (completeness 92.2\\% in 2019, World Bank SP.REG.BRTH.ZS). If completeness is",
 "unaffected by treatment, averted births and associated benefits are conservative. Per-birth values divide MILENA's annual national totals",
 "(UNFPA 2021, data year 2018) by the 28{,}791 adolescent births reported for 2019, an annual-flow",
-"approximation. `Total opportunity cost' adds foregone education, labor-force participation, earnings, and fiscal",
+"approximation. ``Total opportunity cost'' adds foregone education, labor-force participation, earnings, and fiscal",
 "revenue to health spending. 2025 US\\$ uses the ratio of the BLS CPI-U annual averages for 2025 (321.943)",
 "and 2018 (251.107). The break-even threshold is the maximum cost per treated municipality-year at which",
 "valued benefits equal costs. The calculation applies the average ATT to all post-treatment years even though",

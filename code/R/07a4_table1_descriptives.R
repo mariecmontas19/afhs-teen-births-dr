@@ -3,8 +3,8 @@
 # statistics at BASELINE (MM, 2026-08-04). Three panels by level/source, one
 # Treated column, one Never-treated column, normalized difference where the
 # comparison is municipality-level and pre-treatment:
-#   Panel A. Birth-record level, 2019 (registration-complete, pre-treatment
-#            for every cohort): means over INDIVIDUAL teen (15-19) births.
+#   Panel A. Birth-record level, 2019 (the start of the revised roll-out):
+#            means over INDIVIDUAL teen (15-19) births.
 #   Panel B. Municipality level (20 treated / 126 never-treated): baseline
 #            rates and time-invariant characteristics + normalized difference.
 #   Panel C. Survey benchmarks (ENDESA 2013 province measures by arm;
@@ -91,7 +91,7 @@ mcb <- unique(p_all[, .(adm3_pcode, ever_treated, always_treated, wealth_index,
                         pct_educ_secplus, pct_urban, pct_internet, cwr_2010_baseline,
                         pct_bottom2q_2018, sns_per10k, pct_senasa_2013)])
 mcb[, womenA_15_19_2016 := p_all[year==2016][.SD, on="adm3_pcode", x.womenA_15_19]]
-mcb <- merge(mcb, p_all[year %in% 2016:2019,
+mcb <- merge(mcb, p_all[year %in% 2016:2018,
              .(baseline_teenrate_A=mean(rateA_15_19)), by=adm3_pcode], by="adm3_pcode")
 mcb <- merge(mcb, p_all[year==2019, .(adm3_pcode, rate_2019=rateA_15_19, nb_2019=nb_15_19)],
              by="adm3_pcode")
@@ -245,7 +245,7 @@ rr <- function(lab, v, d=1){
 rC <- function(lab, x, d=1) sprintf("%s & \\multicolumn{3}{c}{%s} \\\\", lab, num(x,d))
 L <- c(
 "\\begin{table}[htbp]\\centering",
-"\\caption{Baseline characteristics of treated and comparison municipalities}",
+"\\caption{Characteristics of treated and comparison municipalities}",
 "\\label{tab:table1}\\scriptsize",
 "\\setlength{\\tabcolsep}{3pt}",
 "\\begin{tabular}{lccc}",
@@ -296,7 +296,7 @@ rC(sprintf("Teen mothers: prenatal visits (N $=$ %s)", bm(n_tm[["prenatal"]])), 
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.94\\linewidth}\\vspace{3pt}\\scriptsize",
-"\\textit{Notes:} All quantities are pre-treatment unless noted otherwise; the first cohort opens in 2020.",
+"\\textit{Notes:} Panel A and the 2019 rows in Panel B are descriptive snapshots. They overlap with La Romana's earliest field-identified access date but precede the other nineteen first openings. The 2016--2018 birth-rate average and all earlier-dated measures are pre-treatment.",
 "Sample sizes appear in row labels when they differ from the panel total. The nine municipalities served",
 "before 2016 are excluded. The matched column reports the never-treated municipalities selected by the",
 "primary matching scheme (each treated municipality matched with replacement to its three nearest",

@@ -29,11 +29,11 @@ rowC <- function(k, lb){ r <- gc_(k)
 L1 <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{Composition of the response by maternal education}",
-"\\label{tab:composition}\\small",
-"\\setlength{\\tabcolsep}{5pt}",
+"\\label{tab:composition}\\footnotesize",
+"\\setlength{\\tabcolsep}{4pt}\\renewcommand{\\arraystretch}{1.10}",
 "\\begin{tabular}{lccc}",
 "\\toprule",
-" & Estimate (SE) [95\\% CI] & Baseline & \\% of baseline \\\\",
+" & Estimate (SE) [95\\% CI] & \\makecell{Mean rate, \\\\ 2020--2025} & \\% of mean \\\\",
 "\\midrule",
 "\\multicolumn{4}{l}{\\textit{Birth rates by maternal education (per 1{,}000 women aged 15--19)}} \\\\[2pt]",
 rowE("Below secondary (None/Primary)", "Less than secondary"),
@@ -42,7 +42,7 @@ rowE("DIFFERENTIAL (below-sec minus sec+)", "Difference: less than secondary $-$
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
-r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group ATT using the first-opening design, not-yet-treated controls, and municipio-clustered multiplier-bootstrap standard errors. Outcomes are birth rates per 1{,}000 women aged 15--19, split by the mother's registered education. Maternal education is observed beginning in 2020, so these estimates are identified from the shorter 2020--2025 panel and the reported baselines are treated-group means over that period. The final row reports the difference between the two education-group estimates. The estimates indicate declines in both education groups and do not reject equality across them. The analogous split by age bands affected by the 2021 child-marriage ban appears in \autoref{tab:shocks}, Panel C. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group-aggregated ATT using the first-opening design, not-yet-treated controls, and municipality-clustered multiplier-bootstrap standard errors. Parentheses contain standard errors and brackets contain 95\% confidence intervals. Outcomes are birth rates per 1{,}000 women aged 15--19, split by the mother's registered education. Maternal education is observed beginning in 2020, so these estimates use the shorter 2020--2025 panel. The mean column reports the treated-group mean during that period and is not a $g-1$ baseline. The final row reports the difference between the two education-group estimates. The estimates indicate declines in both education groups and do not reject equality across them. The analogous split by age bands affected by the 2021 child-marriage ban appears in \autoref{tab:shocks}, Panel C. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L1 <- gsub("municipio-clustered", "municipality-clustered", L1, fixed=TRUE)
@@ -55,8 +55,8 @@ a <- gm("^\\(A\\)"); b <- gm("^\\(B\\)"); d <- gm("^\\(C\\)")
 L2 <- c(
 "\\begin{table}[htbp]\\centering",
 "\\caption{Utilization signals from hospital-production registries}",
-"\\label{tab:utilization}\\small",
-"\\setlength{\\tabcolsep}{3.5pt}",
+"\\label{tab:utilization}\\footnotesize",
+"\\setlength{\\tabcolsep}{3.5pt}\\renewcommand{\\arraystretch}{1.10}",
 "\\begin{tabular}{lcc}",
 "\\toprule",
 " & Estimate (SE) [95\\% CI] & Opening cohorts \\\\",
@@ -67,7 +67,7 @@ sprintf("Counseling and family-planning visits per 1{,}000 women 15--49 & %s & 2
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
-r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group ATT using outcomes constructed from the public-facility Form 67-A hospital-production registries and assigned to municipalities as in Section~\ref{sec:data-mechanisms}. Standard errors are municipio-clustered multiplier-bootstrap standard errors. The consultation series begin in 2020, and counseling/family-planning visits are observed only from 2022, so only the listed opening cohorts contribute to each estimate. The prenatal-consultation share is the most informative utilization margin because it is less sensitive than consultation levels to changes in the number of pregnancies and is available for more cohorts. The NHS confirmed in writing that no unit-level utilization records exist. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group-aggregated ATT using outcomes constructed from the public-facility Form 67-A hospital-production registries and assigned to municipalities as in Section~\ref{sec:data-mechanisms}. Municipality-clustered multiplier-bootstrap standard errors are in parentheses and 95\% confidence intervals are in brackets. The consultation series begin in 2020, and counseling and family-planning visits are observed only from 2022, so only the listed opening cohorts contribute to each estimate. The adolescent share of prenatal consultations is less mechanically sensitive than consultation levels to changes in the number of pregnancies, but it remains an indirect proxy for AU use. The NHS confirmed in writing that no unit-level utilization records exist. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L2 <- gsub("municipio-clustered", "municipality-clustered", L2, fixed=TRUE)

@@ -1,13 +1,16 @@
 # ============================================================================
 # 07t_headline.R — consolidated headline estimates for S1 (any new unit, binary)
 # and S2 (all units incl. modernized). For each: CS level teen rate WITHOUT and
-# WITH baseline covariates, and the triple-difference (triplediff, DR, no covs).
+# WITH baseline covariates, and the triple-difference (triplediff, regression adjustment, no covariates).
 # Reports estimate / SE / p / baseline pre-treatment teen rate / % of baseline,
 # and saves event-study plots for every spec. Denominator A.
 #   CS: att_gt(rateA_15_19), control="notyettreated", est="reg", universal base, muni-clustered.
 #   CS covariates (baseline): wealth_index + sns_per10k + pct_urban + pct_educ_secplus + pct_senasa_2013.
-#   DDD: ddd(), pname=1{15-19}, gname=opening yr, control="notyettreated" (PRIMARY,
-#        tighter inference — never-treated reported as robustness in 09), est="dr", no covariates.
+#   DDD: ddd(), pname=1{15-19}, gname=opening yr, control="notyettreated",
+#        est="reg", no covariates. The 2019 cohort is omitted from this
+#        complementary specification because it has only three pre-treatment
+#        years and makes the not-yet-treated GMM system singular. The level
+#        design continues to include all treated cohorts.
 # ============================================================================
 source(here::here("code","R","00_config.R"))
 source(here::here("code","R","00_theme.R"))
@@ -40,6 +43,8 @@ baseline <- function(gtab){
   round(d[year == g-1L, mean(rateA_15_19)], 2)
 }
 b_S1 <- baseline(bin); b_S2 <- baseline(mod)
+b_S1_ddd <- baseline(bin[g != 2019L | is.na(g)])
+b_S2_ddd <- baseline(mod[g != 2019L | is.na(g)])
 
 # ---------- CS (level teen rate) ----------
 cs_one <- function(gtab, xf){
@@ -56,10 +61,10 @@ cs_one <- function(gtab, xf){
 }
 # ---------- DDD (triplediff) ----------
 ddd_one <- function(gtab){
-  d <- merge(La, gtab[!is.na(g), .(adm3_pcode, state=g)], by="adm3_pcode")
+  d <- merge(La, gtab[!is.na(g) & g != 2019L, .(adm3_pcode, state=g)], by="adm3_pcode")
   d[, `:=`(id=as.integer(factor(paste(adm3_pcode,partition))), cluster=as.integer(factor(adm3_pcode)), time=as.integer(year))]
   o <- ddd(yname="y",tname="time",idname="id",gname="state",pname="partition",xformla=~1,data=d,
-           control_group="notyettreated", base_period="universal", est_method="dr", panel=TRUE,
+           control_group="notyettreated", base_period="universal", est_method="reg", panel=TRUE,
            cluster="cluster", boot=TRUE, nboot=999, cband=TRUE)
   dy <- agg_ddd(o,type="eventstudy",boot=TRUE,nboot=999,cband=TRUE)$aggte_ddd
   csz <- d[state>0, .(n=uniqueN(cluster)), by=.(g=state)]
@@ -72,17 +77,17 @@ ddd_one <- function(gtab){
 specs <- list(
   list(s="S1", lab="S1 any new unit — CS, no covs",  base=b_S1, f=function() cs_one(bin, ~1)),
   list(s="S1", lab="S1 any new unit — CS, +covs",    base=b_S1, f=function() cs_one(bin, XF)),
-  list(s="S1", lab="S1 any new unit — DDD (no covs)",base=b_S1, f=function() ddd_one(bin)),
+  list(s="S1", lab="S1 any new unit — DDD (no covs)",base=b_S1_ddd, f=function() ddd_one(bin)),
   list(s="S2", lab="S2 all incl. modernized — CS, no covs", base=b_S2, f=function() cs_one(mod, ~1)),
   list(s="S2", lab="S2 all incl. modernized — CS, +covs",   base=b_S2, f=function() cs_one(mod, XF)),
-  list(s="S2", lab="S2 all incl. modernized — DDD (no covs)",base=b_S2, f=function() ddd_one(mod)))
+  list(s="S2", lab="S2 all incl. modernized — DDD (no covs)",base=b_S2_ddd, f=function() ddd_one(mod)))
 
 rows <- list(); dyns <- list(); pts <- list(); nbes <- list()
 for(sp in specs){
   set.seed(20260722)   # 2026-08-06: seed before EVERY spec (project rule) so each
                        # spec's multiplier-bootstrap SE is order-independent; the
                        # first spec (S1 CS no-covs headline) is unchanged from the
-                       # prior single-seed run, preserving the canonical -6.43/2.10/.002.
+                       # prior single-seed run, preserving stable bootstrap inference.
   r <- sp$f(); att <- r$grp$overall.att; se <- r$grp$overall.se
   rows[[sp$lab]] <- data.table(scenario=sp$s, spec=sub("^S[12][^—]*— ","",sp$lab), n_treated=r$ntr,
      estimate=round(att,2), SE=round(se,2), p=round(2*pnorm(-abs(att/se)),3),
@@ -114,15 +119,15 @@ meta <- data.table(
   subtitle = c(
     "Callaway-Sant'Anna staggered event study  |  no covariates",
     "Callaway-Sant'Anna staggered event study  |  baseline covariates: wealth, urban, education, health centers, SeNaSa",
-    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  no covariates",
+    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  excludes 2019 cohort",
     "Callaway-Sant'Anna staggered event study  |  no covariates",
     "Callaway-Sant'Anna staggered event study  |  baseline covariates: wealth, urban, education, health centers, SeNaSa",
-    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  no covariates"),
+    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  excludes 2019 cohort"),
   xlab = c(rep("Years since first AU opening",3), rep("Years since new/modernized unit",3)))
 meta[, ylab := fifelse(method=="ddd", "ATT: (15-19 minus 30-34) births per 1,000 women",
                                       "ATT: teen births per 1,000 women (15-19)")]
 meta[, caption := fifelse(method=="ddd",
-  "Denominator A. Uniform 95% bands (error bars); SEs clustered by municipality. Triple-difference (triplediff), not-yet-treated controls; outcome = 15-19 rate minus 30-34 rate.",
+  "Denominator A. Uniform 95% bands (error bars); SEs clustered by municipality. Triple-difference (triplediff), not-yet-treated controls, excluding the 2019 cohort; outcome = 15-19 rate minus 30-34 rate.",
   "Denominator A. Uniform 95% bands (error bars); SEs clustered by municipality. Callaway-Sant'Anna, not-yet-treated controls; reference = year before treatment.")]
 
 mk <- function(m, dd, pt, nbe, rng_fix=NA_real_, short_ann=FALSE){

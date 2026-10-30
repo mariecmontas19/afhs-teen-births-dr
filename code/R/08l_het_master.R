@@ -11,7 +11,7 @@
 source(here::here("code","R","00_config.R")); source(here::here("code","R","00_theme.R"))
 suppressPackageStartupMessages({library(data.table); library(did); library(ggplot2)})
 set.seed(20260722); fold <- c("DOM010905","DOM051703","DOM012510")
-TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figures"); OVERALL <- -6.43
+TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figures"); OVERALL <- -6.39
 
 p   <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[, .(adm3_pcode, year, rateA_15_19, wealth_index, pct_urban)]
 bin <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]

@@ -1,10 +1,11 @@
 # ============================================================================
 # 09b_ramp_robustness.R — robustness to the 2016-2018 birth-REGISTRATION RAMP
 # (national undercount). Re-estimate the S1 headline on the POST-RAMP subsample
-# (year >= 2019) and compare to the full 2016-2025 sample. All 20 in-window
-# treated cohorts open 2020-2025, so 2019+ keeps every treated unit (g-1>=2019);
-# it just drops the ramp years from the pre-period. If the estimate is stable,
-# the effect is not an artifact of incomplete early-period registration.
+# (year >= 2019) and compare to the full 2016-2025 sample. Because one treated
+# cohort begins in 2019, the restricted estimator necessarily omits that cohort:
+# it has no pre-treatment observation in the restricted panel. If the estimate
+# remains stable among the 2020--2025 cohorts, the effect is unlikely to be an
+# artifact of incomplete early-period registration.
 # Denominator A; S1; not-yet controls; universal base; municipio-clustered.
 # Output: output/tables/ramp_robustness.csv
 # ============================================================================
