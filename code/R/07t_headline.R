@@ -7,15 +7,17 @@
 #   CS: att_gt(rateA_15_19), control="notyettreated", est="reg", universal base, muni-clustered.
 #   CS covariates (baseline): wealth_index + sns_per10k + pct_urban + pct_educ_secplus + pct_senasa_2013.
 #   DDD: ddd(), pname=1{15-19}, gname=opening yr, control="notyettreated",
-#        est="reg", no covariates. The 2019 cohort is omitted from this
-#        complementary specification because it makes the not-yet-treated GMM
+#        est="reg", no covariates. In the first-opening design (S1) the 2019
+#        cohort is omitted because it makes the not-yet-treated GMM
 #        system singular: the estimator combines one DDD per comparison cohort
 #        using the inverse of their estimated covariance matrix, and a cohort
 #        with a single municipality has zero estimated sampling variance. In the
 #        first-opening design the 2019 cohort (La Romana) and the 2025 cohort are
 #        both single municipalities, and together they make that matrix exactly
 #        singular (dropping 2025 instead of 2019 also removes the singularity).
-#        The level design continues to include all treated cohorts.
+#        The level design continues to include all treated cohorts. The
+#        modernization design (S2) keeps its 2019 cohort: it has no
+#        single-municipality cohorts, so the system is not singular (MM 2026-11-12).
 # ============================================================================
 source(here::here("code","R","00_config.R"))
 source(here::here("code","R","00_theme.R"))
@@ -49,7 +51,7 @@ baseline <- function(gtab){
 }
 b_S1 <- baseline(bin); b_S2 <- baseline(mod)
 b_S1_ddd <- baseline(bin[g != 2019L | is.na(g)])
-b_S2_ddd <- baseline(mod[g != 2019L | is.na(g)])
+b_S2_ddd <- baseline(mod)   # S2 keeps the 2019 cohort (MM 2026-11-12)
 
 # ---------- CS (level teen rate) ----------
 cs_one <- function(gtab, xf){
@@ -65,8 +67,8 @@ cs_one <- function(gtab, xf){
        ntr=uniqueN(est[g>0,adm3_pcode]), nbe=nbe)
 }
 # ---------- DDD (triplediff) ----------
-ddd_one <- function(gtab){
-  d <- merge(La, gtab[!is.na(g) & g != 2019L, .(adm3_pcode, state=g)], by="adm3_pcode")
+ddd_one <- function(gtab, drop2019=TRUE){
+  d <- merge(La, gtab[!is.na(g) & (!drop2019 | g != 2019L), .(adm3_pcode, state=g)], by="adm3_pcode")
   d[, `:=`(id=as.integer(factor(paste(adm3_pcode,partition))), cluster=as.integer(factor(adm3_pcode)), time=as.integer(year))]
   o <- ddd(yname="y",tname="time",idname="id",gname="state",pname="partition",xformla=~1,data=d,
            control_group="notyettreated", base_period="universal", est_method="reg", panel=TRUE,
@@ -85,7 +87,7 @@ specs <- list(
   list(s="S1", lab="S1 any new unit — DDD (no covs)",base=b_S1_ddd, f=function() ddd_one(bin)),
   list(s="S2", lab="S2 all incl. modernized — CS, no covs", base=b_S2, f=function() cs_one(mod, ~1)),
   list(s="S2", lab="S2 all incl. modernized — CS, +covs",   base=b_S2, f=function() cs_one(mod, XF)),
-  list(s="S2", lab="S2 all incl. modernized — DDD (no covs)",base=b_S2_ddd, f=function() ddd_one(mod)))
+  list(s="S2", lab="S2 all incl. modernized — DDD (no covs)",base=b_S2_ddd, f=function() ddd_one(mod, drop2019=FALSE)))
 
 rows <- list(); dyns <- list(); pts <- list(); nbes <- list()
 for(sp in specs){
@@ -127,13 +129,15 @@ meta <- data.table(
     "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  excludes 2019 cohort",
     "Callaway-Sant'Anna staggered event study  |  no covariates",
     "Callaway-Sant'Anna staggered event study  |  baseline covariates: wealth, urban, education, health centers, SeNaSa",
-    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34  |  excludes 2019 cohort"),
+    "Triple-difference (triplediff): eligible 15-19 vs comparison 30-34"),
   xlab = c(rep("Years since first AU opening",3), rep("Years since new/modernized unit",3)))
 meta[, ylab := fifelse(method=="ddd", "ATT: (15-19 minus 30-34) births per 1,000 women",
                                       "ATT: teen births per 1,000 women (15-19)")]
 meta[, caption := fifelse(method=="ddd",
   "Denominator A. Uniform 95% bands (error bars); SEs clustered by municipality. Triple-difference (triplediff), not-yet-treated controls, excluding the 2019 cohort; outcome = 15-19 rate minus 30-34 rate.",
   "Denominator A. Uniform 95% bands (error bars); SEs clustered by municipality. Callaway-Sant'Anna, not-yet-treated controls; reference = year before treatment.")]
+
+meta[fn=="hl_S2_ddd", caption := sub(", excluding the 2019 cohort", "", caption, fixed=TRUE)]   # S2 keeps 2019
 
 mk <- function(m, dd, pt, nbe, rng_fix=NA_real_, short_ann=FALSE){
   dd <- dd[e>=-5 & e<=4]; dd[, `:=`(lo=att-crit*se, hi=att+crit*se)]

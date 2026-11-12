@@ -36,9 +36,10 @@ mod <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio_mod.rds"))
 mod[, g := fifelse(mod_ever_treated==1L & always_treated_mod==0L, as.integer(mod_cohort), fifelse(mod_ever_treated==0L,0L,NA_integer_))]
 N <- function(gt){ d<-merge(p, gt[!is.na(g),.(adm3_pcode,g)], by="adm3_pcode"); list(cl=uniqueN(d$adm3_pcode), ob=nrow(d)) }
 n1 <- N(bin); n2 <- N(mod)
-# Triple differences stack ages 15--19 and 30--34 and omit 2019 cohorts.
-Nddd <- function(gt){ d<-merge(p, gt[!is.na(g) & g!=2019L,.(adm3_pcode,g)], by="adm3_pcode"); 2L*nrow(d) }
-ddo1 <- Nddd(bin); ddo2 <- Nddd(mod)
+# Triple differences stack ages 15--19 and 30--34; the first-opening DDD omits the 2019 cohort,
+# the modernization DDD keeps it (07t, MM 2026-11-12).
+Nddd <- function(gt, drop2019){ d<-merge(p, gt[!is.na(g) & (!drop2019 | g!=2019L),.(adm3_pcode,g)], by="adm3_pcode"); 2L*nrow(d) }
+ddo1 <- Nddd(bin, TRUE); ddo2 <- Nddd(mod, FALSE)
 
 stars <- function(p) ifelse(p<0.01,"***",ifelse(p<0.05,"**",ifelse(p<0.10,"*","")))
 cell  <- function(e,se,p){ s<-stars(p); sup<-if(s=="") "" else sprintf("^{%s}",s)
@@ -88,7 +89,7 @@ rbrow("One year of anticipation allowed", "A3 anticipation 1yr"),
 "first AU opening; the second also includes documented administrative opening, modernization, or remodeling events",
 "for pre-existing units and does not assume a uniform change in service intensity. Triple differences use",
 "the triplediff estimator with cohort-specific not-yet-treated comparisons combined by GMM;",
-"the 2019 cohort is omitted from these rows because its inclusion makes the GMM system singular;",
+"in the first-opening column the 2019 cohort, a single municipality, is omitted because its inclusion makes the GMM system singular;",
 "the indented row restricts the comparison group to never-treated municipalities.",
 "Controls: baseline wealth index, public health facilities per 10{,}000 residents, \\% urban,",
 "\\% secondary-or-more, \\% SeNaSa 2013 (time-invariant). The triple-difference nets the",
