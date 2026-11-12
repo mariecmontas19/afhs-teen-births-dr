@@ -8,9 +8,14 @@
 #   CS covariates (baseline): wealth_index + sns_per10k + pct_urban + pct_educ_secplus + pct_senasa_2013.
 #   DDD: ddd(), pname=1{15-19}, gname=opening yr, control="notyettreated",
 #        est="reg", no covariates. The 2019 cohort is omitted from this
-#        complementary specification because it has only three pre-treatment
-#        years and makes the not-yet-treated GMM system singular. The level
-#        design continues to include all treated cohorts.
+#        complementary specification because it makes the not-yet-treated GMM
+#        system singular: the estimator combines one DDD per comparison cohort
+#        using the inverse of their estimated covariance matrix, and a cohort
+#        with a single municipality has zero estimated sampling variance. In the
+#        first-opening design the 2019 cohort (La Romana) and the 2025 cohort are
+#        both single municipalities, and together they make that matrix exactly
+#        singular (dropping 2025 instead of 2019 also removes the singularity).
+#        The level design continues to include all treated cohorts.
 # ============================================================================
 source(here::here("code","R","00_config.R"))
 source(here::here("code","R","00_theme.R"))
