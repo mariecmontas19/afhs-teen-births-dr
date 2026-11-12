@@ -27,13 +27,14 @@ pct_yr2  <- round(100*dyn[yr==2, att]/hl$baseline)       # -17
 
 ## ---- panel 1: map -----------------------------------------------------------
 geo <- readRDS(file.path(DIR_CLEAN,"muni_geom.rds"))
-trt <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[, .(adm3_pcode, ever_treated, always_treated)]
+trt <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[, .(adm3_pcode, ever_treated, always_treated, first_year)]
 geo <- merge(geo, trt, by="adm3_pcode", all.x=TRUE)
+FY <- range(trt[ever_treated %in% 1 & always_treated %in% 0, first_year])   # opening years read from the data
 geo$grp <- ifelse(geo$ever_treated %in% 1 & geo$always_treated %in% 0, "first", ifelse(geo$always_treated %in% 1, "pre", "none"))
 stopifnot(sum(geo$grp=="first")==20)
 p1 <- ggplot(geo) + geom_sf(aes(fill=grp), color="white", linewidth=0.08) +
   scale_fill_manual(values=c(first=BLUE, pre=G2, none=G3), guide="none") +
-  labs(title="20 municipalities open their\nfirst adolescent unit, 2020-25") +
+  labs(title=sprintf("%d municipalities open their\nfirst adolescent unit, %d-%02d", sum(geo$grp=="first"), FY[1], FY[2] %% 100)) +
   theme_void(base_size=6) + theme(plot.title=element_text(size=6.2, face="bold", color=G1, lineheight=0.95, hjust=0.5))
 
 ## ---- panel 2: year-by-year effect ---------------------------------------------
@@ -62,7 +63,7 @@ p3 <- ggplot(tiles) +
   geom_text(aes(x=0.04, y=y, label=big), hjust=0, size=2.6, fontface="bold", color=BLUE) +
   geom_text(aes(x=0.56, y=y, label=small), hjust=0, size=fs*0.85, color=G1, lineheight=0.9) +
   coord_cartesian(xlim=c(0,1), ylim=c(0.5,3.5), expand=FALSE) +
-  labs(title="Fewer pregnancies, largest where\nadolescents can reach care") +
+  labs(title="Fewer pregnancies; larger effects\nwhere adolescents can reach care") +
   theme_void(base_size=6) + theme(plot.title=element_text(size=6.2, face="bold", color=G1, lineheight=0.95, hjust=0.5))
 
 ga <- (p1 | p2 | p3) + plot_layout(widths=c(1, 1.1, 1.35)) +
