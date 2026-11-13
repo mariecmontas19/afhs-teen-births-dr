@@ -57,7 +57,7 @@ N <- cs_if(rbind(firstaccess, recnew))        # all new modern units (secondary 
 dec <- fread(file.path(TAB,"cs_att_decomposition.csv"))
 chk <- function(obj, pat){ r <- dec[grepl(pat, layer)]; stopifnot(nrow(r)==1)
   stopifnot(abs(round(obj$att,2) - r$ATT) < 1e-9, abs(round(obj$se_boot,2) - r$SE) < 1e-9) }
-chk(A, "^First-opening municipalities"); chk(U, "^Pre-2016 access: recorded remodeling"); chk(N, "^All recorded new openings")
+chk(A, "^Municipalities in the primary first-opening sample"); chk(U, "^Previously served: recorded upgrade"); chk(N, "^First-opening sample or additional new opening")
 cat(sprintf("reproduced A17: first openings %.2f (%.2f) | upgrades %.2f (%.2f) | all new %.2f (%.2f)\n",
             A$att, A$se_boot, U$att, U$se_boot, N$att, N$se_boot))
 cat(sprintf("analytic IF SEs: first openings %.2f | upgrades %.2f | all new %.2f\n", A$se_an, U$se_an, N$se_an))
@@ -82,8 +82,8 @@ difftest <- function(X, Y, label){
              se_indep=round(se_ind,2), p_indep=signif(2*pnorm(-abs(dlt/se_ind)),3),
              corr=round(rho,3), n_units=nrow(m), shared_units=shared)
 }
-res <- rbind(difftest(A, U, "First openings (20) minus upgrades (6)"),
-             difftest(N, U, "All new modern units (23) minus upgrades (6)"))
+res <- rbind(difftest(A, U, "Primary first-opening sample (20) minus recorded upgrades (6)"),
+             difftest(N, U, "First-opening sample or additional new opening (23) minus recorded upgrades (6)"))
 print(res, class=FALSE)
 fwrite(res, file.path(TAB,"newupgrade_difftest.csv"))
 cat("saved -> newupgrade_difftest.csv\n")
@@ -92,7 +92,7 @@ cat("saved -> newupgrade_difftest.csv\n")
 ## Idempotent: any row/note inserted by a previous run is removed before re-inserting.
 a17f <- file.path(TAB, "tab_a17_decomposition.tex")
 L <- readLines(a17f)
-L <- L[!grepl("^\\\\quad Difference: first openings minus upgrades", L)]
+L <- L[!grepl("^\\\\quad Difference: first-opening sample minus recorded upgrades", L)]
 STARS <- "$^{***}p<0.01$"
 strip_note <- function(x){ repeat { i <- regexpr("The difference row", x, fixed=TRUE); j <- regexpr(STARS, x, fixed=TRUE)
     if (i < 0 || j < i) return(x)
@@ -102,11 +102,11 @@ L <- vapply(L, strip_note, "", USE.NAMES=FALSE)
 r <- res[1]
 stars <- function(pp) if (pp<.01) "^{***}" else if (pp<.05) "^{**}" else if (pp<.10) "^{*}" else ""
 pfmt  <- function(pp) if (pp < .001) "$p<.001$" else sprintf("$p=%s$", sub("^0", "", sprintf("%.3f", pp)))
-row <- sprintf("\\quad Difference: first openings minus upgrades$^{\\dagger}$ & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & & & \\\\",
+row <- sprintf("\\quad Difference: first-opening sample minus recorded upgrades$^{\\dagger}$ & \\makecell{$%.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & & & \\\\",
                r$difference, stars(r$p_joint), r$se_joint, r$difference-1.96*r$se_joint, r$difference+1.96*r$se_joint)
-iu <- grep("^Pre-2016 access: recorded remodeling event", L); stopifnot(length(iu)==1)
+iu <- grep("^Previously served: recorded upgrade event", L); stopifnot(length(iu)==1)
 L <- append(L, row, after=iu)
-note <- sprintf("$^{\\dagger}$The difference row tests whether first openings and upgrades have the same effect; its standard error accounts for the correlation between the two estimates induced by their shared never-treated comparison municipalities (correlation %.2f), obtained by aligning the estimates' influence functions by municipality (%s; joint multiplier bootstrap %s). ",
+note <- sprintf("$^{\\dagger}$The difference row tests whether the primary first-opening sample and recorded upgrades have the same effect; its standard error accounts for the correlation between the two estimates induced by their shared never-treated comparison municipalities (correlation %.2f), obtained by aligning the estimates' influence functions by municipality (%s; joint multiplier bootstrap %s). ",
                 r$corr, pfmt(r$p_joint), pfmt(r$p_boot))
 ino <- grep(STARS, L, fixed=TRUE); stopifnot(length(ino)==1)
 k <- regexpr(STARS, L[ino], fixed=TRUE)

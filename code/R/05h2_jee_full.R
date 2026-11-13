@@ -104,6 +104,7 @@ tr[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year),
 est <- merge(jee[!is.na(pct_jee_sch), .(adm3_pcode, year=year_end, pct_jee_sch)],
              tr[!is.na(g), .(adm3_pcode, g)], by="adm3_pcode")
 est[, id := as.integer(factor(adm3_pcode))]
+set.seed(20261030)
 a <- att_gt(yname="pct_jee_sch", tname="year", idname="id", gname="g", xformla=~1, data=est,
             control_group="notyettreated", base_period="universal", est_method="reg",
             bstrap=TRUE, cband=TRUE, biters=2000, clustervars="id", print_details=FALSE,

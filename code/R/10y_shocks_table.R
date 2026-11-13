@@ -5,7 +5,7 @@
 # test; cohort-restriction test; both). Panel B = Jornada Escolar Extendida
 # (3 rows: no covs on the common JEE sample -> headline covs -> + baseline
 # JEE 2018-19; "baseline JEE only" dropped per MM). The JEE-orthogonality
-# event study (+0.91pp, p=.32) goes in the NOTES with a pointer to fig:jee,
+# the JEE event-study result is reported with Figure B7 rather than hard-coded here,
 # not in the table body (MM).
 # Sources (read this session): covid_robustness.csv, jee_baseline_control.csv,
 # headline_S1_S2.csv. Stars *** p<.01, ** p<.05, * p<.10.

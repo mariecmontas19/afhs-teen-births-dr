@@ -89,12 +89,12 @@ ggsave(file.path(FIG,"fig_rollout_cumulative.png"), pB, width=8, height=4.6, dpi
 
 # ---------------------------------------------------------------- C: cohort bars
 bars <- uc[, .(municipalities=.N, units=sum(units)), by=.(first_year, always_treated)]
-bars[, arm := fifelse(always_treated==1L, "Always served (pre-2016, excluded)", "In-window cohort (2020-25)")]
+bars[, arm := fifelse(always_treated==1L, "Always served (pre-2016, excluded)", "In-window cohort (2019-25)")]
 bars[, lbl := sprintf("%d muni.\n%d unit%s", municipalities, units, fifelse(units==1L,"","s"))]
 pC <- ggplot(bars, aes(factor(first_year), municipalities, fill=arm)) +
   geom_col(width=.72) +
   geom_text(aes(label=lbl), vjust=-0.3, size=2.5, lineheight=.95, colour="grey25") +
-  scale_fill_manual(values=c("In-window cohort (2020-25)"="#1F4E79",
+  scale_fill_manual(values=c("In-window cohort (2019-25)"="#1F4E79",
                              "Always served (pre-2016, excluded)"="grey62"), name=NULL) +
   scale_y_continuous(expand=expansion(mult=c(0,.30))) +
   labs(x="Year of first unit in the municipality", y="Municipalities") +

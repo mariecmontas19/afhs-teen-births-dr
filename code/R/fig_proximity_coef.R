@@ -28,8 +28,8 @@ g <- ggplot(d, aes(att, grp)) +
   geom_point(size=6, color=c(PCUA_COL$blue, "grey45")) +
   geom_text(aes(label=sprintf("%.1f", att)), vjust=-1.4, size=4.6, fontface="bold",
             color=c(PCUA_COL$blue, "grey35")) +
-  annotate("text", x=hm$att_s, y=2.45, hjust=0.5, size=3.6, color=PCUA_COL$ink,
-           label=sprintf("difference: %.1f births per 1,000 (p = %.3f)", hm$gap, hm$p_diff)) +
+  annotate("text", x=-11.5, y=2.45, hjust=0.5, size=3.6, color=PCUA_COL$ink,
+           label=sprintf("Gap in magnitude: %.1f per 1,000\np = %.3f", hm$gap, hm$p_diff)) +
   scale_x_continuous(breaks=seq(-16,4,4), limits=c(-17,5)) +
   labs(x="ATT: teen births per 1,000 women (15-19), with 95% CI", y=NULL) +
   theme_pcua(base_size=16) + theme(axis.text.y=element_text(size=14, face="bold", lineheight=0.95))

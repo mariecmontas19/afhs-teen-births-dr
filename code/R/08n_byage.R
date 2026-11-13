@@ -72,7 +72,7 @@ L <- c(
 "\\label{tab:byage}\\small",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-"Mother's age & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
+"Mother's age & First AU opening & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Single years}} \\\\[2pt]",
 rr("15",TRUE), rr("16",TRUE), rr("17",TRUE), rr("18",TRUE), rr("19",TRUE),

@@ -5,7 +5,8 @@
 # Two pooled series (% of secondary-offering public/semioficial schools with
 # any Jornada Extendida): AU-treated (20 S1 munis) vs never-treated (126).
 # Always-treated munis excluded (no clean pre-period). Caption carries the
-# formal test: CS event study of %JEE around AU openings = +0.91pp (p=.32).
+# The formal CS event-study result is read from jee_full_checks.csv, which is
+# regenerated under the final first-opening dates by 05h2_jee_full.R.
 # ============================================================================
 source(here::here("code","R","00_config.R"))
 source(here::here("code","R","00_theme.R"))
@@ -15,22 +16,22 @@ fold <- c("DOM010905","DOM051703","DOM012510")
 
 jee <- as.data.table(readRDS(file.path(DIR_CLEAN,"jee_full_muni.rds")))[!is.na(n_sec)]
 tr  <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]
-tr[, grp := fcase(ever_treated==1L & always_treated==0L, "AU municipalities (treated 2020-25)",
+tr[, grp := fcase(ever_treated==1L & always_treated==0L, "AU municipalities (treated 2019-25)",
                   ever_treated==0L, "Never-treated municipalities", default=NA_character_)]
 d <- merge(jee, tr[!is.na(grp), .(adm3_pcode, grp)], by="adm3_pcode")
 s <- d[, .(pct = 100*sum(n_jee)/sum(n_sec)), by=.(grp, year_end, school_year)]
 cat("series points:", nrow(s), "\n"); print(dcast(s, school_year ~ grp, value.var="pct"), class=FALSE)
 
-chk <- fread(file.path(PROJ,"output","tables","jee_full_checks.csv"))
+chk <- fread(file=file.path(PROJ,"output","tables","jee_full_checks.csv"))
 att <- chk[check=="C2_jee_on_AU_att", value]; pce <- chk[check=="C2_p", value]
 
 gA <- ggplot(s, aes(year_end, pct, color=grp)) +
-  annotate("rect", xmin=2020, xmax=2025, ymin=-Inf, ymax=Inf, fill="grey85", alpha=0.35) +
-  annotate("text", x=2022.5, y=97, label="AU openings (2020-25)", size=3.2, color="grey35", fontface="italic") +
+  annotate("rect", xmin=2019, xmax=2025, ymin=-Inf, ymax=Inf, fill="grey85", alpha=0.35) +
+  annotate("text", x=2022, y=97, label="AU openings (2019-25)", size=3.2, color="grey35", fontface="italic") +
   geom_line(linewidth=1.1) +
   geom_point(size=2.8, fill="white", shape=21, stroke=1.2) +
   scale_color_manual(values=setNames(c(PCUA_COL$blue, "grey45"),
-    c("AU municipalities (treated 2020-25)","Never-treated municipalities")), name=NULL) +
+    c("AU municipalities (treated 2019-25)","Never-treated municipalities")), name=NULL) +
   scale_x_continuous(breaks=2016:2025) +
   scale_y_continuous(limits=c(0,100), breaks=seq(0,100,20)) +
   labs(title="JEE expanded in parallel for treated and never-treated municipalities",
@@ -49,6 +50,7 @@ tr2[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year)
 est <- merge(jee[!is.na(pct_jee_sch), .(adm3_pcode, year=year_end, pct_jee_sch)],
              tr2[!is.na(g), .(adm3_pcode, g)], by="adm3_pcode")
 est[, id := as.integer(factor(adm3_pcode))]
+set.seed(20261030)
 a <- att_gt(yname="pct_jee_sch", tname="year", idname="id", gname="g", xformla=~1, data=est,
             control_group="notyettreated", base_period="universal", est_method="reg",
             bstrap=TRUE, cband=TRUE, biters=2000, clustervars="id", print_details=FALSE,
@@ -64,7 +66,7 @@ gB <- ggplot(dd, aes(e, att)) +
   geom_errorbar(aes(ymin=lo, ymax=hi), width=0.14, linewidth=0.7, color=PCUA_COL$blue, na.rm=TRUE) +
   geom_point(color=PCUA_COL$blue, fill="white", shape=21, size=2.9, stroke=1.2, na.rm=TRUE) +
   annotate("text", x=-5, y=rng*0.92, hjust=0, vjust=1, size=3.3, fontface="italic", color="grey25",
-           label=sprintf("Group ATT %+.2fpp (p = %.2f):\nJEE does not move when the AU opens", att, pce)) +
+           label=sprintf("Group ATT %+.2fpp (p = %.2f):\nno discrete change at the 5%% level", att, pce)) +
   scale_x_continuous(breaks=seq(-5,4,1)) +
   scale_y_continuous(limits=c(-rng,rng)) +
   labs(title="(B) Effect of AU openings on JEE coverage among secondary schools",

@@ -23,7 +23,7 @@ stopifnot(nrow(u) == 39L, !anyDuplicated(u$unit_id))
 
 # ---- verified extras, keyed by unit_id ------------------------------------
 # modern_event_date : YYYY, YYYY-MM, or YYYY-MM-DD (the date of a documented
-#   administrative opening, modernization, or remodeling event). It does not
+#   upgrade event: a documented opening, modernization, or remodeling). It does not
 #   imply a uniform or independently verified change in service intensity. NA if
 #   unknown or if the unit was never modernized.
 # modern_event_type : new_opening | upgrade | upgrade_unconfirmed |

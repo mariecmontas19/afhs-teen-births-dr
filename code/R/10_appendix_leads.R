@@ -49,7 +49,7 @@ L <- c(
 "\\label{tab:leads}\\small",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-"Years since opening ($e$) & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
+"Years since event ($e$) & First AU opening & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Leads (pre-treatment)}} \\\\[2pt]",
 rows[m$e < 0],

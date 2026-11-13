@@ -1,9 +1,9 @@
 # ============================================================================
 # 04c_treatment_modernization.R — ALTERNATIVE treatment: MODERNIZATION design.
 #
-# Treatment = earliest documented administrative opening, modernization, or
-# remodeling event for an adolescent service. The record does not verify a uniform
-# change in service intensity across events, so this is an administrative-event
+# Treatment = earliest documented upgrade event: an opening, modernization, or
+# remodeling recorded for an adolescent service. The record does not verify a uniform
+# change in service intensity across events, so this is an upgrade-event
 # specification rather than a comprehensive-service treatment definition.
 #
 # Per-unit modernization year (from notes/pcua_unit_dates_verified.csv, built in

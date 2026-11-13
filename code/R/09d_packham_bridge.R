@@ -109,7 +109,7 @@ L <- c(
 "\\label{tab:funcform}\\small",
 "\\begin{tabular}{p{7.0cm}cc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Implied \\% effect on the teen birth rate}} \\\\[2pt]",
 sprintf("Callaway--Sant'Anna, linear (main estimate) & %s & %s \\\\", pc("S1","CS linear (headline)"), pc("S2","CS linear (headline)")),
