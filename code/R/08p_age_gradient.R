@@ -1,7 +1,7 @@
 # ============================================================================
 # 08p_age_gradient.R — R4 centerpiece: effect by mother's AGE BAND, the
 # spillover-gradient exhibit (methods §49.3). CS group ATT on each band's OWN
-# rate (rateA_15_19 / 20_24 / 25_29 / 30_34), full window 2016-2025, S1,
+# rate (rateA_10_14 / 15_19 / 20_24 / 25_29 / 30_34), full window 2016-2025, S1,
 # spec = 07t. Plotted as % of the g-1 baseline with 95% CIs so bands with
 # different fertility levels are comparable. Prediction (§49): monotone decay
 # 15-19 > 20-24 > 25-29 >= 30-34 = 0.
@@ -15,7 +15,7 @@ TAB <- file.path(PROJ,"output","tables"); FIG <- file.path(PROJ,"output","figure
 
 p <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[,
        .(adm3_pcode, year, rateA_10_14, rateA_15_19, rateA_20_24, rateA_25_29,
-         rateA_30_34, rateA_35_39, rateA_40_44)]
+         rateA_30_34)]
 bin <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]
 bin[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year), fifelse(ever_treated==0L,0L,NA_integer_))]
 est0 <- merge(p, bin[!is.na(g), .(adm3_pcode, g)], by="adm3_pcode")
@@ -37,28 +37,22 @@ one <- function(yname, lab){
 # script-level seed, so their published bootstrap SEs reproduce byte-identically.
 res4 <- rbind(one("rateA_15_19","15-19"), one("rateA_20_24","20-24"),
               one("rateA_25_29","25-29"), one("rateA_30_34","30-34"))
-# Extension (2026-08-05, MM): all seven reproductive age bands. New bands are
-# seeded immediately before each att_gt (the current convention), so they are
-# order-independent. PREDICTIONS (rule 1b), stated before running: 10-14 is
-# inside the units' service range (10-19) but its base rate is ~2 per 1,000,
-# so expect a noisy zero; 35-39 and 40-44 cannot be exposed in any study year
-# (like 30-34), so both must be ~0 — a significant estimate there is an
-# instrument check, not a finding.
+# Extension (2026-08-05, MM): the 10-14 band, seeded immediately before its
+# att_gt (the current convention), so it is order-independent. PREDICTION
+# (rule 1b), stated before running: 10-14 is inside the units' service range
+# (10-19) but its base rate is ~2 per 1,000, so expect a noisy zero.
+# The table and figure stop at 30-34, the comparison band of the triple
+# difference (MM, methods 59.94 and 59.112).
 one_seeded <- function(yname, lab, seed){ set.seed(seed); one(yname, lab) }
-res_new <- rbind(one_seeded("rateA_10_14","10-14",20260805L),
-                 one_seeded("rateA_35_39","35-39",20260806L),
-                 one_seeded("rateA_40_44","40-44",20260807L))
-res <- rbind(res_new[band=="10-14"], res4, res_new[band!="10-14"])
+res_new <- one_seeded("rateA_10_14","10-14",20260805L)
+res <- rbind(res_new, res4)
 
 # Pre-trend column (2026-08-05): average of the dynamic leads e in [-5,-2] with
 # its ANALYTIC influence-function SE (es_pretrend_p; deterministic, so these
 # re-runs cannot perturb the canonical group-ATT bootstrap stream above).
-# Motivated by the 35-39 surprise: its group ATT (-4.40, p=.009) sits on a
-# pre-existing differential decline (leads all negative), so the table must
-# show per-band lead evidence rather than assert cleanliness in prose.
+# The table shows per-band lead evidence rather than asserting cleanliness in prose.
 BANDS <- c(`10-14`="rateA_10_14", `15-19`="rateA_15_19", `20-24`="rateA_20_24",
-           `25-29`="rateA_25_29", `30-34`="rateA_30_34", `35-39`="rateA_35_39",
-           `40-44`="rateA_40_44")
+           `25-29`="rateA_25_29", `30-34`="rateA_30_34")
 pt <- rbindlist(lapply(seq_along(BANDS), function(i){
   set.seed(20260810L + i)
   a <- suppressWarnings(suppressMessages(att_gt(yname=BANDS[i], tname="year", idname="id", gname="g",
@@ -70,13 +64,12 @@ pt <- rbindlist(lapply(seq_along(BANDS), function(i){
 }))
 res <- merge(res, pt, by="band", sort=FALSE)
 res[, band := factor(band, levels=names(BANDS))]; setorder(res, band); res[, band := as.character(band)]
-cat("\n=== age-band gradient (2016-25; S1; own denominators; 7 bands) ===\n"); print(res, class=FALSE)
+cat("\n=== age-band gradient (2016-25; S1; own denominators; 5 bands) ===\n"); print(res, class=FALSE)
 fwrite(res, file.path(TAB,"age_gradient.csv"))
 
 # ---- figure: % of baseline with 95% CI, point + error bar ----
-# 2026-09-09 (§59.94/96): figure now STOPS AT 30-34, matching Table A8 and the
-# paper (35-39/40-44 dropped everywhere per MM; the old 6-band figure was stale
-# and nearly reached a MoH deck). 10-14 excluded from the % plot: its base rate
+# 2026-09-09 (§59.94/96): the figure stops at 30-34, matching Table A8 and the
+# paper. 10-14 excluded from the % plot: its base rate
 # (~2/1,000) makes the percent scale explode; it stays in the csv. Colors moved
 # to the blue/grey convention (§59.73; the old red predates the rule).
 fig <- res[band %in% c("15-19","20-24","25-29","30-34")]

@@ -1,10 +1,8 @@
 # ============================================================================
 # 08p5_placebo_panel.R — 3-panel own-rate event studies near the eligibility
-# boundary: 20-24, 25-29, 30-34 (MM 2026-08-12, §59.94: replaces the earlier
-# 25-29/30-34/35-39/40-44 placebo panel; the unexposable older bands 35-39/
-# 40-44 are dropped, and 20-24 — the aged-out band that DOES respond — is added
-# so the panel reads as the age gradient from responding [20-24] through
-# marginal [25-29] to the clean comparison group [30-34]). Same spec as 08p:
+# boundary: 20-24, 25-29, 30-34 (MM 2026-08-12, §59.94: the panel reads as
+# the age gradient from the aged-out band that responds [20-24] through the
+# marginal band [25-29] to the comparison group [30-34]). Same spec as 08p:
 # S1, not-yet-treated controls, universal base, seeded per att_gt call.
 # No in-image caption (MM: notes live in the LaTeX caption).
 # Output: output/figures/fig_b05_placebo_ages.png

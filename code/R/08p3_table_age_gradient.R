@@ -1,13 +1,11 @@
 # ============================================================================
-# 08p3_table_age_gradient.R — R4 appendix table (methods §49, extended
-# 2026-08-05 to ALL SEVEN reproductive age bands per MM + a pre-trend column).
+# 08p3_table_age_gradient.R — R4 appendix table (methods §49; five age bands,
+# 10-14 through 30-34, with a pre-trend column).
 # Panel A = band rates (own denominators, 2016-25, from age_gradient.csv /
 # 08p; incl. avg dynamic lead e[-5,-2] with analytic IF SE). Panel B = single
 # years 20-24 (per 1,000 women 20-24, 2018-25, age at birth, from ages2029.csv
 # / 08o6) — pinpoints the spillover at ages 20-21.
-# The 35-39 band is the reason the pre-trend column exists: its group ATT
-# (-4.40, p=.009) sits on a pre-existing differential decline (avg lead -3.30),
-# so the table shows per-band lead evidence instead of asserting cleanliness.
+# The pre-trend column shows per-band lead evidence instead of asserting cleanliness.
 # Output: tab_a08_age_gradient.tex
 # ============================================================================
 source(here::here("code","R","00_config.R"))
@@ -17,7 +15,7 @@ TAB <- file.path(PROJ,"output","tables")
 gr <- fread(file.path(TAB,"age_gradient.csv"))
 .HL <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1" & spec=="CS, no covs"]  # 2026-08-06: canonical main estimate for the 15-19 row
 sy <- fread(file.path(TAB,"ages2029.csv"))[classification=="Age at BIRTH" & age %in% as.character(20:24)]
-stopifnot(nrow(gr)==7, nrow(sy)==5, all(c("pre_avg","pre_p") %in% names(gr)))
+stopifnot(nrow(gr)==5, nrow(sy)==5, all(c("pre_avg","pre_p") %in% names(gr)))
 gr[band=="15-19", `:=`(ATT=.HL$estimate, SE=.HL$SE, p=.HL$p)]
 
 stars <- function(p) ifelse(p<0.01,"***",ifelse(p<0.05,"**",ifelse(p<0.10,"*","")))
