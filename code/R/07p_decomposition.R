@@ -143,7 +143,7 @@ sprintf("Implied triple difference (Table 3 level $-$ band) & $%.2f$ & $%.2f$ \\
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Callaway--Sant'Anna group ATTs; not-yet-treated comparisons, universal base period,",
-"municipality-clustered multiplier bootstrap, seed reset before each estimate. \\emph{Panel A}: the teen",
+"municipality-clustered multiplier bootstrap. \\emph{Panel A}: the teen",
 "birth rate, estimated separately for each subset of the upgrade-event design's treated municipalities",
 "against the shared never-treated comparisons, with upgrade-event timing throughout.",
 "The nine municipalities served before 2016 enter through their earliest documented upgrade event,",

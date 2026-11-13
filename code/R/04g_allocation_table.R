@@ -95,6 +95,7 @@ sprintf("Mean baseline rate, 2019--21 vs.\\ 2023--25 cohorts & \\multicolumn{4}{
 "adolescent births, the documented allocation criterion, is the",
 "product of the adolescent population and the birth rate, so allocation on counts implies",
 "that the two components of column (3) enter with equal coefficients.",
+{ stopifnot(eq$`Pr(>F)`[2] < .001); sprintf("Equality of the two coefficients in column (3) is rejected ($F=%.1f$, $p<.001$).", eq$F[2]) },
 "$^{c}$Panel B tests whether earlier openings went to higher-fertility municipalities among the 20 treated",
 "municipalities. Opening year is regressed on the log baseline rate (HC1 standard",
 "errors), the rank correlation is Spearman's $\\rho$, and the last row compares mean baseline rates",

@@ -38,7 +38,7 @@ v[, oy   := fifelse(!is.na(recorded_year), as.character(recorded_year), as.chara
 v[, open := fifelse(!is.na(recorded_month), sprintf("%s-%02d", oy, as.integer(recorded_month)), oy)]
 v[year_imputed==TRUE, open := sprintf("%d$^{\\dagger}$", first_year)]
 # modernization + type
-tymap <- c(new_opening="new", upgrade="upgrade", upgrade_unconfirmed="upgrade?",
+tymap <- c(new_opening="new", upgrade="upgrade", upgrade_unconfirmed="upgrade, unconfirmed",
            old_never_modernized="", unknown="")
 v[, mtype := tymap[modern_event_type]]
 v[, modern := fcase(never_modernized==TRUE, "None",

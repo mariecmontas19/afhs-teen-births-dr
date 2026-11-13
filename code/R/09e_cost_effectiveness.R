@@ -88,7 +88,8 @@ sprintf("\\textit{Notes:} Treatment is a municipality's first AU opening (20 mun
 "revenue to health spending. 2025 US\\$ uses the ratio of the BLS CPI-U annual averages for 2025 (321.943)",
 "and 2018 (251.107). The break-even threshold is the maximum cost per treated municipality-year at which",
 "valued benefits equal costs. The calculation applies the average ATT to all post-treatment years even though",
-"the effect builds with exposure. It is a threshold exercise, not a cost-effectiveness ratio; denominator A.",
+"the effect builds with exposure. It is a threshold exercise, not a cost-effectiveness ratio.",
+"Rates use the main population series (Series A).",
 "\\end{minipage}",
 "\\end{table}")
 writeLines(L, file.path(TAB,"tab_08_cost_effectiveness.tex"))
