@@ -46,11 +46,11 @@ cs1 <- function(treated){
   c(att=o$overall.att, se=o$overall.se, n=uniqueN(treated$adm3_pcode), base=base)
 }
 sets <- list(); lay <- function(nm, dt) sets[[nm]] <<- dt
-lay(sprintf("First-opening municipalities, dated by administrative event (%d)", nFA), firstaccess)
-lay(sprintf("Pre-2016 access: recorded new opening (%d)", nRN), recnew)
-lay(sprintf("All recorded new openings (%d)", nFA+nRN), rbind(firstaccess, recnew))
-lay(sprintf("Pre-2016 access: recorded remodeling event (%d)", nUP), recupg)
-lay(sprintf("Pooled administrative-event design (%d)", nFA+nRN+nUP), rbind(firstaccess, recnew, recupg))
+lay(sprintf("Municipalities in the primary first-opening sample (%d)", nFA), firstaccess)
+lay(sprintf("Previously served: additional new opening (%d)", nRN), recnew)
+lay(sprintf("First-opening sample or additional new opening (%d)", nFA+nRN), rbind(firstaccess, recnew))
+lay(sprintf("Previously served: recorded upgrade event (%d)", nUP), recupg)
+lay(sprintf("Pooled upgrade-event design (%d)", nFA+nRN+nUP), rbind(firstaccess, recnew, recupg))
 
 out <- rbindlist(lapply(names(sets), function(nm){
   r <- cs1(sets[[nm]])
@@ -91,6 +91,11 @@ modg[, g := fifelse(mod_ever_treated==1L & always_treated_mod==0L, as.integer(mo
 rec9 <- rbind(modg[always_treated==1 & mod_ever_treated==1, .(adm3_pcode, g)],
               modg[mod_ever_treated==0, .(adm3_pcode, g)])
 b_h1  <- cs34(bin);  b_h2 <- cs34(modg);  b_r9 <- cs34(rec9)
+# 2026-11-13: the first-opening 30-34 cell is also Table A8's 30-34 row (08p_age_gradient). Same
+# estimate, different bootstrap stream (SE 2.04 here vs 2.13 there). Display the A8 value so the two
+# tables agree; 07p therefore runs after 08p_age_gradient in 00_run_all.R.
+.AG <- fread(file.path(TAB,"age_gradient.csv"))[band=="30-34"]; stopifnot(nrow(.AG)==1, abs(.AG$ATT - round(b_h1[["att"]],2)) < 1e-9)
+b_h1[["att"]] <- .AG$ATT; b_h1[["se"]] <- .AG$SE   # both from A8 so the cell and its CI match exactly
 .H1 <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1" & spec=="CS, no covs"]
 imp_h1 <- .H1$estimate - b_h1[["att"]]; imp_h2 <- .H2$estimate - b_h2[["att"]]
 cat(sprintf("\nPANEL B (30-34 band): H1 %+.2f (%.2f) | H2 %+.2f (%.2f) | recovered-9 %+.2f (%.2f) | implied DDD %.2f / %.2f\n",
@@ -110,7 +115,7 @@ c34 <- function(v){ att<-v[["att"]]; se<-v[["se"]]; p<-2*pnorm(-abs(att/se))
   sprintf("\\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%+.2f$, $%+.2f$]}}", att, stars(p), se, att-1.96*se, att+1.96*se) }
 L <- c(
 "\\begin{table}[htbp]\\centering",
-"\\caption{First openings and later administrative events}",
+"\\caption{First openings and upgrade events}",
 "\\label{tab:decomposition}\\footnotesize",
 "\\setlength{\\tabcolsep}{2.5pt}",
 "\\textit{Panel A. Effects by recorded event type}\\par\\smallskip",
@@ -129,7 +134,7 @@ rowx(5),
 "\\textit{Panel B. The 30--34 comparison band (placebo)}\\par\\smallskip",
 "\\begin{tabular}{p{6.4cm}cc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
 "\\midrule",
 sprintf("Effect on the 30--34 birth rate & %s & %s \\\\", c34(b_h1), c34(b_h2)),
 sprintf("\\quad recovered nine municipalities alone & N/A & %s \\\\", c34(b_r9)),
@@ -139,21 +144,25 @@ sprintf("Implied triple difference (Table 3 level $-$ band) & $%.2f$ & $%.2f$ \\
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
 "\\textit{Notes:} Callaway--Sant'Anna group ATTs; not-yet-treated comparisons, universal base period,",
 "municipality-clustered multiplier bootstrap, seed reset before each estimate. \\emph{Panel A}: the teen",
-"birth rate, estimated separately for each subset of the administrative-event design's treated municipalities",
-"against the shared never-treated comparisons, with administrative-event timing throughout.",
-"The nine municipalities served before 2016 enter through their earliest documented administrative event,",
-"classified in the source record as a new opening or a remodeling event. These labels do not imply a",
+"birth rate, estimated separately for each subset of the upgrade-event design's treated municipalities",
+"against the shared never-treated comparisons, with upgrade-event timing throughout.",
+"The nine municipalities served before 2016 enter through their earliest documented upgrade event,",
+"classified in the source record as a new opening or an upgrade. These labels do not imply a",
 "verified or uniform change in service intensity. Baseline $=$ the treated-group mean in the year before the event.",
+"La Vega remains in the primary sample, but because its original opening date is unverified, its cohort",
+"is dated to the earliest documented event, a September 2023 reinauguration recorded as an upgrade.",
+"Under upgrade-event timing, Nizao is dated to 2021 rather than 2020 and San Pedro de Macor\\'is to 2025 rather than 2023,",
+"so the first row differs from the main estimate in \\autoref{tab:estimates}.",
 "Parentheses contain standard errors and brackets contain 95\\% confidence intervals.",
-"The pooled row reproduces the administrative-event column of \\autoref{tab:estimates}; the remodeling-event",
-"subset is small and its estimate correspondingly imprecise.",
+"The pooled row reproduces the upgrade-event column of \\autoref{tab:estimates}; the six-municipality",
+"upgrade subset is small and its estimate correspondingly imprecise.",
 "\\emph{Panel B}: the 30--34 birth rate, the triple difference's comparison band; these women are",
 "outside the program's 10--19 eligibility range at each observed event. The near-zero response under",
 "the first-opening design supports the use of this comparison band; under",
-"the administrative-event design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
+"the upgrade-event design the band \\emph{rises}, driven entirely by the nine recovered municipalities,",
 "consistent with urban fertility postponement rather than the program. The final row is the simple difference",
 "between the level estimate and the comparison-band estimate; it is descriptive and is not the GMM triple-difference",
-"estimator reported in \\autoref{tab:estimates}. The larger administrative-event contrast is therefore driven by",
+"estimator reported in \\autoref{tab:estimates}. The larger upgrade-event contrast is therefore driven by",
 "movement in the comparison band, not by a larger effect on teens. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")

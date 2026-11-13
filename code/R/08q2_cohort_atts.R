@@ -53,7 +53,7 @@ sprintf("not-yet-treated controls, municipio-clustered SEs in parentheses; overa
 "the cohort mean teen birth rate in the year before opening. The final column counts calendar years",
 "observed from the opening year through 2025, inclusive. Later cohorts contain few municipalities and",
 "have short post-opening windows; their cohort-specific estimates, especially the one-municipality",
-"2025 cohort, should therefore be interpreted descriptively rather than as separate causal results.",
+"2019 and 2025 cohorts, should therefore be interpreted descriptively rather than as separate causal results.",
 "$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")

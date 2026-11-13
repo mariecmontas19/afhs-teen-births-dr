@@ -122,7 +122,10 @@ panelC,
 "Panel (c) uses center-level results from the Pruebas Nacionales, the national terminal-secondary",
 "examination (first convocatoria; school years 2016--2024, with the assessment scoreless in 2020",
 "and cancelled in 2021; the 2024 wave uses first-convocatoria student microdata provided by",
-"MoE), aggregated to municipalities; 16 treated municipalities (2020 and 2021 openers are",
+sprintf("MoE), aggregated to municipalities; %d treated municipalities (2020 and 2021 openers are", local({   # counted as in 08z9 (2026-11-13; was a typed 16)
+  b <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% c("DOM010905","DOM051703","DOM012510")]
+  pm <- unique(as.data.table(readRDS(file.path(DIR_CLEAN,"pruebas_muni.rds")))$adm3_pcode)
+  b[ever_treated==1L & always_treated==0L & !first_year %in% c(2020L,2021L) & adm3_pcode %in% pm, .N] })),
 "excluded because their base school year is unobservable). Scores are standardized within year",
 "$\\times$ subject $\\times$ modality $\\times$ scoring regime; test-takers and passers are scaled",
 "per 100 population aged 17--18, approximated as $0.4\\times$ the population aged 15--19.",

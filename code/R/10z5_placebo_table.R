@@ -15,10 +15,16 @@ TAB <- file.path(PROJ,"output","tables")
 pw <- fread(file.path(TAB,"placebo_wcb.csv"))
 ft <- pw[grepl("^CS fake-timing", spec)]; stopifnot(nrow(ft)==1)
 rb <- fread(file.path(TAB,"robustness_S1_S2.csv"))[scenario=="S1" & block=="D"]
-dl <- rb[outcome=="rateA_15_19"]; dd <- rb[outcome=="ddd_A"]; stopifnot(nrow(dl)==1, nrow(dd)==1)
+dl <- rb[outcome=="rateA_15_19"]; stopifnot(nrow(dl)==1)
+# 2026-11-13 (MM): the triple-difference column uses the Table 3 estimator (triplediff; 07b2),
+# not the pre-differenced gap-CS (ddd_A).
+ds <- fread(file.path(TAB,"ddd_triplediff_sensitivity.csv"))
+dd <- ds[stat=="precell", .(ATT=est, SE=se, p=p)]; stopifnot(nrow(dd)==1)
 hd <- fread(file.path(TAB,"honestdid_S1_S2.csv"))
 hL <- hd[outcome=="S1 level 15-19" & Mbar %in% c(0,.1,.2,.3)]
-hD <- hd[outcome=="S1 age-DDD"     & Mbar %in% c(0,.1,.2,.3)]
+hD <- ds[stat=="RR" & Mbar %in% c(0,.1,.2,.3)]
+bk <- function(h){ m <- 0; for (x in c(.1,.2,.3)) { if (h[Mbar==x, includes0]==FALSE) m <- x else break }; m }   # largest Mbar shown at which the set still excludes zero
+bkL <- bk(hL); bkD <- bk(hD)
 stopifnot(nrow(hL)==4, nrow(hD)==4)
 
 cellP <- function(est,se,p) sprintf("\\makecell{$%.2f$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.2f", est, se, est-1.96*se, est+1.96*se, p)
@@ -59,8 +65,10 @@ rowRR(0), rowRR(0.1), rowRR(0.2), rowRR(0.3),
 "rates of unexposable age groups appear in Appendix \\autoref{tab:agegradient}. Panel B reports",
 "\\citet{rambachanroth2023} C-LF confidence sets allowing post-treatment parallel-trends violations up",
 "to $\\bar{M}$ times the largest pre-treatment violation; $^{\\dagger}$marks sets that exclude zero.",
-"The level estimate survives violations up to 10 percent of the maximal pre-treatment trend and the",
-"triple difference, with its flatter pre-period, up to 20 percent. The pre-period is estimated on",
+"The triple-difference column uses the estimator of \\autoref{tab:estimates} (2019 cohort omitted), with the",
+"covariance of its event-study coefficients built from the municipality-clustered influence function.",
+if (bkL==bkD) sprintf("The level estimate and the triple difference both survive violations up to %.0f percent of the maximal pre-treatment trend. The pre-period is estimated on", 100*bkL) else
+  sprintf("The level estimate survives violations up to %.0f percent of the maximal pre-treatment trend and the triple difference up to %.0f percent. The pre-period is estimated on", 100*bkL, 100*bkD),
 "twenty treated clusters, so this yardstick is itself noisy; the identification case rests on the",
 "convergence of leads, placebos, timing, and the age gradient rather than on any single bound.",
 "\\end{minipage}",

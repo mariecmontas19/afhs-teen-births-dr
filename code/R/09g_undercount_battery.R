@@ -46,7 +46,7 @@ cs <- function(d, yname, boot=TRUE){
   list(att=gr$overall.att, se=gr$overall.se, p=2*pnorm(-abs(gr$overall.att/gr$overall.se)))
 }
 res <- list(); add <- function(block, label, r, note="") res[[length(res)+1]] <<-
-  data.table(block=block, spec=label, ATT=round(r$att,3), SE=round(r$se,3), p=round(r$p,3), note=note)
+  data.table(block=block, spec=label, ATT=round(r$att,4), SE=round(r$se,4), p=round(r$p,3), note=note)   # 4 decimals since 2026-11-13
 
 # ---- A. all-births vs non-teen placebo ----
 cat("\n===== A. composition test: ALL births vs NON-TEEN (25-44) births =====\n")

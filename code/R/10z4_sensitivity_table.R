@@ -32,9 +32,10 @@ dcz <- fread(file.path(TAB,"drop_constanza.csv"))
 loo <- fread(file.path(TAB,"leave_one_out_treated.csv"))
 c10 <- fread(file.path(TAB,"census2010_covariate_check.csv"))
 v10 <- function(k) c10[stat==k, value]
-# La Vega 2022 sensitivity: the §56.1 vintage headline (-5.90, SE 2.06, p=.004),
-# recorded in methodology_decisions.md §56.1/§57 ("La-Vega-2022 sensitivity on file").
-LAVEGA <- list(ATT=-5.90, SE=2.06, p=0.004)
+# La Vega 2022 sensitivity: computed by 09_robustness.R on the current treatment dates
+# (2026-11-13; previously a hand-typed July value, -5.90, from before La Romana/Yamasa were re-dated).
+.lv <- rb[spec=="A5 La Vega dated 2022" & outcome=="rateA_15_19"]; stopifnot(nrow(.lv)==1)
+LAVEGA <- list(ATT=.lv$ATT, SE=.lv$SE, p=.lv$p)
 
 stars <- function(p) ifelse(p<0.01,"***",ifelse(p<0.05,"**",ifelse(p<0.10,"*","")))
 cell <- function(ATT,SE,p,d=2){ s<-stars(p); sup<-if(s=="")"" else sprintf("^{%s}",s)
@@ -50,7 +51,7 @@ rowD <- function(lb, dv){
 den <- function(){ l <- get("B4 denominator B (level)","rateB_15_19")
   sprintf("Intercensal population denominators & %s & %s \\\\", cell(l$ATT,l$SE,l$p), dvcell("intercensal denominators (B)")) }
 dsd <- function(){ l <- get("C1 drop Santo Domingo metro (level)","rateA_15_19")
-  sprintf("Drop the Santo Domingo metropolitan area & %s & --- \\\\", cell(l$ATT,l$SE,l$p)) }
+  sprintf("Drop the Santo Domingo metropolitan area & %s & %s \\\\", cell(l$ATT,l$SE,l$p), dvcell("drop Santo Domingo metro")) }   # 2026-11-13: estimable since the 2019 cohort is omitted (09m)
 
 loorow <- function(){
   sprintf("Drop each treated municipality in turn & \\multicolumn{2}{c}{range $[%.2f, %.2f]$} \\\\",
@@ -95,7 +96,7 @@ sprintf("Covariates from the 2010 census & %s & --- \\\\", cell(v10("attcovs_201
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{2pt}\\scriptsize",
-r"(\textit{Notes:} Each row changes one element of the first-opening design. Standard errors are municipality-clustered multiplier-bootstrap standard errors except in the leave-one-out row, which reports the range obtained by dropping each of the 20 treated municipalities in turn. Triple differences compare ages 15--19 with ages 30--34 using cohort-specific not-yet-treated comparisons combined by GMM; the 2019 cohort is omitted because it makes the GMM aggregation singular. The comparison-age rows deliberately use age groups that may themselves have been exposed, so their attenuation is expected. La Vega is dated to its documented 2023 reinauguration in the main analysis; the table also reports a 2022 coding. Spatial exclusions remove nearby controls and therefore address attenuation from cross-border use. Appendix~\autoref{tab:matching} reports the matching estimates. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Each row changes one element of the first-opening design. Standard errors are municipality-clustered multiplier-bootstrap standard errors except in the leave-one-out row, which reports the range obtained by dropping each of the 20 treated municipalities in turn. Triple differences compare ages 15--19 with ages 30--34 using cohort-specific not-yet-treated comparisons combined by GMM; all triple-difference rows omit the 2019 cohort, a single municipality, as in \autoref{tab:estimates}. The comparison-age rows deliberately use age groups that may themselves have been exposed, so their attenuation is expected. La Vega is dated to its documented 2023 reinauguration in the main analysis; the table also reports a 2022 coding. Spatial exclusions remove nearby controls and therefore address attenuation from cross-border use. Appendix~\autoref{tab:matching} reports the matching estimates. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L <- gsub("municipio-clustered", "municipality-clustered", L, fixed=TRUE)

@@ -97,6 +97,30 @@ run_scenario <- function(sc, gt){
 cat("==================== 09 ROBUSTNESS BATTERY — S1 & S2 (denom A unless noted) ====================\n")
 run_scenario("S1", bin); run_scenario("S2", mod)
 out <- rbindlist(res)
+
+## ---- A4 corrected (2026-11-13) ------------------------------------------------
+## The A4 call inside run_scenario() subsets on the PANEL's embedded cohort_imputed flag. The panel
+## was built 2026-07-29 and still flags La Romana and Yamasa (re-dated to 2019/2020 on 2026-10-22),
+## so that call drops THREE municipalities. It is kept only so the bootstrap stream of every later
+## row stays identical (seed-stream rule, notes 59.91). Its rows are overwritten here with the
+## correct sample: drop the municipality flagged in treatment_municipio.rds (San Pedro de Macoris).
+imp <- bin[cohort_imputed==TRUE & ever_treated==1L & always_treated==0L, adm3_pcode]
+stopifnot(length(imp)==1L)
+for (sc in c("S1","S2")) {
+  d <- mkest(if (sc=="S1") bin else mod)
+  for (yn in c("rateA_15_19","ddd_A")) {
+    set.seed(20260722); r <- cs(d[!adm3_pcode %in% imp], yn)
+    out[scenario==sc & spec=="A4 drop imputed cohorts" & outcome==yn,
+        `:=`(ATT=round(r[1],2), SE=round(r[2],2), p=round(2*pnorm(-abs(r[1]/r[2])),3),
+             note="drops San Pedro de Macoris only (flag from treatment file)")]
+  }
+}
+## ---- A5 La Vega dated 2022 (2026-11-13; was a hand-typed July value in 10z4) ----
+lv <- copy(bin); stopifnot(lv[adm3_pcode=="DOM021301", g]==2023L); lv[adm3_pcode=="DOM021301", g := 2022L]
+set.seed(20260722); r <- cs(mkest(lv), "rateA_15_19")
+out <- rbind(out, data.table(scenario="S1", block="A", spec="A5 La Vega dated 2022", outcome="rateA_15_19",
+                             ATT=round(r[1],2), SE=round(r[2],2), p=round(2*pnorm(-abs(r[1]/r[2])),3),
+                             note="main analysis dates La Vega to its 2023 reinauguration"))
 print(out[, .(scenario,block,spec,outcome,ATT,SE,p)], class=FALSE)
 fwrite(out, file.path(DIR_TABLES,"robustness_S1_S2.csv"))
 saveRDS(out, file.path(DIR_CLEAN,"robustness_09.rds"))

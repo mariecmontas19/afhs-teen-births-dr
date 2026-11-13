@@ -58,8 +58,8 @@ res <- rbindlist(lapply(seq_len(nrow(spec)), function(i){
   v<-spec$var[i]; med<-median(M[[v]]); und<-if(spec$under_high[i]) M[get(v)>=med,adm3_pcode] else M[get(v)<med,adm3_pcode]
   srv<-setdiff(M$adm3_pcode,und); ru<-cs_sub(und); rs<-cs_sub(srv); gap<-ru$att-rs$att
   data.table(label=spec$label[i], category=spec$category[i], in_dumbbell=spec$in_dumbbell[i],
-    att_u=round(ru$att,2), se_u=round(ru$se,2), p_u=round(2*pnorm(-abs(ru$att/ru$se)),3),
-    att_s=round(rs$att,2), se_s=round(rs$se,2), p_s=round(2*pnorm(-abs(rs$att/rs$se)),3),
+    att_u=round(ru$att,2), se_u=round(ru$se,2), p_u=round(2*pnorm(-abs(ru$att/ru$se)),4),
+    att_s=round(rs$att,2), se_s=round(rs$se,2), p_s=round(2*pnorm(-abs(rs$att/rs$se)),4),
     base_u=round(M[adm3_pcode %in% und, mean(base)],1), base_s=round(M[adm3_pcode %in% srv, mean(base)],1),
     gap=round(gap,2), p_diff=round(2*pnorm(-abs(gap/sqrt(ru$se^2+rs$se^2))),3), n_u=length(und), n_s=length(srv))
 }))
@@ -99,8 +99,8 @@ farB <- MB[near_any_km>=medB, adm3_pcode]; nearB <- setdiff(MB$adm3_pcode, farB)
 pF <- aB$pts[grp=="Far from facility"]; pN <- aB$pts[grp=="Near a facility"]
 row_exsd <- data.table(label="Nearest facility (km, excl. SD)", category="Health access (distance)",
   in_dumbbell=FALSE,
-  att_u=round(pF$att,2), se_u=round(pF$se,2), p_u=round(2*pnorm(-abs(pF$att/pF$se)),3),
-  att_s=round(pN$att,2), se_s=round(pN$se,2), p_s=round(2*pnorm(-abs(pN$att/pN$se)),3),
+  att_u=round(pF$att,2), se_u=round(pF$se,2), p_u=round(2*pnorm(-abs(pF$att/pF$se)),4),
+  att_s=round(pN$att,2), se_s=round(pN$se,2), p_s=round(2*pnorm(-abs(pN$att/pN$se)),4),
   base_u=round(M[adm3_pcode %in% farB, mean(base)],1), base_s=round(M[adm3_pcode %in% nearB, mean(base)],1),
   gap=round(pF$att-pN$att,2), p_diff=round(aB$dif$pd,3), n_u=length(farB), n_s=length(nearB))
 # (2) Adolescent vulnerability and school attachment (familia questionnaire, 05t):
@@ -113,8 +113,8 @@ res2 <- rbindlist(lapply(seq_len(nrow(spec2)), function(i){
   v<-spec2$var[i]; med<-median(M[[v]]); und<-if(spec2$under_high[i]) M[get(v)>=med,adm3_pcode] else M[get(v)<med,adm3_pcode]
   srv<-setdiff(M$adm3_pcode,und); ru<-cs_sub(und); rs<-cs_sub(srv); gap<-ru$att-rs$att
   data.table(label=spec2$label[i], category=spec2$category[i], in_dumbbell=spec2$in_dumbbell[i],
-    att_u=round(ru$att,2), se_u=round(ru$se,2), p_u=round(2*pnorm(-abs(ru$att/ru$se)),3),
-    att_s=round(rs$att,2), se_s=round(rs$se,2), p_s=round(2*pnorm(-abs(rs$att/rs$se)),3),
+    att_u=round(ru$att,2), se_u=round(ru$se,2), p_u=round(2*pnorm(-abs(ru$att/ru$se)),4),
+    att_s=round(rs$att,2), se_s=round(rs$se,2), p_s=round(2*pnorm(-abs(rs$att/rs$se)),4),
     base_u=round(M[adm3_pcode %in% und, mean(base)],1), base_s=round(M[adm3_pcode %in% srv, mean(base)],1),
     gap=round(gap,2), p_diff=round(2*pnorm(-abs(gap/sqrt(ru$se^2+rs$se^2))),3), n_u=length(und), n_s=length(srv))
 }))
@@ -158,11 +158,11 @@ g1 <- ggplot() +
   geom_point(data=Po[blue==TRUE],  aes(att, lab), color=PCUA_COL$blue, size=3.9, alpha=0.55) +
   geom_point(data=Po[blue==FALSE], aes(att, lab), color="grey45", size=3.9, alpha=0.55) +
   geom_text(data=Po[blue==TRUE],  aes(att, lab, label=sprintf("%.1f",att)), color=PCUA_COL$blue, vjust=-1.4, size=3.0, alpha=0.9) +
-  geom_text(data=Po[blue==FALSE], aes(att, lab, label=sprintf("%.1f",att)), color="grey40", vjust=-1.4, size=3.0, alpha=0.9) +
+  geom_text(data=Po[blue==FALSE], aes(att, lab, label=sprintf("%.1f",att)), color="grey40", vjust=1.8, size=3.0, alpha=0.9) +
   geom_point(data=Pe[blue==TRUE],  aes(att, lab), color=PCUA_COL$blue, size=5.6) +
   geom_point(data=Pe[blue==FALSE], aes(att, lab), color="grey45", size=5.6) +
   geom_text(data=Pe[blue==TRUE],  aes(att, lab, label=sprintf("%.1f",att)), color=PCUA_COL$blue, vjust=-1.3, size=3.6, fontface="bold") +
-  geom_text(data=Pe[blue==FALSE], aes(att, lab, label=sprintf("%.1f",att)), color="grey35", vjust=-1.3, size=3.6, fontface="bold") +
+  geom_text(data=Pe[blue==FALSE], aes(att, lab, label=sprintf("%.1f",att)), color="grey35", vjust=1.8, size=3.6, fontface="bold") +
   coord_cartesian(clip="off") +
   labs(x="ATT: teen births per 1,000 women (15-19)", y=NULL) +
   theme_pcua(base_size=14) +

@@ -58,8 +58,7 @@ scripts <- c(
   "07s_triplediff_ddd.R",
   "07t2_dynamic_panelB.R",
   "07t_headline.R",
-  "07p_decomposition.R",          # after 07t: checks its pooled row against headline_S1_S2.csv
-  "07p2_newupgrade_difftest.R",   # after 07p: reproduces cs_att_decomposition.csv, splices A17
+  "07b2_honestdid_ddd.R",         # after 07t: sensitivity bounds for the Table 3 triple difference (Table A4)
   "07y_distance_build.R",
   "07z5_spillover_table.R",
   "07z6_gestlag_national.R",
@@ -82,6 +81,8 @@ scripts <- c(
   "08p3_table_age_gradient.R",
   "08p5_placebo_panel.R",
   "08p_age_gradient.R",
+  "07p_decomposition.R",          # after 07t (pooled row vs headline_S1_S2.csv) and 08p (A17's 30-34 cell = A8's)
+  "07p2_newupgrade_difftest.R",   # after 07p: reproduces cs_att_decomposition.csv, splices A17
   "08q2_cohort_atts.R",
   "08s_siuben_inscripcion.R",
   "08x_bridge_cs.R",

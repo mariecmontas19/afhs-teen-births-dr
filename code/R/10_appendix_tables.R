@@ -38,7 +38,7 @@ A1 <- c(
 "\\label{tab:estimators}\\small",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-" & First AU opening & \\makecell{First AU opening \\\\ or administrative event} \\\\",
+" & First AU opening & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
 "\\midrule",
 sprintf("Callaway--Sant'Anna & %s & %s \\\\", ex("S1","^CS"),  ex("S2","^CS")),
 sprintf("Sun--Abraham & %s & %s \\\\",         ex("S1","^SA"),  ex("S2","^SA")),
@@ -56,7 +56,11 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 "two-stage omitted because its point estimate is identical to Borusyak imputation. Controls are",
 "omitted here because, being time-invariant, they are absorbed by municipality fixed",
 "effects in every estimator except Callaway--Sant'Anna. The Callaway--Sant'Anna row reproduces",
-"the canonical estimates in Table~\\ref{tab:estimates}. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
+"the canonical estimates in Table~\\ref{tab:estimates}.",
+local({ w <- fread(file.path(TAB,"placebo_wcb.csv"))[block=="B"]   # 2026-11-13: the inference comparison cited in the Robustness section
+  sprintf("For the TWFE benchmark, the analytic cluster-robust $p$-value is %.3f and the wild-cluster bootstrap-$t$ $p$-value is %.3f.",
+          w[grepl("analytic", spec), p], w[grepl("wild", spec), p]) }),
+"$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}"
 )

@@ -82,6 +82,7 @@ code/R/*
 !code/R/06b_monthly_panel.R
 !code/R/07a4_table1_descriptives.R
 !code/R/07b_honestdid.R
+!code/R/07b2_honestdid_ddd.R
 !code/R/07p_decomposition.R
 !code/R/07p2_newupgrade_difftest.R
 !code/R/07s_triplediff_ddd.R
