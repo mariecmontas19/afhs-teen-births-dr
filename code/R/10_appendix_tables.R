@@ -50,7 +50,7 @@ A1 <- c(
 "\\label{tab:estimators}",
 "\\small",
 "",
-"\\begin{tabular}{>{\\raggedright\\arraybackslash}p{6.0cm}cc}",
+"\\begin{tabular}{>{\\raggedright\\arraybackslash}p{7.6cm}cc}",
 "\\toprule",
 " & First AU opening",
 " & \\makecell{First AU opening \\\\ or upgrade event} \\\\",
