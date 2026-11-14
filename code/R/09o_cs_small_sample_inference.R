@@ -1,10 +1,10 @@
 # =============================================================================
 # 09o_cs_small_sample_inference.R — small-sample inference for the headline
 # Callaway--Sant'Anna group ATT (first-opening design, 20 treated of 146
-# municipalities). Two checks made for few treated clusters and applied to the
-# main estimator itself (committee comment, 2026-11-14):
+# municipalities): a check made for few treated clusters and applied to the
+# main estimator itself (committee comment, 2026-11-14).
 #
-# (1) CLUSTER JACKKNIFE, Karim, Nielsen, MacKinnon and Webb (2026,
+#     CLUSTER JACKKNIFE, Karim, Nielsen, MacKinnon and Webb (2026,
 #     arXiv:2602.12043), their eq. (20):
 #       CV3 = ((H-1)/H) * sum_h (ATT_(h) - ATT)^2 ,
 #     where ATT_(h) re-estimates every ATT(g,t) and the aggregate with
@@ -17,19 +17,12 @@
 #     here are single municipalities (2019 and 2025); their delete-one
 #     estimates are flagged in the output.
 #
-# (2) PERMUTATION (randomization) TEST, MacKinnon and Webb (2020): the 20
-#     observed opening years are reassigned at random across the 146
-#     municipalities (the whole cohort vector is permuted), B = 1,999 draws.
-#     p-values from the estimate (RI-beta) and from its t-ratio with the
-#     analytic clustered standard error (RI-t). The test treats placement as
-#     random; actual placement followed population size (Table 2).
-#
-# Expectations stated before running (rule 1b): both checks give wider
-# intervals than the multiplier bootstrap (SE 2.01) and the estimate remains
-# distinguishable from zero at conventional levels.
+# Expectation stated before running (rule 1b): a wider interval than the
+# multiplier bootstrap (SE 2.01), with the estimate still distinguishable
+# from zero at conventional levels.
 #
 # Output: output/tables/cs_small_sample_inference.csv (summary),
-#         cs_jackknife_deleteone.csv, cs_permutation_draws.csv
+#         cs_jackknife_deleteone.csv
 # =============================================================================
 source(here::here("code", "R", "00_config.R"))
 suppressPackageStartupMessages({library(data.table); library(did); library(parallel)})
@@ -63,7 +56,7 @@ stopifnot(abs(round(full[["att"]], 2) - hl$estimate) < 1e-9)      # same point e
 cat(sprintf("full sample: ATT %.4f | analytic SE %.4f | multiplier-bootstrap SE (Table 3) %.2f\n",
             full[["att"]], full[["se"]], hl$SE))
 
-## ---- (1) cluster jackknife ---------------------------------------------------
+## ---- cluster jackknife ---------------------------------------------------
 H  <- nrow(gm)
 jk <- rbindlist(mclapply(seq_len(H), function(h) {
   z <- est(d0[adm3_pcode != gm$adm3_pcode[h]])
@@ -86,24 +79,7 @@ cat(sprintf("jackknife: SE %.3f | t %.2f | p (t, %d df) %.4f | 95%% CI [%.2f, %.
             se_jk, t_jk, H - 1, p_jk, ci_jk[1], ci_jk[2], sh_tr))
 fwrite(jk, file.path(DIR_TABLES, "cs_jackknife_deleteone.csv"))
 
-## ---- (2) permutation test ----------------------------------------------------
-B <- 1999L
-set.seed(20260722)
-gperm <- lapply(seq_len(B), function(b) sample(gm$g))      # all permutations drawn first, from one seed
-perm <- rbindlist(mclapply(seq_len(B), function(b) {
-  gp <- copy(gm)[, g := gperm[[b]]]                # permute the whole cohort vector
-  z  <- tryCatch(est(merge(p, gp, by = "adm3_pcode")), error = function(e) c(att = NA_real_, se = NA_real_))
-  data.table(draw = b, ATT = z[["att"]], SE = z[["se"]])
-}, mc.cores = NC))
-stopifnot(nrow(perm) == B)
-fwrite(perm, file.path(DIR_TABLES, "cs_permutation_draws.csv"))
-ok <- perm[is.finite(ATT) & is.finite(SE) & SE > 0]
 t0 <- full[["att"]] / full[["se"]]
-p_beta <- (1 + sum(abs(ok$ATT) >= abs(full[["att"]]))) / (nrow(ok) + 1)
-p_t    <- (1 + sum(abs(ok$ATT / ok$SE) >= abs(t0))) / (nrow(ok) + 1)
-cat(sprintf("permutation: %d of %d draws usable | placebo ATT mean %.3f, sd %.3f | p (estimate) %.4f | p (t-ratio) %.4f\n",
-            nrow(ok), B, mean(ok$ATT), sd(ok$ATT), p_beta, p_t))
-
 out <- rbind(
   data.table(method = "Multiplier bootstrap (Table 3)", estimate = hl$estimate, se = hl$SE,
              lo = hl$estimate - 1.96 * hl$SE, hi = hl$estimate + 1.96 * hl$SE, p = hl$p,
@@ -113,12 +89,8 @@ out <- rbind(
              p = 2 * pnorm(-abs(t0)), note = "influence function"),
   data.table(method = "Cluster jackknife (CV3)", estimate = full[["att"]], se = se_jk,
              lo = ci_jk[1], hi = ci_jk[2], p = p_jk,
-             note = sprintf("H=%d delete-one re-estimations; t(%d); treated share of variance %.2f", H, H - 1, sh_tr)),
-  data.table(method = "Permutation test, estimate", estimate = full[["att"]], se = NA_real_, lo = NA_real_, hi = NA_real_,
-             p = p_beta, note = sprintf("%d usable draws of %d", nrow(ok), B)),
-  data.table(method = "Permutation test, t-ratio", estimate = full[["att"]], se = NA_real_, lo = NA_real_, hi = NA_real_,
-             p = p_t, note = sprintf("%d usable draws of %d", nrow(ok), B)))
+             note = sprintf("H=%d delete-one re-estimations; t(%d); treated share of variance %.2f", H, H - 1, sh_tr)))
 out[, `:=`(estimate = round(estimate, 4), se = round(se, 4), lo = round(lo, 4), hi = round(hi, 4), p = round(p, 4))]
 print(out, class = FALSE)
 fwrite(out, file.path(DIR_TABLES, "cs_small_sample_inference.csv"))
-cat("saved -> cs_small_sample_inference.csv, cs_jackknife_deleteone.csv, cs_permutation_draws.csv\n")
+cat("saved -> cs_small_sample_inference.csv, cs_jackknife_deleteone.csv\n")

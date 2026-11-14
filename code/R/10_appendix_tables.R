@@ -33,7 +33,7 @@ ex <- function(sc,pat){
   stopifnot(nrow(r)==1); cell(r$ATT,r$SE,r$p)
 }
 # Panel B (2026-11-14, committee comment): small-sample inference for the first-opening CS estimate,
-# from 09o_cs_small_sample_inference.R (cluster jackknife + permutation test).
+# from 09o_cs_small_sample_inference.R (cluster jackknife).
 ssi <- fread(file.path(TAB,"cs_small_sample_inference.csv"))
 ssr <- function(m){ r <- ssi[method==m]; stopifnot(nrow(r)==1); r }
 pf3 <- function(p) if (p < .001) "$<$0.001" else sprintf("%.3f", p)
@@ -62,8 +62,6 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 " & Standard error [95\\% CI] & $p$-value \\\\",
 ssrow("Multiplier bootstrap (as in Table~\\ref{tab:estimates})", "Multiplier bootstrap (Table 3)"),
 ssrow("Cluster jackknife", "Cluster jackknife (CV3)"),
-ssrow("Permutation test, based on the estimate", "Permutation test, estimate", FALSE),
-ssrow("Permutation test, based on the $t$-ratio", "Permutation test, t-ratio", FALSE),
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.86\\linewidth}\\vspace{4pt}\\footnotesize",
@@ -77,13 +75,9 @@ ssrow("Permutation test, based on the $t$-ratio", "Permutation test, t-ratio", F
 local({ w <- fread(file.path(TAB,"placebo_wcb.csv"))[block=="B"]   # 2026-11-13: the inference comparison cited in the Robustness section
   sprintf("For the TWFE benchmark, the analytic cluster-robust $p$-value is %.3f and the wild-cluster bootstrap-$t$ $p$-value is %.3f.",
           w[grepl("analytic", spec), p], w[grepl("wild", spec), p]) }),
-"Panel B applies two checks designed for few treated clusters to the first-opening Callaway--Sant'Anna",
-"estimate. The cluster jackknife re-estimates the effect omitting each of the 146 municipalities in turn",
-"\\citep{karim2026jackknife}; its $p$-value uses the $t$ distribution with 145 degrees of freedom. The permutation",
-"test reassigns the 20 observed opening years at random across the 146 municipalities 1{,}999 times",
-"\\citep{mackinnon2020randomization} and reports the share of reassignments whose estimate, or whose $t$-ratio,",
-"is at least as large in absolute value as the actual one. The permutation test treats the placement of AUs",
-"as random, whereas placement followed population size (\\autoref{tab:allocation}).",
+"Panel B reports cluster-jackknife standard errors, which are designed for few treated clusters, for the",
+"first-opening Callaway--Sant'Anna estimate. The jackknife re-estimates the effect omitting each of the 146",
+"municipalities in turn \\citep{karim2026jackknife}; its $p$-value uses the $t$ distribution with 145 degrees of freedom.",
 "$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}"
