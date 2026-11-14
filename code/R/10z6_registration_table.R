@@ -41,7 +41,7 @@ L <- c(
 "\\setlength{\\tabcolsep}{3.5pt}",
 "\\begin{tabular}{lcc}",
 "\\toprule",
-"\\multicolumn{3}{l}{\\textit{Panel A. Dropping the registration-ramp years (2016--2018)}} \\\\[2pt]",
+"\\multicolumn{3}{l}{\\textit{Panel A. Dropping the years of rising registration completeness (2016--2018)}} \\\\[2pt]",
 " & Full window 2016--2025 & 2019--2025 only \\\\",
 "\\midrule",
 rowA("S1 CS level, no covs", "Level"),
@@ -60,7 +60,7 @@ rowB("TWFE + contemporaneous shares", "Teen rate, conditioning on contemporaneou
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
-r"(\textit{Notes:} Panel A re-estimates the main design on the 2019--2025 window. This removes the 2016--2018 registration ramp but also excludes La Romana, whose 2019 opening leaves no pre-treatment year in the restricted panel. The comparison therefore asks whether the result persists among the 19 later-opening municipalities rather than holding the treated sample fixed. Panel B reports compositional shifts after openings and associated bounds. Both shifts also appear among births to mothers aged 25--44, indicating broader municipality-level changes rather than teen-specific responses. The leave-one-out rows drop each treated municipality in turn; both ranges remain negative. The largest movers are San Crist\'obal for the facility share and Santo Domingo Norte for the Haitian share. Conditioning on baseline shares strengthens the teen estimate; conditioning on contemporaneous shares ($^{c}$) uses post-treatment outcomes and is shown only as a bad-control bound. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Panel A re-estimates the main design on the 2019--2025 window. This removes the 2016--2018 increase in registration completeness but also excludes La Romana, whose 2019 opening leaves no pre-treatment year in the restricted panel. The comparison therefore asks whether the result persists among the 19 later-opening municipalities rather than holding the treated sample fixed. Panel B reports compositional shifts after openings and associated bounds. Both shifts also appear among births to mothers aged 25--44, indicating broader municipality-level changes rather than teen-specific responses. The leave-one-out rows drop each treated municipality in turn; both ranges remain negative. The largest movers are San Crist\'obal for the facility share and Santo Domingo Norte for the Haitian share. Conditioning on baseline shares strengthens the teen estimate; conditioning on contemporaneous shares ($^{c}$) uses post-treatment outcomes and is shown only as a bad-control bound. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 writeLines(L, file.path(TAB,"tab_a12_registration.tex"))

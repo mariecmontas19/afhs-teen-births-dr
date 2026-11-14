@@ -106,6 +106,7 @@ scripts <- c(
   "09l_bacon.R",
   "09m_ddd_variants.R",
   "09n_leave_one_out.R",
+  "09o_cs_small_sample_inference.R",   # after 09n: cluster jackknife + permutation test for the headline
   "10_appendix_leads.R",
   "10_appendix_tables.R",
   "10_table3_estimates.R",

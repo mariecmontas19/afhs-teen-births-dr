@@ -66,6 +66,33 @@ run <- function(sc, d){
 }
 cat("\n===== Table 4: functional form =====\n")
 run("S1", dS1); run("S2", dS2)
+
+# ---- Birth COUNTS as the outcome, no population denominator (committee comment, 2026-11-14) ----
+# Municipality fixed effects absorb differences in population size, so the count can be the outcome.
+# Estimated AFTER the legacy rows and seeded per call, so the rows above keep their bootstrap stream
+# (59.91 rule). No log-of-count row: some municipality-years have zero adolescent births, and Poisson
+# handles zeros (Wooldridge 2023). Expectation stated before running (rule 1b): the Poisson count
+# effect is close to the offset version above; the level-count estimate is negative but imprecise
+# because a few large municipalities dominate it.
+cat("nb_15_19==0 municipio-years (S1 sample):", dS1[nb_15_19==0, .N], "of", nrow(dS1), "\n")
+run_counts <- function(sc, d){
+  m3 <- fepois(nb_15_19 ~ post | id+year, d, cluster=~id)                      # no offset
+  b3 <- coef(m3)[["post"]]; s3 <- se(m3)[["post"]]
+  add(sc,"TWFE Poisson (count, no population term)", b3, s3, 100*(exp(b3)-1),
+      100*exp(b3)*s3, 100*(exp(b3-1.96*s3)-1), 100*(exp(b3+1.96*s3)-1))
+  set.seed(20260722)
+  a  <- suppressWarnings(suppressMessages(att_gt(yname="nb_15_19", tname="year", idname="id", gname="g", xformla=~1,
+         data=d, control_group="notyettreated", base_period="universal", est_method="reg",
+         bstrap=TRUE, biters=2000, clustervars="id", print_details=FALSE)))
+  gc <- suppressMessages(aggte(a, type="group", na.rm=TRUE))
+  bc0 <- gc$overall.att; sc0 <- gc$overall.se
+  basec <- d[g>0 & year==g-1L, mean(nb_15_19)]; kc <- 100/basec                 # mean count in the year before opening
+  add(sc,"CS count (levels)", bc0, sc0, kc*bc0, kc*sc0, kc*(bc0-1.96*sc0), kc*(bc0+1.96*sc0))
+  cat(sprintf("%s counts: Poisson no-offset %.4f (%.4f) | CS count ATT %.2f (%.2f) on baseline mean %.1f births\n",
+              sc, b3, s3, bc0, sc0, basec))
+  data.table(scenario=sc, base_count=basec)
+}
+count_base <- rbind(run_counts("S1", dS1), run_counts("S2", dS2))
 ff <- rbindlist(res); print(ff, class=FALSE)
 fwrite(ff, file.path(TAB,"packham_bridge.csv"))
 
@@ -115,6 +142,10 @@ L <- c(
 sprintf("Callaway--Sant'Anna, linear (main estimate) & %s & %s \\\\", pc("S1","CS linear (headline)"), pc("S2","CS linear (headline)")),
 sprintf("Callaway--Sant'Anna, log-rate & %s & %s \\\\", pc("S1","CS log-rate (% effect)"), pc("S2","CS log-rate (% effect)")),
 sprintf("TWFE, Poisson (count) & %s & %s \\\\", pc("S1","TWFE Poisson (count)"),     pc("S2","TWFE Poisson (count)")),
+"\\addlinespace",
+"\\multicolumn{3}{l}{\\textit{Outcome: number of adolescent births, no population denominator}} \\\\[2pt]",
+sprintf("TWFE, Poisson, no population term & %s & %s \\\\", pc("S1","TWFE Poisson (count, no population term)"), pc("S2","TWFE Poisson (count, no population term)")),
+sprintf("Callaway--Sant'Anna, number of births & %s & %s \\\\", pc("S1","CS count (levels)"), pc("S2","CS count (levels)")),
 "\\midrule",
 sprintf("Registered adolescent births averted (treated, 2016--2025) [95\\%% CI] & %s & %s \\\\", bc("S1"), bc("S2")),
 "\\bottomrule",
@@ -127,7 +158,12 @@ sprintf("Registered adolescent births averted (treated, 2016--2025) [95\\%% CI] 
 "heterogeneity-robust proportional effect (Callaway--Sant'Anna has no count/Poisson family).",
 "The Poisson row is a static two-way fixed-effects count model with a log-population offset",
 "and is the count-model analogue of Packham's (2017) log-rate specification, population-weighted via the",
-"birth count. \\textbf{Births averted} $=$ CS ATT $\\times$ exposed teen-women-years in treated municipalities",
+"birth count. The two rows on the number of births use no population term: municipality fixed effects",
+"absorb differences in population size. The Poisson row reports $e^{\\beta}-1$. The Callaway--Sant'Anna row",
+sprintf("divides the estimated change in the number of births ($%.1f$ per municipality-year in the first-opening design)", ff[scenario=="S1" & form=="CS count (levels)", coef]),
+sprintf("by the treated municipalities' mean number of births in the year before opening (%.1f). Treated municipalities", count_base[scenario=="S1", base_count]),
+"are larger than comparison municipalities, so a comparison of changes in the number of births can overstate a",
+"proportional effect; the Poisson row is its proportional counterpart. \\textbf{Births averted} $=$ CS ATT $\\times$ exposed teen-women-years in treated municipalities",
 "after opening; brackets $=$ 95\\% CI propagated from the ATT (normal approx.). Rough welfare approximation: it",
 "applies the \\emph{average} ATT to \\emph{all} post-treatment years (the effect actually builds from",
 "smaller and imprecise in Year 0, so it is a total rather than a year-specific estimate), counts only treated municipalities' own exposure",

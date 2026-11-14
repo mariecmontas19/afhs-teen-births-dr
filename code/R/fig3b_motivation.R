@@ -22,7 +22,7 @@ trt <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[, 
 natl <- p[, .(rate_popwtd=round(1000*sum(nb_15_19)/sum(womenA_15_19),1),
               median_muni=round(median(rateA_15_19),1)), by=year][order(year)]
 natl[, `:=`(vs_2019=round(100*(rate_popwtd/natl[year==2019,rate_popwtd]-1)),
-            era=fifelse(year<=2019,"registration ramp (undercount)","post-2019"))]
+            era=fifelse(year<=2019,"registration incomplete (undercount)","post-2019"))]
 fwrite(natl, file.path(TAB,"national_teen_rates.csv"))
 
 # ---- MAP: time-lapse 2019/2022/2025 + open-by-year unit dots ----
@@ -67,7 +67,7 @@ cat("provinces flagged Santo Domingo metro:", paste(sort(unique(pr[sd==TRUE]$pro
 sdlab <- pr[sd==TRUE & year==2025]; sdlab[, lab := tools::toTitleCase(tolower(prov_norm))]
 gP <- ggplot() +
   annotate("rect", xmin=2016, xmax=2019.5, ymin=-Inf, ymax=Inf, fill="grey85", alpha=0.30) +
-  annotate("text", x=2017.7, y=8, label="registration ramp", vjust=0, size=3, color="grey40", fontface="italic") +
+  annotate("text", x=2017.7, y=8, label="registration still incomplete", vjust=0, size=3, color="grey40", fontface="italic") +
   geom_line(data=pr, aes(year, rate, group=prov_norm), color="grey60", alpha=0.40, linewidth=0.35) +
   geom_line(data=wdi, aes(year, rate), color="grey45", linewidth=1.5) +
   geom_point(data=wdi, aes(year, rate), color="grey45", fill="white", shape=22, size=2.2, stroke=1.1) +
@@ -88,7 +88,7 @@ ggsave_pair(file.path(FIG,"fig_01_spaghetti_prov.png"), gP, width=10.2, height=5
 nmuni <- p[, uniqueN(adm3_pcode)]; mclip <- p[rateA_15_19>100, .N]
 gM <- ggplot() +
   annotate("rect", xmin=2016, xmax=2019.5, ymin=-Inf, ymax=Inf, fill="grey85", alpha=0.30) +
-  annotate("text", x=2017.7, y=100, label="registration ramp", vjust=1.4, size=3, color="grey40", fontface="italic") +
+  annotate("text", x=2017.7, y=100, label="registration still incomplete", vjust=1.4, size=3, color="grey40", fontface="italic") +
   geom_line(data=p, aes(year, rateA_15_19, group=adm3_pcode), color="grey55", alpha=0.20, linewidth=0.3) +
   geom_line(data=nat, aes(year, rate), color=PCUA_COL$blue, linewidth=1.7) +
   geom_point(data=nat, aes(year, rate), color=PCUA_COL$blue, fill="white", shape=21, size=2.6, stroke=1.3) +

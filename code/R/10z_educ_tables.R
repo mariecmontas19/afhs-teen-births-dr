@@ -120,9 +120,9 @@ panelC,
 "population, so the sex-specific ratios do not average to the total.",
 "Panel (b) omits grades 1--3 because that outcome fails its pre-trend test;",
 "the nested row isolates students at least three years behind grade.",
-"Panel (c) uses center-level results from the Pruebas Nacionales, the national terminal-secondary",
-"examination (first convocatoria; school years 2016--2024, with the assessment scoreless in 2020",
-"and cancelled in 2021; the 2024 wave uses first-convocatoria student microdata provided by",
+"Panel (c) uses school-level results from the Pruebas Nacionales, the national terminal-secondary",
+"examination (first examination round; school years 2016--2024, with the assessment scoreless in 2020",
+"and cancelled in 2021; the 2024 results use student microdata for the first examination round provided by",
 sprintf("MoE), aggregated to municipalities; %d treated municipalities (2020 and 2021 openers are", local({   # counted as in 08z9 (2026-11-13; was a typed 16)
   b <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% c("DOM010905","DOM051703","DOM012510")]
   pm <- unique(as.data.table(readRDS(file.path(DIR_CLEAN,"pruebas_muni.rds")))$adm3_pcode)

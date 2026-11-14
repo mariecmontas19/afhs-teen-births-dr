@@ -54,7 +54,7 @@ gm <- function(pat){ r <- mc[grepl(pat, outcome)]; stopifnot(nrow(r)==1); r }
 a <- gm("^\\(A\\)"); b <- gm("^\\(B\\)"); d <- gm("^\\(C\\)")
 L2 <- c(
 "\\begin{table}[htbp]\\centering",
-"\\caption{Utilization signals from hospital-production registries}",
+"\\caption{Utilization signals from hospital administrative records}",
 "\\label{tab:utilization}\\footnotesize",
 "\\setlength{\\tabcolsep}{3.5pt}\\renewcommand{\\arraystretch}{1.10}",
 "\\begin{tabular}{lcc}",
@@ -67,7 +67,7 @@ sprintf("Counseling and family-planning visits per 1{,}000 women 15--49 & %s & 2
 "\\bottomrule",
 "\\end{tabular}",
 "\\begin{minipage}{0.97\\linewidth}\\vspace{4pt}\\footnotesize",
-r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group-aggregated ATT using outcomes constructed from the public-facility Form 67-A hospital-production registries and assigned to municipalities as in Section~\ref{sec:data-mechanisms}. Municipality-clustered multiplier-bootstrap standard errors are in parentheses and 95\% confidence intervals are in brackets. The consultation series begin in 2020, and counseling and family-planning visits are observed only from 2022, so only the listed opening cohorts contribute to each estimate. The adolescent share of prenatal consultations is less mechanically sensitive than consultation levels to changes in the number of pregnancies, but it remains an indirect proxy for AU use. The NHS confirmed in writing that no unit-level utilization records exist. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
+r"(\textit{Notes:} Each row reports a Callaway--Sant'Anna group-aggregated ATT using outcomes constructed from the public-facility hospital administrative records (Form 67-A) and assigned to municipalities as in Section~\ref{sec:data-mechanisms}. Municipality-clustered multiplier-bootstrap standard errors are in parentheses and 95\% confidence intervals are in brackets. The consultation series begin in 2020, and counseling and family-planning visits are observed only from 2022, so only the listed opening cohorts contribute to each estimate. The adolescent share of prenatal consultations is less mechanically sensitive than consultation levels to changes in the number of pregnancies, but it remains an indirect proxy for AU use. The NHS confirmed in writing that no unit-level utilization records exist. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.)",
 "\\end{minipage}",
 "\\end{table}")
 L2 <- gsub("municipio-clustered", "municipality-clustered", L2, fixed=TRUE)
