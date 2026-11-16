@@ -87,6 +87,11 @@ cat("non-finite overage_rate:", gp[!is.finite(overage_rate), .N],
 
 trt <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[
          !adm3_pcode %in% names(fold)]
+# Optional exclusion (2026-11-16): 08z13_educ_excl_laromana.R re-runs this script with
+# EDUC_DROP_PCODE set, to produce the "excluding La Romana" rows of Table 6. With the variable
+# unset (the default) nothing changes and the outputs keep their usual names.
+DROP <- Sys.getenv("EDUC_DROP_PCODE", ""); SFX <- if (nzchar(DROP)) paste0("_excl_", DROP) else ""
+trt <- trt[adm3_pcode != DROP]
 trt[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year),
                    fifelse(ever_treated==0L, 0L, NA_integer_))]
 runD <- function(grp_, yvar){
@@ -110,5 +115,5 @@ res <- rbindlist(lapply(grps, function(x) rbind(runD(x,"overage_rate"), runD(x,"
 cat("\n============ ENROLLMENT DECOMPOSITION: OVERAGE (3+ yrs behind) vs ON-TRACK ============\n")
 cat("per 100 pop 12-17 (GER convention); overage + ontime = total; CS not-yet, universal base.\n\n")
 print(res, class=FALSE)
-fwrite(res, file.path(PROJ,"output","tables","educ_overage_decomp.csv"))
+fwrite(res, file.path(PROJ,"output","tables",paste0("educ_overage_decomp",SFX,".csv")))
 cat("saved -> educ_overage_decomp.csv\n")

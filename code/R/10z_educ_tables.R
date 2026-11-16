@@ -18,9 +18,14 @@ n <- fread(file.path(TAB,"educ_final_bysex_numeric.csv"))
 n <- n[yvar %in% c("enroll_rate","dropout")]
 cellA <- function(r) sprintf("\\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}}",
                              r$ATT, st(r$p), r$SE, r$ATT-1.96*r$SE, r$ATT+1.96*r$SE)
-rowA <- function(yv, lab){
+rowA <- function(yv, lab, n=get("n", envir=globalenv())){
   M <- n[yvar==yv & sexo=="M"]; F <- n[yvar==yv & sexo=="F"]; T <- n[yvar==yv & sexo=="T"]
+  stopifnot(nrow(M)==1, nrow(F)==1, nrow(T)==1)
   sprintf("%s & %s & %s & %s & %.1f & %.2f \\\\", lab, cellA(M), cellA(F), cellA(T), T$base, T$lead_p) }
+# Rows excluding La Romana (MM 2026-11-16; 08z13_educ_excl_laromana.R): the only 2019 opener,
+# whose enrollment ratio fell sharply in 2020-2021.
+nx  <- fread(file.path(TAB,"educ_final_bysex_numeric_excl_DOM081201.csv"))[yvar %in% c("enroll_rate","dropout")]
+XLR <- "\\quad excluding La Romana"
 panelA <- c(
 "\\begin{subtable}{\\linewidth}\\centering",
 "\\caption{Enrollment and dropout, by sex}\\label{tab:educ_bysex}",
@@ -29,8 +34,9 @@ panelA <- c(
 " & Male & Female & Total & Baseline & Pre-trend $p$ \\\\",
 "\\midrule",
 rowA("enroll_rate","Gross enrollment ratio (ages 12--17)"),
+rowA("enroll_rate", XLR, nx),
 "\\addlinespace",
-rowA("dropout","Dropout rate (pp of enrolled)"),
+rowA("dropout","Dropout rate (pp of enrolled)"),   # no excluding-La-Romana row: it barely moves (MM 2026-11-16)
 "\\bottomrule",
 "\\end{tabular}",
 "\\end{subtable}")
@@ -55,6 +61,9 @@ rowXB <- function(gv){
   sprintf("%s & %s & %s & %s & %.1f & %.2f \\\\", lab[gv], cellA(M), cellA(F), cellA(T), T$base, T$lead_p) }
 ovrow <- sprintf("\\quad\\quad \\emph{of which overage (3+ yrs behind, both sexes)} & & & \\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.2f & %.2f \\\\",
    ov$ATT, st(ov$p), ov$SE, ov$ATT-1.96*ov$SE, ov$ATT+1.96*ov$SE, ov_base, ov$lead_p)
+ovx <- fread(file.path(TAB,"educ_overage_decomp_excl_DOM081201.csv"))[component=="overage" & group=="6"]; stopifnot(nrow(ovx)==1)
+ovrowx <- sprintf("\\quad\\quad\\quad excluding La Romana & & & \\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.2f & %.2f \\\\",
+   ovx$ATT, st(ovx$p), ovx$SE, ovx$ATT-1.96*ovx$SE, ovx$ATT+1.96*ovx$SE, ovx$base, ovx$lead_p)
 panelB <- c(
 "\\begin{subtable}{\\linewidth}\\centering\\scriptsize",
 "\\caption{Enrollment by grade group, by sex}\\label{tab:educ_grade}",
@@ -68,6 +77,7 @@ rowXB("4-5 (Cuarto-Quinto)"),
 rowXB("6 (Sexto, terminal)"),
 "\\addlinespace",
 ovrow,
+ovrowx,
 "\\bottomrule",
 "\\end{tabular}",
 "\\end{subtable}")
@@ -102,17 +112,21 @@ comb <- c(
 "\\caption{Effects of AU openings on secondary-school outcomes}",
 "\\label{tab:educ}",
 panelA,
-"\\\\[1.2em]",
+"\\\\[0.6em]",   # tighter gaps: three rows were added on 2026-11-16 and the table must stay on one page
 panelB,
-"\\\\[1.2em]",
+"\\\\[0.6em]",   # tighter gaps: three rows were added on 2026-11-16 and the table must stay on one page
 panelC,
-"\\begin{minipage}{0.96\\linewidth}\\vspace{6pt}\\footnotesize",
+"\\begin{minipage}{\\linewidth}\\vspace{3pt}\\footnotesize",
 "\\textit{Notes:} Callaway--Sant'Anna group-aggregated ATT on municipality-level secondary-schooling",
 "outcomes (146 municipalities, school years 2015--16 to 2024--25); not-yet-treated controls,",
 "universal base period, municipality-clustered multiplier-bootstrap standard errors in parentheses,",
 "95\\% confidence intervals in brackets. The gross enrollment ratio is all secondary enrollment,",
 "regardless of age, per 100 population of the official secondary ages 12--17; the dropout rate is",
-"the share of enrolled students leaving during the school year. Baseline $=$ treated mean in the",
+"the share of enrolled students leaving during the school year.",
+local({ g <- fread(file.path(TAB,"educ_laromana_ger.csv"))
+  sprintf("Rows labeled ``excluding La Romana'' drop La Romana, the only municipality that opened in 2019, whose enrollment ratio fell from %.0f to %.0f between 2019 and 2021.",
+          g[year_end==2019, la_romana], g[year_end==2021, la_romana]) }),
+"Baseline $=$ treated mean in the",
 "year before opening (total column); pre-trend $p$ tests that the",
 "inverse-variance-weighted average of the leads $e\\in[-5,-2]$ is zero.",
 "Percentage effects are relative to that baseline; N/A indicates that the baseline is not defined for the outcome.",

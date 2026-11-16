@@ -50,6 +50,11 @@ d0[, c("y18","y20") := NULL]
 
 fold <- c("DOM010905","DOM051703","DOM012510")
 trt <- as.data.table(readRDS(file.path(DIR_CLEAN,"treatment_municipio.rds")))[!adm3_pcode %in% fold]
+# Optional exclusion (2026-11-16): 08z13_educ_excl_laromana.R re-runs this script with
+# EDUC_DROP_PCODE set, to produce the "excluding La Romana" rows of Table 6. With the variable
+# unset (the default) nothing changes and the outputs keep their usual names.
+DROP <- Sys.getenv("EDUC_DROP_PCODE", ""); SFX <- if (nzchar(DROP)) paste0("_excl_", DROP) else ""
+trt <- trt[adm3_pcode != DROP]
 trt[, g := fifelse(ever_treated==1L & always_treated==0L, as.integer(first_year),
                    fifelse(ever_treated==0L, 0L, NA_integer_))]
 
@@ -96,11 +101,11 @@ tab <- rbindlist(lapply(names(outs), function(v) data.table(
 cat("\n============ EDUCATION: MALE / FEMALE / TOTAL (enrollment normalized) ============\n")
 cat("Secondary, CS (not-yet, universal base, muni-clustered); lead p = joint pre-trend test.\n\n")
 print(tab, class=FALSE)
-fwrite(tab, file.path(PROJ,"output","tables","educ_final_bysex.csv"))
+fwrite(tab, file.path(PROJ,"output","tables",paste0("educ_final_bysex",SFX,".csv")))
 cat("\nsaved -> educ_final_bysex.csv\n")
 
 # numeric twin for the paper .tex formatter (10z)
 num <- rbindlist(lapply(names(outs), function(v)
   rbindlist(lapply(c("M","F","T"), function(sx) cellN(sx, v)))))
-fwrite(num, file.path(PROJ,"output","tables","educ_final_bysex_numeric.csv"))
+fwrite(num, file.path(PROJ,"output","tables",paste0("educ_final_bysex_numeric",SFX,".csv")))
 cat("saved -> educ_final_bysex_numeric.csv\n")

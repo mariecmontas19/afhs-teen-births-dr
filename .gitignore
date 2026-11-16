@@ -118,6 +118,7 @@ code/R/*
 !code/R/08z4_educ_by_grade.R
 !code/R/08z5_educ_overage_decomp.R
 !code/R/08z9_pruebas_panelC.R
+!code/R/08z13_educ_excl_laromana.R
 !code/R/09_robustness.R
 !code/R/09b_ramp_robustness.R
 !code/R/09c3_denominator_final.R
