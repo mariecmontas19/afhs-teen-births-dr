@@ -24,7 +24,7 @@ rowA <- function(yv, lab, n=get("n", envir=globalenv())){
   sprintf("%s & %s & %s & %s & %.1f & %.2f \\\\", lab, cellA(M), cellA(F), cellA(T), T$base, T$lead_p) }
 # Rows excluding La Romana (MM 2026-11-16; 08z13_educ_excl_laromana.R): the only 2019 opener,
 # whose enrollment ratio fell sharply in 2020-2021.
-nx  <- fread(file.path(TAB,"educ_final_bysex_numeric_excl_DOM081201.csv"))[yvar %in% c("enroll_rate","dropout")]
+nx  <- fread(file.path(TAB,"educ_final_bysex_numeric_excl_DOM081201.csv"))[yvar == "enroll_rate"]
 XLR <- "\\quad excluding La Romana"
 panelA <- c(
 "\\begin{subtable}{\\linewidth}\\centering",
@@ -61,9 +61,6 @@ rowXB <- function(gv){
   sprintf("%s & %s & %s & %s & %.1f & %.2f \\\\", lab[gv], cellA(M), cellA(F), cellA(T), T$base, T$lead_p) }
 ovrow <- sprintf("\\quad\\quad \\emph{of which overage (3+ yrs behind, both sexes)} & & & \\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.2f & %.2f \\\\",
    ov$ATT, st(ov$p), ov$SE, ov$ATT-1.96*ov$SE, ov$ATT+1.96*ov$SE, ov_base, ov$lead_p)
-ovx <- fread(file.path(TAB,"educ_overage_decomp_excl_DOM081201.csv"))[component=="overage" & group=="6"]; stopifnot(nrow(ovx)==1)
-ovrowx <- sprintf("\\quad\\quad\\quad excluding La Romana & & & \\makecell{$%+.2f%s$ (%.2f) \\\\ {[$%.2f$, $%.2f$]}} & %.2f & %.2f \\\\",
-   ovx$ATT, st(ovx$p), ovx$SE, ovx$ATT-1.96*ovx$SE, ovx$ATT+1.96*ovx$SE, ovx$base, ovx$lead_p)
 panelB <- c(
 "\\begin{subtable}{\\linewidth}\\centering\\scriptsize",
 "\\caption{Enrollment by grade group, by sex}\\label{tab:educ_grade}",
@@ -77,7 +74,6 @@ rowXB("4-5 (Cuarto-Quinto)"),
 rowXB("6 (Sexto, terminal)"),
 "\\addlinespace",
 ovrow,
-ovrowx,
 "\\bottomrule",
 "\\end{tabular}",
 "\\end{subtable}")
@@ -124,7 +120,7 @@ panelC,
 "regardless of age, per 100 population of the official secondary ages 12--17; the dropout rate is",
 "the share of enrolled students leaving during the school year.",
 local({ g <- fread(file.path(TAB,"educ_laromana_ger.csv"))
-  sprintf("Rows labeled ``excluding La Romana'' drop La Romana, the only municipality that opened in 2019, whose enrollment ratio fell from %.0f to %.0f between 2019 and 2021.",
+  sprintf("The row labeled ``excluding La Romana'' drops La Romana, the only municipality that opened in 2019, whose enrollment ratio fell from %.0f to %.0f between 2019 and 2021.",
           g[year_end==2019, la_romana], g[year_end==2021, la_romana]) }),
 "Baseline $=$ treated mean in the",
 "year before opening (total column); pre-trend $p$ tests that the",

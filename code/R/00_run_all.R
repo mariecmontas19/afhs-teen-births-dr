@@ -90,7 +90,7 @@ scripts <- c(
   "08z3_educ_final_table.R",
   "08z4_educ_by_grade.R",
   "08z5_educ_overage_decomp.R",
-  "08z13_educ_excl_laromana.R",     # after 08z3 and 08z5: Table 6 rows excluding La Romana
+  "08z13_educ_excl_laromana.R",     # after 08z3: Table 6 enrollment row excluding La Romana
   "08z9_pruebas_panelC.R",
   "09_robustness.R",
   "09b_ramp_robustness.R",

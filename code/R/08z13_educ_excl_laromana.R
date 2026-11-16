@@ -2,23 +2,20 @@
 # 08z13_educ_excl_laromana.R — the "excluding La Romana" rows of Table 6
 # (MM 2026-11-16). La Romana (DOM081201) is the only municipality that opened
 # in 2019; its secondary gross enrollment ratio fell sharply in 2020-2021, so
-# Table 6 reports the enrollment, dropout and overage estimates with and
-# without it. This script re-runs 08z3 (enrollment and dropout by sex) and
-# 08z5 (overage decomposition) with EDUC_DROP_PCODE set; each script keeps its
-# own seed, so the full-sample outputs are untouched and the excluded-sample
-# outputs are reproducible. It also records the enrollment-ratio series quoted
+# Table 6 reports the enrollment estimate with and without it. This script
+# re-runs 08z3 (enrollment and dropout by sex) with EDUC_DROP_PCODE set; that
+# script keeps its own seed, so the full-sample outputs are untouched and the
+# excluded-sample outputs are reproducible. It also records the enrollment-ratio series quoted
 # in the table note and in the text.
 # Output: output/tables/educ_final_bysex_numeric_excl_DOM081201.csv,
-#         educ_final_bysex_excl_DOM081201.csv, educ_overage_decomp_excl_DOM081201.csv,
-#         educ_laromana_ger.csv
+#         educ_final_bysex_excl_DOM081201.csv, educ_laromana_ger.csv
 # ============================================================================
 source(here::here("code","R","00_config.R"))
 suppressPackageStartupMessages(library(data.table))
 LR <- "DOM081201"
 Sys.setenv(EDUC_DROP_PCODE = LR)
 tryCatch({
-  for (s in c("08z3_educ_final_table.R", "08z5_educ_overage_decomp.R"))
-    sys.source(here::here("code","R",s), envir = new.env())
+  sys.source(here::here("code","R","08z3_educ_final_table.R"), envir = new.env())
 }, finally = Sys.unsetenv("EDUC_DROP_PCODE"))
 
 # ---- the series behind "fell from 108 to 93": total secondary GER, as built in 08z3 ----
