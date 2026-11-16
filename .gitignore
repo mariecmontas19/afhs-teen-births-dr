@@ -139,6 +139,7 @@ code/R/*
 !code/R/10_table3_estimates.R
 !code/R/10_tables.R
 !code/R/10r_rollout_figure.R
+!code/R/10t_age_trends_figure.R
 !code/R/10w_wealth_items_table.R
 !code/R/10x_bridge_table.R
 !code/R/10x_denominator_panel.R

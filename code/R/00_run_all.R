@@ -112,6 +112,7 @@ scripts <- c(
   "10_appendix_tables.R",
   "10_table3_estimates.R",
   "10r_rollout_figure.R",
+  "10t_age_trends_figure.R",        # Appendix Figure B8: birth rates by age group, treated vs never-treated
   "10w_wealth_items_table.R",
   "10x_bridge_table.R",
   "10x_denominator_panel.R",
