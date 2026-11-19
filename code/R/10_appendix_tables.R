@@ -75,7 +75,7 @@ sprintf("Observations (municipality-years) & %s & %s \\\\", cma(n1$ob), cma(n2$o
 "\\midrule",
 "\\multicolumn{3}{l}{\\textit{Panel B. First AU opening, 2018--2025 (mother's age fully recorded)}} \\\\[2pt]",
 "",
-sprintf("Callaway--Sant'Anna\n & %s\n & \\\\", x18("^CS")),
+sprintf("Callaway--Sant'Anna\n & %s\n & \\\\", ex("S1","^CS")),   # 2026-11-18 (MM, 59.143): same estimate as Panel A, so the same SE
 "",
 sprintf("Sun--Abraham\n & %s\n & \\\\", x18("^SA")),
 "",

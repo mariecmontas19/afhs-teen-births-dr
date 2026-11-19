@@ -64,3 +64,26 @@ for(v in unique(res$classification)){
 }
 fwrite(res, file.path(TAB,"birth_vs_conception.csv"))
 cat("saved -> birth_vs_conception.csv\n")
+
+# ---- 2026-11-18 (MM; methods 59.143): ages 10-14 per 1,000 women aged 10-14 -------------------
+# The 10-14 row of Table A7 is not part of the 15-19 total, so it uses its own denominator, as in
+# Table A8 and the main text. Estimated after the rows above with its own seed and written to a
+# separate file, so birth_vs_conception.csv is unchanged.
+w1014 <- as.data.table(readRDS(file.path(DIR_CLEAN,"panel_muni_year_155.rds")))[year %in% 2018:2025 & !adm3_pcode %in% fold,
+           .(adm3_pcode, year, womenA_10_14)]
+r1014 <- rbindlist(lapply(c("age_mom","age_conc"), function(cl){
+  cnt <- b[get(cl) %in% 10:14, .(n=.N), by=.(adm3_pcode, year=birth_year)]
+  d1 <- merge(w1014, cnt, by=c("adm3_pcode","year"), all.x=TRUE); d1[is.na(n), n := 0L]
+  d1[, r := 1000*n/womenA_10_14]
+  e1 <- merge(d1, bin[!is.na(g), .(adm3_pcode, g)], by="adm3_pcode"); e1[, id := as.integer(factor(adm3_pcode))]
+  set.seed(20261119)
+  a <- suppressWarnings(suppressMessages(att_gt(yname="r", tname="year", idname="id", gname="g", xformla=~1, data=e1,
+        control_group="notyettreated", base_period="universal", est_method="reg",
+        bstrap=TRUE, biters=2000, clustervars="id", print_details=FALSE)))
+  o <- suppressMessages(aggte(a, type="group", na.rm=TRUE))
+  data.table(classification=fifelse(cl=="age_mom","Age at BIRTH","Age at CONCEPTION"), age="10--14",
+             ATT=round(o$overall.att,2), SE=round(o$overall.se,2), p=round(2*pnorm(-abs(o$overall.att/o$overall.se)),3),
+             denominator="women aged 10-14")
+}))
+print(r1014, class=FALSE)
+fwrite(r1014, file.path(TAB,"birth_vs_conception_1014.csv"))

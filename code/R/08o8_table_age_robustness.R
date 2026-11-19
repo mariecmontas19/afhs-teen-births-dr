@@ -14,6 +14,13 @@ suppressPackageStartupMessages(library(data.table))
 TAB <- file.path(PROJ,"output","tables")
 
 res <- fread(file.path(TAB,"birth_vs_conception.csv"))
+# 2026-11-18 (MM; methods 59.143): the 15-19 age-at-birth cell is the main estimate (Table 3), whose point
+# estimate is the same on 2018-2025; the 10-14 row is per 1,000 women aged 10-14 (08o5, separate file).
+hl1 <- fread(file.path(TAB,"headline_S1_S2.csv"))[scenario=="S1" & spec=="CS, no covs"]; stopifnot(nrow(hl1)==1)
+stopifnot(abs(res[classification=="Age at BIRTH" & age=="15--19", ATT] - round(hl1$estimate,2)) < 0.005)
+res[classification=="Age at BIRTH" & age=="15--19", `:=`(SE=hl1$SE, p=hl1$p)]
+r14 <- fread(file.path(TAB,"birth_vs_conception_1014.csv")); stopifnot(nrow(r14)==2)
+res <- rbind(res[age!="10--14"], r14[, .(classification, age, ATT, SE, p)], fill=TRUE)
 hyb <- fread(file.path(TAB,"conception_fullwindow.csv"))
 f40 <- fread(file.path(TAB,"conception_table.csv"))[variant=="B: fixed 40 weeks" & age=="15--19 (all)"]
 stopifnot(nrow(hyb)==1, nrow(f40)==1)
@@ -53,7 +60,7 @@ rr("10--14"),                                        # MM 2026-11-16: the text c
 "age-at-birth estimate is $-6.39$ in both the full panel and the 2018--2025 window. Age at conception",
 "$=$ age at (birth date $-$ recorded gestational age). Outcome $=$ births",
 "to mothers of the given age per 1{,}000 women 15--19 (common denominator), so single-year rows sum",
-"to the 15--19 total. The 10--14 row uses the same denominator and is not part of that total. Records with inconsistent date-of-birth/gestation combinations ($\\approx$2.4\\%)",
+"to the 15--19 total. The 10--14 row is per 1{,}000 women aged 10--14, as in Table A8, and is not part of that total. The 15--19 age-at-birth row is the main estimate (Table 3). Records with inconsistent date-of-birth/gestation combinations ($\\approx$2.4\\%)",
 "excluded. The two classifications tell one story at different clocks: conceptions are prevented from",
 "age 17 up, which appears as fewer births at 18--19. Sensitivity: dating conception by a fixed 40",
 sprintf("weeks instead of recorded gestation gives $%.2f$; extending to 2016--2025 by allocating pre-2018", f40$ATT),
