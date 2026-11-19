@@ -8,8 +8,9 @@
 #      their first OBSERVED treated period (2022): in the retained panel they
 #      are untreated through 2019 and treated in every observed year 2022+,
 #      so under absorbing treatment g=2022(idx 5) is their observed onset.
-#      Event-time for the six 2019--2021 municipalities is shifted —
-#      noted; variant C removes them entirely.
+#      Event-time for the 2020--2021 municipalities is shifted —
+#      noted; variant C removes them entirely. La Romana (2019) keeps its
+#      own date (corrected 2026-11-18; see the block after variant C).
 #   B. FULL PANEL, LATE COHORTS ONLY: treated = 2022+ openers (14); the six
 #      municipalities opening in 2019--2021 are EXCLUDED. All years 2016-2025.
 #   C. A and C combined: years {2016-19, 2022-25} AND 2022+ cohorts only.
@@ -65,6 +66,18 @@ dC[, t := ymap[as.character(year)]]
 dC[, g := fifelse(g0==0L, 0L, ymap[as.character(g0)])]
 baseC <- dC[g>0][, .SD[t==g-1L], by=adm3_pcode][, mean(rateA_15_19)]
 add("C: drop 2020-21 + 2022+ cohorts", run_cs(dC), baseC, "strictest: no COVID years, no COVID-era openers")
+
+# ---- A corrected (2026-11-18, methods 59.128): La Romana opened in 2019, which is a retained
+# year, so it keeps its own date instead of being moved to 2022 with the 2020/2021 cohorts.
+# Before this, its first treated year (2019) served as its pre-period. Estimated AFTER the
+# legacy rows with its own seed, so rows B and C stay byte-identical; it replaces row A.
+dA2 <- copy(dA)
+dA2[, g := fifelse(g0==0L, 0L, fifelse(g0==2019L, ymap[["2019"]], ymap[as.character(pmax(g0, 2022L))]))]
+stopifnot(dA2[g0==2019L, uniqueN(adm3_pcode)]==1L, dA2[g0>0, uniqueN(adm3_pcode)]==20, !anyNA(dA2$g))
+baseA2 <- dA2[g>0][, .SD[t==g-1L], by=adm3_pcode][, mean(rateA_15_19)]
+set.seed(20260722)
+add("A: drop 2020-21 (all 20, remapped)", run_cs(dA2), baseA2,
+    "2020--2021 cohorts observed-onset 2022; La Romana (2019) keeps its date")
 
 RR <- rbindlist(res)
 cat("\n=== COVID robustness (headline reference: -6.39, se 2.01, base 56.5) ===\n")
