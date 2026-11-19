@@ -91,7 +91,7 @@ sprintf("Mean baseline rate, 2019--21 vs.\\ 2023--25 cohorts & \\multicolumn{4}{
 "first AU between 2019 and 2025; Panel A reports linear probability models for the 146 estimation",
 "municipalities.",
 "$^{b}$The birth count is the number of births to women aged 15--19; the birth rate is births per",
-"1{,}000 women aged 15--19. All regressors are 2016--2018 pre-opening averages. The number of",
+"1{,}000 women aged 15--19. All regressors are 2016--2018 pre-opening averages. Births whose record lacks the mother's age, about 12 percent in 2016 and 2017, are not counted. The number of",
 "adolescent births, the documented allocation criterion, is the",
 "product of the adolescent population and the birth rate, so allocation on counts implies",
 "that the two components of column (3) enter with equal coefficients.",
