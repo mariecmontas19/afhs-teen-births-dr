@@ -108,6 +108,7 @@ scripts <- c(
   "09m_ddd_variants.R",
   "09n_leave_one_out.R",
   "09o_cs_small_sample_inference.R",   # after 09n: cluster-jackknife standard errors for the headline
+  "09q_hospital_alignment.R",          # hospital records as a check on the registry (Table C3, Table A12 Panel C, Table 5 note)
   "10_appendix_leads.R",
   "10_appendix_tables.R",
   "10_table3_estimates.R",
