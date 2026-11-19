@@ -69,6 +69,36 @@ fwrite(gl, file.path(DIR_TABLES,"gestlag_inference.csv"))
 fwrite(rbind(cbind(window="pre[-24,-1]",pre), cbind(window="lag[0,8]",lagw), cbind(window="post[9,24]",post)),
        file.path(DIR_TABLES,"gestlag_national.csv"))
 
+# 2026-11-18 (methods 59.132): the same contrasts for never-treated municipalities at the same
+# event dates. Births were falling nationally over these windows, so part of the within-treated
+# contrast is that common decline. Each never-treated municipality is demeaned within the same
+# +/-24-month window; their mean by event-month is subtracted from the treated event's series.
+# No random numbers; written to a separate file, so gestlag_inference.csv is unchanged.
+.fold <- c("DOM010905","DOM051703","DOM012510")
+nev <- trt[ever_treated==0L & !adm3_pcode %in% .fold, adm3_pcode]; stopifnot(length(nev)==126L)
+ctl <- rbindlist(lapply(seq_len(nrow(ev)), function(i){
+  e <- ev[i]; s <- mp[adm3_pcode %in% nev]
+  s[, em := (year*12L+month) - (e$eyear*12L+e$emon)]
+  s <- s[em %between% c(-W, W)]
+  s[, rate_dm := rateA_ann - mean(rateA_ann, na.rm=TRUE), by=adm3_pcode]
+  s[, .(ctrl=mean(rate_dm, na.rm=TRUE)), by=em][, event_id := e$event_id]
+}))
+stk2 <- merge(stk, ctl, by=c("event_id","em")); stk2[, diff_dm := rate_dm - ctrl]
+stopifnot(nrow(stk2)==nrow(stk))
+con2 <- function(yv){
+  d <- copy(stk2)[, yy := get(yv)]
+  m2 <- feols(yy ~ 0 + win, data=d, cluster=~adm3_pcode, notes=FALSE); h2 <- coef(m2); V2 <- vcov(m2)
+  pl <- h2[["winpost"]] - h2[["winlag"]]; spl <- sqrt(V2["winpost","winpost"] + V2["winlag","winlag"] - 2*V2["winpost","winlag"])
+  lp <- h2[["winlag"]] - h2[["winpre"]];  slp <- sqrt(V2["winlag","winlag"] + V2["winpre","winpre"] - 2*V2["winlag","winpre"])
+  data.table(series=yv, contrast=c("post_vs_lag","lag_vs_pre"), diff=c(pl,lp), se=c(spl,slp),
+             p=round(2*pnorm(-abs(c(pl/spl, lp/slp))),3), clusters=uniqueN(d$adm3_pcode))
+}
+gc2 <- rbind(con2("rate_dm"), con2("ctrl"), con2("diff_dm"))
+gc2[, series := fcase(series=="rate_dm","treated events", series=="ctrl","never-treated, same dates", series=="diff_dm","treated minus never-treated")]
+stopifnot(abs(gc2[series=="treated events" & contrast=="post_vs_lag", diff] - dpl) < 1e-10)   # reproduces the paper's contrast
+cat("\n=== months 9-24 vs 0-8, and 0-8 vs before: treated, never-treated at the same dates, difference ===\n"); print(gc2, class=FALSE)
+fwrite(gc2, file.path(DIR_TABLES,"gestlag_comparison.csv"))
+
 g <- ggplot(L, aes(em, rate_dm)) +
   annotate("rect", xmin=0, xmax=9, ymin=-Inf, ymax=Inf, fill="grey50", alpha=0.10) +  # no-response-possible window
   geom_hline(yintercept=0, color="grey60", linewidth=0.4) +
