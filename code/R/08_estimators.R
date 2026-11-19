@@ -89,11 +89,24 @@ tw18 <- feols(rateA_15_19 ~ post | id + year, data=d18, cluster=~id, notes=FALSE
 e18 <- data.table(estimator=c("CS (Callaway-Sant'Anna)","SA (Sun-Abraham)","BJS (Borusyak imputation)","TWFE (static benchmark)"),
                   ATT=c(gr18$overall.att, sa18[1,1], bj18$estimate[1], coef(tw18)[["post"]]),
                   SE =c(gr18$overall.se,  sa18[1,2], bj18$std.error[1], se(tw18)[["post"]]))
-e18[, `:=`(p=round(2*pnorm(-abs(ATT/SE)),3), ATT=round(ATT,2), SE=round(SE,2),
-           n_muni=d18[, uniqueN(adm3_pcode)], n_obs=nrow(d18))]
+e18[, `:=`(n_muni=d18[, uniqueN(adm3_pcode)], n_obs=nrow(d18))]
+# Imputation with the opening year counted as untreated (methods 59.133): each municipality's first
+# treated year is the year of its opening month plus nine months (openings after March, or with no
+# recorded month, move to the next year). A municipality whose first treated year would fall after
+# 2025 is excluded. No random numbers are used.
+d18e <- merge(d18, bin[!is.na(g), .(adm3_pcode, fm_ = first_month)], by="adm3_pcode")
+d18e[, g_eff := fifelse(g == 0L, 0L, fifelse(!is.na(fm_) & fm_ <= 3L, g, g + 1L))]
+d18e <- d18e[g_eff == 0L | g_eff <= 2025L]
+bj18e <- as.data.frame(did_imputation(data=d18e, yname="rateA_15_19", gname="g_eff", tname="year", idname="id", cluster_var="adm3_pcode"))
+e18 <- rbind(e18, data.table(estimator="IMP_EFF (imputation, opening year counted as untreated)",
+                             ATT=bj18e$estimate[1], SE=bj18e$std.error[1]), fill=TRUE)
+e18[, `:=`(n_muni = c(rep(d18[, uniqueN(adm3_pcode)], 4L), d18e[, uniqueN(adm3_pcode)]),
+           n_obs  = c(rep(nrow(d18), 4L), nrow(d18e)))]
 pt18 <- es_pretrend_p(dy18, -5, -2)
 l18 <- data.table(e=dy18$egt, att=round(dy18$att.egt,2), se=round(dy18$se.egt,2))[e>=-5 & e<=-2]
 l18[, `:=`(avg_lead=round(pt18$avg,2), avg_lead_p=round(pt18$p,3))]
+e18[, `:=`(p=round(2*pnorm(-abs(ATT/SE)),3), ATT=round(ATT,2), SE=round(SE,2))]
+setcolorder(e18, c("estimator","ATT","SE","p","n_muni","n_obs"))
 fwrite(e18, file.path(TAB,"estimators_S1_2018_2025.csv")); fwrite(l18, file.path(TAB,"leads_2018_2025.csv"))
 cat("=== first-opening design, 2018-2025 ===\n"); print(e18, class=FALSE); print(l18, class=FALSE)
 assign(".Random.seed", .rs, envir=globalenv())
