@@ -66,6 +66,9 @@ sprintf("Test that the average lead is zero ($e\\in[-5,-2]$), $p$ & %.2f & %.2f 
 "and 95\\% confidence intervals in brackets. The pre-trend test is a test that the",
 "equal-weighted average of the plotted leads $e\\in[-5,-2]$ is zero. $^{\\dagger}$Years 3--4 are identified",
 sprintf("off only %d and %d treated municipalities in the first-opening design and are imprecise.", S1$nmuni[4], S1$nmuni[5]),
+{ l18 <- fread(file.path(TAB,"leads_2018_2025.csv")); g18 <- function(k) l18[e==k]; stopifnot(nrow(l18)>=3)   # 2018-2025 leads (08_estimators.R), methods 59.130
+  sprintf("On 2018--2025, the leads at $e=-2$, $-3$ and $-4$ are $%.2f$ (%.2f), $%.2f$ (%.2f) and $%.2f$ (%.2f), and the test that the average lead is zero gives $p=%s$.",
+          g18(-2)$att, g18(-2)$se, g18(-3)$att, g18(-3)$se, g18(-4)$att, g18(-4)$se, sub("^0", "", sprintf("%.2f", l18$avg_lead_p[1]))) },
 "$^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.",
 "\\end{minipage}",
 "\\end{table}")

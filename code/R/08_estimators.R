@@ -66,6 +66,38 @@ g <- ggplot(ov, aes(e, att, color=est, fill=est)) +
 ggsave_pair(file.path(FIG,"fig_b03_estimators_overlay.png"), g, width=8.6, height=5.2, dpi=200)
 cat("saved overlay figure (computed before did2s).\n")
 
+# ---- 2018-2025 window (2026-11-18, methods 59.130): the first-opening design on the years in which
+# the mother's age is recorded for all births (it is missing for about 12 percent of births in 2016
+# and 2017). Placed here because did's dynamic aggregation must run before any did2s call; the
+# random-number state is saved and restored around the block and the results go to separate files,
+# so the legacy stream and estimators_S1_S2.csv are unchanged. One att_gt object gives the group
+# ATT and the leads.
+.rs <- .Random.seed
+d18 <- merge(p[year >= 2018], bin[!is.na(g), .(adm3_pcode, g)], by="adm3_pcode")
+d18[, id := as.integer(factor(adm3_pcode))]
+d18[, g_sa := fifelse(g>0, g, 10000L)]; d18[, post := as.integer(g>0 & year>=g)]
+stopifnot(d18[, uniqueN(adm3_pcode)]==146L, d18[g>0, uniqueN(adm3_pcode)]==20L)
+set.seed(20261118)
+a18  <- suppressWarnings(suppressMessages(att_gt(yname="rateA_15_19", tname="year", idname="id", gname="g", xformla=~1,
+          data=d18, control_group="notyettreated", base_period="universal", est_method="reg",
+          bstrap=TRUE, cband=TRUE, biters=2000, clustervars="id", print_details=FALSE)))
+gr18 <- suppressMessages(aggte(a18, type="group", na.rm=TRUE))
+dy18 <- suppressMessages(aggte(a18, type="dynamic", na.rm=TRUE))
+sa18 <- summary(feols(rateA_15_19 ~ sunab(g_sa, year) | id + year, data=d18, cluster=~id, notes=FALSE), agg="att")$coeftable
+bj18 <- as.data.frame(did_imputation(data=d18, yname="rateA_15_19", gname="g", tname="year", idname="id", cluster_var="adm3_pcode"))
+tw18 <- feols(rateA_15_19 ~ post | id + year, data=d18, cluster=~id, notes=FALSE)
+e18 <- data.table(estimator=c("CS (Callaway-Sant'Anna)","SA (Sun-Abraham)","BJS (Borusyak imputation)","TWFE (static benchmark)"),
+                  ATT=c(gr18$overall.att, sa18[1,1], bj18$estimate[1], coef(tw18)[["post"]]),
+                  SE =c(gr18$overall.se,  sa18[1,2], bj18$std.error[1], se(tw18)[["post"]]))
+e18[, `:=`(p=round(2*pnorm(-abs(ATT/SE)),3), ATT=round(ATT,2), SE=round(SE,2),
+           n_muni=d18[, uniqueN(adm3_pcode)], n_obs=nrow(d18))]
+pt18 <- es_pretrend_p(dy18, -5, -2)
+l18 <- data.table(e=dy18$egt, att=round(dy18$att.egt,2), se=round(dy18$se.egt,2))[e>=-5 & e<=-2]
+l18[, `:=`(avg_lead=round(pt18$avg,2), avg_lead_p=round(pt18$p,3))]
+fwrite(e18, file.path(TAB,"estimators_S1_2018_2025.csv")); fwrite(l18, file.path(TAB,"leads_2018_2025.csv"))
+cat("=== first-opening design, 2018-2025 ===\n"); print(e18, class=FALSE); print(l18, class=FALSE)
+assign(".Random.seed", .rs, envir=globalenv())
+
 res <- list(); add <- function(sc,est,att,se,note="") res[[length(res)+1]] <<-
   data.table(scenario=sc, estimator=est, ATT=round(att,2), SE=round(se,2),
              p=round(2*pnorm(-abs(att/se)),3), note=note)
