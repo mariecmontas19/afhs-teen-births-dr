@@ -116,6 +116,33 @@ add("B", "TWFE post, analytic cluster-robust", b_hat, se_hat, p_analytic,
 add("B", "TWFE post, wild cluster bootstrap-t", b_hat, NA_real_, p_wcb,
     sprintf("restricted CGM Rademacher, B=%d, n_clusters=%d", B, nC))
 
+# ===========================================================================
+# PART C (2026-11-18, methods 59.134) — placebo openings for the LATER openers on
+# 2018-2021. The Part A placebo uses 2016-2018, when the mother's age is missing
+# for about 12 percent of births, and rests on five municipalities. Here the
+# fourteen municipalities that opened in 2022 or later are given a placebo
+# opening k = 2 or 3 years before the true one; only 2018-2021 is used, before
+# any of them opened; never-treated municipalities are the comparison group.
+# Estimated after Parts A and B with its own seed per call and written to a
+# separate file, so placebo_wcb.csv is unchanged.
+# ===========================================================================
+cat("\n===== C. placebo openings, later openers, 2018-2021 =====\n")
+plc <- rbindlist(lapply(2:3, function(k){
+  dk <- d[year %between% c(2018,2021) & (g==0 | g>=2022), .(adm3_pcode, year, rateA_15_19, g)]
+  dk[, g_fake := fifelse(g>0 & g-k<=2021 & g-k>2018, g-k, 0L)]
+  dk[, id := as.integer(factor(adm3_pcode))]
+  set.seed(20261118)
+  a <- suppressWarnings(suppressMessages(att_gt(yname="rateA_15_19", tname="year", idname="id", gname="g_fake",
+        xformla=~1, data=dk, control_group="notyettreated", base_period="universal", est_method="reg",
+        bstrap=TRUE, cband=TRUE, biters=2000, clustervars="id", print_details=FALSE)))
+  o <- suppressMessages(aggte(a, type="group", na.rm=TRUE))
+  data.table(years_early=k, estimate=round(o$overall.att,2), se=round(o$overall.se,2),
+             p=round(2*pnorm(-abs(o$overall.att/o$overall.se)),2),
+             n_placebo=dk[g_fake>0, uniqueN(adm3_pcode)], n_never=dk[g==0, uniqueN(adm3_pcode)])
+}))
+print(plc, class=FALSE)
+fwrite(plc, file.path(TAB,"placebo_later_openers.csv"))
+
 # ---- save -----------------------------------------------------------------
 out <- rbindlist(res); print(out, class=FALSE)
 fwrite(out, file.path(TAB,"placebo_wcb.csv"))
