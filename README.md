@@ -32,7 +32,7 @@ Each script sources `00_config.R`, which sets paths relative to the project root
 | 06 | Municipality-year and municipality-month panels |
 | 07 | Headline estimates and event studies (Table 3, Figure 4), triple difference, Table 1, placebo and sensitivity tests (Table A4), first-opening vs. upgrade decomposition (Table A17), gestational lag (Figure 5) |
 | 08 | Alternative estimators, heterogeneity and proximity (Figure 6), age profile (Table 4), pregnancy and abortion registries (Table 5), schooling (Table 6), newborn health, mechanisms |
-| 09 | Robustness, registration and denominator checks, matched controls, break-even thresholds (Table 8) |
+| 09 | Robustness, registration and denominator checks, comparison of the registry with hospital records (Table C3), placebo openings, matched controls, break-even thresholds (Table 8) |
 | 10 | Typesets the tables from the numeric outputs |
 | 99 | End-to-end audit of the clean datasets |
 
