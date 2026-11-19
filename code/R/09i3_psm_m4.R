@@ -64,6 +64,10 @@ cs <- data.table(spec="M5: PSM (logit) with M4 vars",
                  p=round(2*pnorm(-abs(o$overall.att/o$overall.se)),3), baseline=round(bs,2),
                  pct=round(100*o$overall.att/bs,1))
 print(bal, class=FALSE)
-fwrite(rbind(fread(file.path(TAB,"matched_balance.csv")), bal, fill=TRUE), file.path(TAB,"matched_balance.csv"))
-fwrite(rbind(fread(file.path(TAB,"matched_cs.csv")), cs, fill=TRUE), file.path(TAB,"matched_cs.csv"))
+# Guard (2026-11-18): drop rows of this specification left by an earlier run, so a re-run replaces
+# them instead of appending duplicates.
+old_b <- fread(file.path(TAB,"matched_balance.csv"))[!spec %in% bal$spec]
+old_c <- fread(file.path(TAB,"matched_cs.csv"))[!spec %in% cs$spec]
+fwrite(rbind(old_b, bal, fill=TRUE), file.path(TAB,"matched_balance.csv"))
+fwrite(rbind(old_c, cs, fill=TRUE), file.path(TAB,"matched_cs.csv"))
 cat("appended -> matched_balance.csv + matched_cs.csv\n")

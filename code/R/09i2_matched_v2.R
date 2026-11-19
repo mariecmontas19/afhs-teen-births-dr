@@ -76,6 +76,9 @@ r4 <- run_match(V4, "M4: + cwr2010 + DHS2013 fertility + proximity", poolE)
 bal <- rbind(r3$bal, r4$bal); cs <- rbind(r3$cs, r4$cs)
 cat("\n=== M4 balance ===\n"); print(bal[spec %like% "M4"], class=FALSE)
 old_b <- fread(file.path(TAB,"matched_balance.csv")); old_c <- fread(file.path(TAB,"matched_cs.csv"))
+# Guard (2026-11-18): drop rows of these specifications left by an earlier run, so a re-run replaces
+# them instead of appending duplicates.
+old_b <- old_b[!spec %in% bal$spec]; old_c <- old_c[!spec %in% cs$spec]
 fwrite(rbind(old_b, bal, fill=TRUE), file.path(TAB,"matched_balance.csv"))
 fwrite(rbind(old_c, cs, fill=TRUE), file.path(TAB,"matched_cs.csv"))
 cat("\nappended -> matched_balance.csv + matched_cs.csv\n")
